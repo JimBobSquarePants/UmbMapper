@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26430.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper", "src\UmbMapper\UmbMapper.csproj", "{70794E9C-5E67-48A0-994C-FD67C7758FB7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper.Tests", "tests\UmbMapper.Tests\UmbMapper.Tests.csproj", "{A766687F-E06C-4389-9D5A-DB6F44FBC1E0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project", "Project", "{0331E607-4CC2-48B7-BA82-02FEBEC44F17}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		UmbMapper.ruleset = UmbMapper.ruleset
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper.Benchmarks", "tests\UmbMapper.Benchmarks\UmbMapper.Benchmarks.csproj", "{2CA212DD-8A24-4574-891C-2036F13B35AA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CAAF4CAF-EDCF-48B7-B705-632464F48B70}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70794E9C-5E67-48A0-994C-FD67C7758FB7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70794E9C-5E67-48A0-994C-FD67C7758FB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70794E9C-5E67-48A0-994C-FD67C7758FB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70794E9C-5E67-48A0-994C-FD67C7758FB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A766687F-E06C-4389-9D5A-DB6F44FBC1E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A766687F-E06C-4389-9D5A-DB6F44FBC1E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A766687F-E06C-4389-9D5A-DB6F44FBC1E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A766687F-E06C-4389-9D5A-DB6F44FBC1E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CA212DD-8A24-4574-891C-2036F13B35AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CA212DD-8A24-4574-891C-2036F13B35AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CA212DD-8A24-4574-891C-2036F13B35AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CA212DD-8A24-4574-891C-2036F13B35AA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A766687F-E06C-4389-9D5A-DB6F44FBC1E0} = {CAAF4CAF-EDCF-48B7-B705-632464F48B70}
+		{2CA212DD-8A24-4574-891C-2036F13B35AA} = {CAAF4CAF-EDCF-48B7-B705-632464F48B70}
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="UmbMapper" ToolsVersion="15.0">
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="AD0001" Action="None" />
+    <Rule Id="SA1200" Action="None" />
+    <Rule Id="SA1405" Action="None" />
+    <Rule Id="SA1413" Action="None" />
+  </Rules>
+</RuleSet>
