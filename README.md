@@ -1,4 +1,4 @@
-# <img src="https://github.com/JimBobSquarePants/umbmarkdown/raw/develop/build/assets/logo/umbmapper-64.png" width="52" height="52" alt="UmbMapper Logo"/> UmbMapper
+# <img src="https://raw.githubusercontent.com/JimBobSquarePants/UmbMapper/develop/build/assets/logo/umbmapper-64.png" width="52" height="52" alt="UmbMapper Logo"/> UmbMapper
 
 This repository contains a convention based published content mapper for Umbraco.
 
@@ -18,7 +18,7 @@ Models are clean without any knowledge of the Umbraco backoffice. They require n
 
 Here's an example class, nothing fancy!
 
-```
+``` csharp
 public class LazyPublishedItem
 {
     public virtual int Id { get; set; }
@@ -45,7 +45,7 @@ You'll have noticed the `virtual` keyword there. It's only required when we want
 
 The mapping behaviour is controlled by creating a mapping class that inherits from `MapperConfig<T>` where `T` is the class you want to map to.
 
-```
+``` csharp
 public class LazyPublishedItemMap : MapperConfig<LazyPublishedItem>
 {
     public LazyPublishedItemMap()
@@ -91,7 +91,7 @@ These mappers handle most use cases since they rely initially on Umbraco's `Prop
 
 There are four extension methods that have been added to the `IPublishedContent` interface providing compile-time and run-time mapping variants. Their signatures are as follows:
 
-```
+``` csharp
 // Map a collection of a compile-time known type instances.
 public static IEnumerable<T> MapTo<T>(this IEnumerable<IPublishedContent> content)
     where T : class, new()
