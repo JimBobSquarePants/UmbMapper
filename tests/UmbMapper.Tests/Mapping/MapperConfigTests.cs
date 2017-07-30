@@ -20,9 +20,27 @@ namespace UmbMapper.Tests.Mapping
             Assert.NotNull(nameMapper);
             Assert.NotNull(createdMapper);
 
-            Assert.True(typeof(int) == idMapper.PropertyType);
-            Assert.True(typeof(string) == nameMapper.PropertyType);
-            Assert.True(typeof(DateTime) == createdMapper.PropertyType);
+            Assert.True(typeof(int) == idMapper.Info.PropertyType);
+            Assert.True(typeof(string) == nameMapper.Info.PropertyType);
+            Assert.True(typeof(DateTime) == createdMapper.Info.PropertyType);
+        }
+
+        [Fact]
+        public void MapperThrowsWhenLazyIsNotVirtual()
+        {
+            var config = new MapperConfig<PublishedItem>();
+
+            Assert.Throws(typeof(InvalidOperationException), () =>
+            {
+                config.AddMap(p => p.Id).AsLazy();
+            });
+        }
+
+        [Fact]
+        public void MapperAllowsLazyVirtual()
+        {
+            var config = new MapperConfig<LazyPublishedItem>();
+            config.AddMap(p => p.Id).AsLazy();
         }
 
         [Fact]

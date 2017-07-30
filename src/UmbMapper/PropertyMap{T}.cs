@@ -26,18 +26,13 @@ namespace UmbMapper
         /// <param name="property">The property to map</param>
         public PropertyMap(PropertyInfo property)
         {
-            this.Config = new PropertyMapperConfig { Property = property, PropertyType = property.PropertyType };
+            this.Info = new PropertyMapInfo(property);
         }
 
         /// <summary>
-        /// Gets the property type
+        /// Gets the mapping property information
         /// </summary>
-        public Type PropertyType => this.Config.PropertyType;
-
-        /// <summary>
-        /// Gets the mapping configuration
-        /// </summary>
-        public PropertyMapperConfig Config { get; }
+        public PropertyMapInfo Info { get; }
 
         /// <summary>
         /// Gets the property mapper
@@ -74,7 +69,7 @@ namespace UmbMapper
                 altNames[i] = member.Member.Name;
             }
 
-            this.Config.Aliases = altNames;
+            this.Info.Aliases = altNames;
             return this;
         }
 
@@ -90,7 +85,7 @@ namespace UmbMapper
                 return this;
             }
 
-            this.Config.Aliases = aliases;
+            this.Info.Aliases = aliases;
             return this;
         }
 
@@ -102,7 +97,7 @@ namespace UmbMapper
         public PropertyMap<T> SetMapper<TMapper>()
             where TMapper : IPropertyMapper
         {
-            this.PropertyMapper = (TMapper)typeof(TMapper).GetInstance(this.Config);
+            this.PropertyMapper = (TMapper)typeof(TMapper).GetInstance(this.Info);
             return this;
         }
 
@@ -113,7 +108,7 @@ namespace UmbMapper
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
         public PropertyMap<T> SetCulture(CultureInfo culture)
         {
-            this.Config.Culture = culture;
+            this.Info.Culture = culture;
             return this;
         }
 
@@ -123,7 +118,7 @@ namespace UmbMapper
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
         public PropertyMap<T> AsRecursive()
         {
-            this.Config.Recursive = true;
+            this.Info.Recursive = true;
             return this;
         }
 
@@ -133,7 +128,12 @@ namespace UmbMapper
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
         public PropertyMap<T> AsLazy()
         {
-            this.Config.Lazy = true;
+            if (!this.Info.Property.ShouldAttemptLazyLoad())
+            {
+                throw new InvalidOperationException($"Property {this.Info.Property.Name} must be marked with the 'virtual' keyword to be lazily mapped.");
+            }
+
+            this.Info.Lazy = true;
             return this;
         }
 
@@ -144,7 +144,7 @@ namespace UmbMapper
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
         public PropertyMap<T> DefaultValue(object value)
         {
-            this.Config.DefaultValue = value;
+            this.Info.DefaultValue = value;
             return this;
         }
     }

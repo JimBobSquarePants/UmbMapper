@@ -241,7 +241,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyMappers\UmbracoPickerPropertyMapper.cs" />
     <Compile Include="PropertyMap{T}.cs" />
-    <Compile Include="PropertyMappers\PropertyMapperConfig.cs" />
+    <Compile Include="PropertyMappers\PropertyMapInfo.cs" />
     <Compile Include="PropertyMappers\PropertyMapperBase.cs" />
     <Compile Include="PropertyMappers\UmbracoPropertyMapper.cs" />
     <Compile Include="Proxy\ConstructorEmitter.cs" />

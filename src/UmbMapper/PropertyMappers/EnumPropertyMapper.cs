@@ -20,9 +20,9 @@ namespace UmbMapper.PropertyMappers
         /// <summary>
         /// Initializes a new instance of the <see cref="EnumPropertyMapper"/> class.
         /// </summary>
-        /// <param name="config">The property configuration</param>
-        public EnumPropertyMapper(PropertyMapperConfig config)
-            : base(config)
+        /// <param name="info">The property map information</param>
+        public EnumPropertyMapper(PropertyMapInfo info)
+            : base(info)
         {
         }
 

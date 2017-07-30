@@ -21,9 +21,9 @@ namespace UmbMapper.PropertyMappers
         /// <summary>
         /// Initializes a new instance of the <see cref="FactoryPropertyMapperBase"/> class.
         /// </summary>
-        /// <param name="config">The property configuration</param>
-        protected FactoryPropertyMapperBase(PropertyMapperConfig config)
-            : base(config)
+        /// <param name="info">The property map information</param>
+        protected FactoryPropertyMapperBase(PropertyMapInfo info)
+            : base(info)
         {
         }
 

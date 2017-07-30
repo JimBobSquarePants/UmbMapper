@@ -69,7 +69,7 @@ namespace UmbMapper
             object result = this.MappedType.GetInstance();
 
             // Gather any lazily mapped properties and assign the lazy mapping
-            IEnumerable<PropertyMap<T>> lazyMaps = this.maps.Where(m => m.Config.Lazy && m.Config.Property.ShouldAttemptLazyLoad()).ToArray();
+            IEnumerable<PropertyMap<T>> lazyMaps = this.maps.Where(m => m.Info.Lazy).ToArray();
             if (lazyMaps.Any())
             {
                 // A dictionary to store lazily invoked values.
@@ -77,7 +77,7 @@ namespace UmbMapper
                 foreach (PropertyMap<T> map in lazyMaps)
                 {
                     object localResult = result;
-                    lazyProperties.Add(map.Config.Property.Name, new Lazy<object>(() => MapProperty(map, content, this.propertyAccessor, localResult)));
+                    lazyProperties.Add(map.Info.Property.Name, new Lazy<object>(() => MapProperty(map, content, this.propertyAccessor, localResult)));
                 }
 
                 // Create a proxy instance to replace our object.
@@ -87,7 +87,7 @@ namespace UmbMapper
             }
 
             // Now map the non-lazy properties
-            foreach (PropertyMap<T> map in this.maps.Where(m => !m.Config.Lazy && !m.Config.Property.ShouldAttemptLazyLoad()))
+            foreach (PropertyMap<T> map in this.maps.Where(m => !m.Info.Lazy))
             {
                 MapProperty(map, content, this.propertyAccessor, result);
             }
@@ -100,25 +100,25 @@ namespace UmbMapper
             // We don't have to explictly set a mapper.
             if (map.PropertyMapper == null)
             {
-                map.PropertyMapper = new UmbracoPropertyMapper(map.Config);
+                map.PropertyMapper = new UmbracoPropertyMapper(map.Info);
             }
 
             // Ensure the property mapper is always invoked first
             object value = null;
             if (!(map.PropertyMapper is UmbracoPropertyMapper))
             {
-                value = new UmbracoPropertyMapper(map.Config).Map(content, null);
+                value = new UmbracoPropertyMapper(map.Info).Map(content, null);
             }
 
             // Other mappers
             value = map.PropertyMapper.Map(content, value);
             if (value != null)
             {
-                Type propertyType = map.PropertyType;
-                value = SantizeValue(value, propertyType);
-                value = RecursivelyMap(value, propertyType);
+                PropertyMapInfo info = map.Info;
+                value = SantizeValue(value, info);
+                value = RecursivelyMap(value, info);
 
-                if (propertyType.IsAssignableFrom(value))
+                if (info.PropertyType.IsAssignableFrom(value))
                 {
                     propertyAccessor.SetValue(map.PropertyMapper.Property.Name, result, value);
                 }
@@ -127,21 +127,21 @@ namespace UmbMapper
             return value;
         }
 
-        private static object RecursivelyMap(object value, Type propertyType)
+        private static object RecursivelyMap(object value, PropertyMapInfo info)
         {
-            if (!propertyType.IsInstanceOfType(value))
+            if (!info.PropertyType.IsInstanceOfType(value))
             {
                 // If the property value is an IPublishedContent, then we can map it to the target type.
                 var content = value as IPublishedContent;
-                if (content != null && propertyType.IsClass)
+                if (content != null && info.PropertyType.IsClass)
                 {
-                    return content.MapTo(propertyType);
+                    return content.MapTo(info.PropertyType);
                 }
 
                 // If the property value is an IEnumerable<IPublishedContent>, then we can map it to the target type.
-                if (value.GetType().IsEnumerableOfType(typeof(IPublishedContent)) && propertyType.IsEnumerableType())
+                if (value.GetType().IsEnumerableOfType(typeof(IPublishedContent)) && info.IsEnumerableType)
                 {
-                    Type genericType = propertyType.GetEnumerableType();
+                    Type genericType = info.PropertyType.GetEnumerableType();
                     if (genericType != null && genericType.IsClass)
                     {
                         return ((IEnumerable<IPublishedContent>)value).MapTo(genericType);
@@ -152,25 +152,25 @@ namespace UmbMapper
             return value;
         }
 
-        private static object SantizeValue(object value, Type propertyType)
+        private static object SantizeValue(object value, PropertyMapInfo info)
         {
-            bool propertyIsEnumerable = propertyType.IsCastableEnumerableType();
+            bool propertyIsCastableEnumerable = info.IsCastableEnumerableType;
 
             if (value != null)
             {
-                bool valueIsEnumerable = value.GetType().IsCastableEnumerableType();
+                bool valueIsCastableEnumerable = value.GetType().IsCastableEnumerableType();
 
                 // You cannot set an enumerable of type from an empty object array.
                 // This should allow the casting back of IEnumerable<T> to an empty List<T> Collection<T> etc.
                 // I cant think of any that don't have an empty constructor
-                if (value.Equals(Enumerable.Empty<object>()) && propertyIsEnumerable)
+                if (value.Equals(Enumerable.Empty<object>()) && propertyIsCastableEnumerable)
                 {
-                    Type typeArg = propertyType.GetTypeInfo().GenericTypeArguments.First();
-                    return propertyType.IsInterface ? EnumerableInvocations.Cast(typeArg, (IEnumerable)value) : propertyType.GetInstance();
+                    Type typeArg = info.PropertyType.GetTypeInfo().GenericTypeArguments.First();
+                    return info.PropertyType.IsInterface ? EnumerableInvocations.Cast(typeArg, (IEnumerable)value) : info.PropertyType.GetInstance();
                 }
 
                 // Ensure only a single item is returned when requested.
-                if (valueIsEnumerable && !propertyIsEnumerable)
+                if (valueIsCastableEnumerable && !propertyIsCastableEnumerable)
                 {
                     // Property is not enumerable, but value is, so grab first item
                     IEnumerator enumerator = ((IEnumerable)value).GetEnumerator();
@@ -178,7 +178,7 @@ namespace UmbMapper
                 }
 
                 // And now check for the reverse situation.
-                if (!valueIsEnumerable && propertyIsEnumerable)
+                if (!valueIsCastableEnumerable && propertyIsCastableEnumerable)
                 {
                     var array = Array.CreateInstance(value.GetType(), 1);
                     array.SetValue(value, 0);
@@ -187,21 +187,21 @@ namespace UmbMapper
             }
             else
             {
-                if (propertyIsEnumerable)
+                if (propertyIsCastableEnumerable)
                 {
-                    if (propertyType.IsInterface && !propertyType.IsEnumerableOfKeyValueType())
+                    if (info.PropertyType.IsInterface && !info.IsEnumerableOfKeyValueType)
                     {
                         // Value is null, but property is enumerable interface, so return empty enumerable
-                        return EnumerableInvocations.Empty(propertyType.GenericTypeArguments.First());
+                        return EnumerableInvocations.Empty(info.PropertyType.GenericTypeArguments.First());
                     }
 
                     // Concrete enumerables cannot be cast from Array so we create an instance and return it
                     // if we know it has an empty constructor.
-                    ParameterInfo[] constructorParams = propertyType.GetConstructorParameters();
+                    ParameterInfo[] constructorParams = info.PropertyType.GetConstructorParameters();
                     if (constructorParams != null && constructorParams.Length == 0)
                     {
                         // Internally this uses Activator.CreateInstance which is heavily optimized.
-                        return propertyType.GetInstance();
+                        return info.PropertyType.GetInstance();
                     }
                 }
             }

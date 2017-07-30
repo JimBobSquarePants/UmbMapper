@@ -15,9 +15,9 @@ namespace UmbMapper.PropertyMappers
         /// <summary>
         /// Initializes a new instance of the <see cref="DocTypeFactoryPropertyMapper"/> class.
         /// </summary>
-        /// <param name="config">The property configuration</param>
-        public DocTypeFactoryPropertyMapper(PropertyMapperConfig config)
-            : base(config)
+        /// <param name="info">The property map information</param>
+        public DocTypeFactoryPropertyMapper(PropertyMapInfo info)
+            : base(info)
         {
         }
 

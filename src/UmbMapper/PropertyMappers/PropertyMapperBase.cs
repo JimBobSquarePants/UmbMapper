@@ -30,24 +30,24 @@ namespace UmbMapper.PropertyMappers
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyMapperBase"/> class.
         /// </summary>
-        /// <param name="config">The property configuration</param>
-        protected PropertyMapperBase(PropertyMapperConfig config)
+        /// <param name="info">The property map information</param>
+        protected PropertyMapperBase(PropertyMapInfo info)
         {
-            this.PropertyType = config.PropertyType;
-            this.Property = config.Property;
+            this.PropertyType = info.PropertyType;
+            this.Property = info.Property;
 
-            if (config.Aliases == null || !config.Aliases.Any())
+            if (info.Aliases == null || !info.Aliases.Any())
             {
                 this.Aliases = new[] { this.Property.Name };
             }
             else
             {
-                this.Aliases = config.Aliases;
+                this.Aliases = info.Aliases;
             }
 
-            this.Recursive = config.Recursive;
-            this.DefaultValue = config.DefaultValue ?? this.GetDefaultValue(this.PropertyType);
-            this.culture = config.Culture;
+            this.Recursive = info.Recursive;
+            this.DefaultValue = info.DefaultValue ?? this.GetDefaultValue(this.PropertyType);
+            this.culture = info.Culture;
         }
 
         /// <inheritdoc/>

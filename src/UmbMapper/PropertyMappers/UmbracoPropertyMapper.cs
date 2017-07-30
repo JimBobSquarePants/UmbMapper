@@ -21,9 +21,9 @@ namespace UmbMapper.PropertyMappers
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoPropertyMapper"/> class.
         /// </summary>
-        /// <param name="config">The property configuration</param>
-        public UmbracoPropertyMapper(PropertyMapperConfig config)
-            : base(config)
+        /// <param name="info">The property map information</param>
+        public UmbracoPropertyMapper(PropertyMapInfo info)
+            : base(info)
         {
         }
 
