@@ -130,7 +130,7 @@ namespace UmbMapper
         {
             if (!this.Info.Property.ShouldAttemptLazyLoad())
             {
-                throw new InvalidOperationException($"Property {this.Info.Property.Name} must be marked with the 'virtual' keyword to be lazily mapped.");
+                throw new InvalidOperationException($"Property {this.Info.Property.Name} in class {typeof(T).Name} must be marked with the 'virtual' keyword to be lazily mapped.");
             }
 
             this.Info.Lazy = true;

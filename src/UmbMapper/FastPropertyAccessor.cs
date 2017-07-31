@@ -38,15 +38,19 @@ namespace UmbMapper
         /// <param name="type">The type to generate the accessors for</param>
         public FastPropertyAccessor(Type type)
         {
-            IEnumerable<PropertyInfo> properties = type.GetProperties(UmbMapperConstants.MappableFlags)
-                .Where(x => x.CanWrite && x.GetSetMethod() != null);
+            IEnumerable<PropertyInfo> properties = type.GetProperties(UmbMapperConstants.MappableFlags);
 
             foreach (PropertyInfo property in properties)
             {
                 string name = property.Name;
                 Type propertyType = property.PropertyType;
+
                 this.getterCache[name] = MakeGetMethod(property.GetGetMethod(), propertyType);
-                this.setterCache[name] = MakeSetMethod(property.GetSetMethod(), propertyType);
+
+                if (property.CanWrite && property.GetSetMethod() != null)
+                {
+                    this.setterCache[name] = MakeSetMethod(property.GetSetMethod(), propertyType);
+                }
             }
         }
 

@@ -1,0 +1,15 @@
+﻿@inherits   UmbracoViewPage<UmbMapper.Sample.RenderModels.RenderPage<UmbMapper.Sample.Models.Pages.Home>>
+@{
+}
+
+<!DOCTYPE html>
+<html lang="@Model.CurrentCulture.TwoLetterISOLanguageName" prefix="og: http://ogp.me/ns#">
+<head>
+    @Html.Partial("~/Views/Partials/Shared/_Meta.cshtml", Model)
+    @RenderSection("HeaderAssets", false)
+</head>
+<body>
+    @RenderBody()
+    @RenderSection("BodyAssets", false)
+</body>
+</html>
