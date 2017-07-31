@@ -362,7 +362,6 @@
     <Compile Include="Models\Pages\IMeta.cs" />
     <Compile Include="Models\Pages\OpenGraphType.cs" />
     <Compile Include="Models\Pages\PublishedPage.cs" />
-    <Compile Include="Models\Pages\PublishedPageExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RenderModels\RenderPage.cs" />
     <Compile Include="RenderModels\IRenderPage.cs" />
