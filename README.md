@@ -2,9 +2,16 @@
 
 This repository contains a convention based published content mapper for Umbraco.
 
-Written as a consequence of a flu-induced vision and driven by a desire for clean separation of concerns in my code I've knocked the initial upload together in less than 48 hours in a Louis Stevenson-esque torrent of writing. 
+Written as a consequence of a flu-induced vision and driven by a desire for clean separation of concerns in my code I knocked the initial upload together in less than 48 hours in a Robert Louis Stevenson-esque torrent of writing. 
+
+I've since added some fine polish!
 
 **Please checkout the repo; I'm looking for API and code reviews :+1:**
+
+Samples project login
+
+- Username : admin
+- Password : umbmapper!
 
 It's not battle tested yet, so no releases, All my unit test pass though so it's very stable already. 
 
