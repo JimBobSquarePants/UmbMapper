@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.26430.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper", "src\UmbMapper\UmbMapper.csproj", "{70794E9C-5E67-48A0-994C-FD67C7758FB7}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CAAF4CAF-EDCF-48B7-B705-632464F48B70}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper.Sample", "tests\UmbMapper.Sample\UmbMapper.Sample.csproj", "{08B00C0A-E231-4166-BCD1-77E46AA0DC3C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper.NuPickers", "src\UmbMapper.NuPickers\UmbMapper.NuPickers.csproj", "{0858E0A4-A161-47AD-88E5-5BF1DBDBD225}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +43,10 @@ Global
 		{08B00C0A-E231-4166-BCD1-77E46AA0DC3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08B00C0A-E231-4166-BCD1-77E46AA0DC3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{08B00C0A-E231-4166-BCD1-77E46AA0DC3C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0858E0A4-A161-47AD-88E5-5BF1DBDBD225}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0858E0A4-A161-47AD-88E5-5BF1DBDBD225}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0858E0A4-A161-47AD-88E5-5BF1DBDBD225}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0858E0A4-A161-47AD-88E5-5BF1DBDBD225}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

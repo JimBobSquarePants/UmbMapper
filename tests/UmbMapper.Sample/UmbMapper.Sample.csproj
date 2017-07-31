@@ -374,6 +374,10 @@
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\UmbMapper.NuPickers\UmbMapper.NuPickers.csproj">
+      <Project>{0858e0a4-a161-47ad-88e5-5bf1dbdbd225}</Project>
+      <Name>UmbMapper.NuPickers</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\UmbMapper\UmbMapper.csproj">
       <Project>{70794e9c-5e67-48a0-994c-fd67c7758fb7}</Project>
       <Name>UmbMapper</Name>

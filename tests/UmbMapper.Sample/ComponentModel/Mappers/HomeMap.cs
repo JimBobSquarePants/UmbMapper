@@ -4,6 +4,7 @@
 // </copyright>
 
 using UmbMapper.PropertyMappers;
+using UmbMapper.PropertyMappers.NuPickers;
 using UmbMapper.Sample.Models.Pages;
 
 namespace UmbMapper.Sample.ComponentModel.Mappers
@@ -30,7 +31,7 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
             this.AddMap(x => x.SwitchTitleOrder).AsLazy();
             this.AddMap(x => x.BrowserDescription).AsLazy();
             this.AddMap(x => x.OpenGraphTitle).AsLazy();
-            this.AddMap(x => x.OpenGraphType).SetMapper<EnumPropertyMapper>().AsLazy();
+            this.AddMap(x => x.OpenGraphType).SetMapper<NuPickerEnumPropertyMapper>().AsLazy();
             this.AddMap(x => x.OpenGraphImage).SetMapper<UmbracoPickerPropertyMapper>().AsRecursive().AsLazy();
         }
     }
