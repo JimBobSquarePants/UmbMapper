@@ -10,7 +10,7 @@ using UmbMapper.Sample.Models.Pages;
 namespace UmbMapper.Sample.ComponentModel.Mappers
 {
     /// <summary>
-    /// COnfigures mapping for the home page
+    /// Configures mapping for the home page
     /// </summary>
     public class HomeMap : MapperConfig<Home>
     {
@@ -19,6 +19,7 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
         /// </summary>
         public HomeMap()
         {
+            // Inherited properties
             this.AddMap(x => x.Id).AsLazy();
             this.AddMap(x => x.Name).AsLazy();
             this.AddMap(x => x.DocumentTypeAlias).AsLazy();
@@ -33,6 +34,9 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
             this.AddMap(x => x.OpenGraphTitle).AsLazy();
             this.AddMap(x => x.OpenGraphType).SetMapper<NuPickerEnumPropertyMapper>().AsLazy();
             this.AddMap(x => x.OpenGraphImage).SetMapper<UmbracoPickerPropertyMapper>().AsRecursive().AsLazy();
+
+            // Home properties
+            this.AddMap(x => x.BodyText).AsLazy();
         }
     }
 }
