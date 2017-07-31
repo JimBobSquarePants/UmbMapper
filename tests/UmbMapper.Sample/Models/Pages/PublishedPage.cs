@@ -57,9 +57,6 @@ namespace UmbMapper.Sample.Models.Pages
         public virtual PublishedImage OpenGraphImage { get; set; }
 
         /// <inheritdoc/>
-        public virtual string OpenGraphUrl { get; set; }
-
-        /// <inheritdoc/>
         public virtual string AlternativeUrl { get; set; }
 
         /// <inheritdoc/>

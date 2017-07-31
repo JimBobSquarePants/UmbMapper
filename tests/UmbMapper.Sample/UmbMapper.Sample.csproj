@@ -352,6 +352,8 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Events\UmbMapperEvents.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Helpers\UrlHelpers.cs" />
     <Compile Include="Models\Media\IPublishedFile.cs" />
     <Compile Include="Models\Media\PublishedImage.cs" />
     <Compile Include="Models\Pages\Home.cs" />
@@ -378,7 +380,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Helpers\" />
     <Folder Include="Models\Components\" />
   </ItemGroup>
   <PropertyGroup>

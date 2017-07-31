@@ -31,6 +31,7 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
             this.AddMap(x => x.BrowserDescription).AsLazy();
             this.AddMap(x => x.OpenGraphTitle).AsLazy();
             this.AddMap(x => x.OpenGraphType).SetMapper<EnumPropertyMapper>().AsLazy();
+            this.AddMap(x => x.OpenGraphImage).SetMapper<UmbracoPickerPropertyMapper>().AsRecursive().AsLazy();
         }
     }
 }

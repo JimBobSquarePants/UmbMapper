@@ -54,10 +54,5 @@ namespace UmbMapper.Sample.Models.Pages
         /// </remarks>
         /// </summary>
         PublishedImage OpenGraphImage { get; set; }
-
-        /// <summary>
-        /// Gets or sets the canonical URL of your document that will be used as its permanent ID when shared in social media.
-        /// </summary>
-        string OpenGraphUrl { get; set; }
     }
 }

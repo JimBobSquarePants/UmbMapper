@@ -1,4 +1,5 @@
 ﻿@using UmbMapper.Sample.Extensions
+@using UmbMapper.Sample.Helpers
 @using UmbMapper.Sample.Models.Media
 @using UmbMapper.Sample.Models.Pages
 @model UmbMapper.Sample.RenderModels.IRenderPage<PublishedPage>
@@ -27,7 +28,7 @@
     // Open Graph Meta Data. See http://ogp.me/ for more information.
     string ogTitle = content.OpenGraphTitle;
     string ogType = content.OpenGraphType.ToDisplay();
-    string ogUrl = content.OpenGraphUrl;
+    string ogUrl = UrlHelpers.AbsoluteUmbracoContentUrl(content.Id);
     <meta property="og:url" content="@ogUrl" />
 
     if (!string.IsNullOrWhiteSpace(ogTitle))
@@ -44,6 +45,6 @@
 
     if (ogImage != null)
     {
-        @*<meta property="og:image" content="@ogImage.UrlAbsolute()" />*@
+        <meta property="og:image" content="@UrlHelpers.AbsoluteUmbracoMediaUrl(ogImage.Crops.Src)" />
     }
 }
