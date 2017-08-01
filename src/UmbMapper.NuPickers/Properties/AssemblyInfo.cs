@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("UmbMapper.NuPickers")]
-[assembly: AssemblyDescription("Extensions to allow the mapping of NuPicker values")]
+[assembly: AssemblyDescription("Extensions for UmbMapper to allow the mapping of NuPicker properties")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("James Jackson-South")]
 [assembly: AssemblyProduct("UmbMapper.NuPickers")]
