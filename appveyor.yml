@@ -33,6 +33,4 @@ after_build:
   - ps: nuget pack build\nuspecs\UmbMapper.Archetype.nuspec -version "$env:PackageVersion"
 
 artifacts:
-  - path: 'UmbMapper.nupkg'
-  - path: 'UmbMapper.NuPickers.nupkg'
-  - path: 'UmbMapper.Archetype.nupkg'
+  - path: 'UmbMapper*.nupkg'
