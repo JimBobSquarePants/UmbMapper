@@ -9,8 +9,8 @@ namespace UmbMapper.Tests.Mapping
         [Fact]
         public void MapperConfigRegistryCanStoreMapper()
         {
-            MapperConfigRegistry.Mappers.Add(new PublishedItemMap());
-            Assert.True(MapperConfigRegistry.Mappers.Any(m => m.MappedType == typeof(PublishedItem)));
+            MapperConfigRegistry.AddMapper(new PublishedItemMap());
+            Assert.True(MapperConfigRegistry.CurrentMappers().Any(m => m.MappedType == typeof(PublishedItem)));
         }
     }
 }

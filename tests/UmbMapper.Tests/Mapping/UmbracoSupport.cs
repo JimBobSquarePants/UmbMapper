@@ -22,6 +22,8 @@ namespace UmbMapper.Tests.Mapping
 {
     public class UmbracoSupport : IDisposable
     {
+        private bool disposed;
+
         public UmbracoSupport()
         {
             this.Setup();
@@ -33,13 +35,17 @@ namespace UmbMapper.Tests.Mapping
 
         private void TearDown()
         {
-            UmbracoContext.Current = null;
-            ApplicationContext.Current = null;
-            MapperConfigRegistry.Mappers.Clear();
-
-            if (Resolution.IsFrozen)
+            if (PublishedCachesResolver.HasCurrent)
             {
-                Resolution.Reset();
+                UmbracoContext.Current = null;
+                ApplicationContext.Current = null;
+                MapperConfigRegistry.Clear();
+                PublishedCachesResolver.Reset();
+
+                if (Resolution.IsFrozen)
+                {
+                    Resolution.Reset();
+                }
             }
         }
 
@@ -89,38 +95,44 @@ namespace UmbMapper.Tests.Mapping
                 PublishedCachesResolver.Current =
                     new PublishedCachesResolver(new PublishedCaches(mockPublishedContentCache.Object, new Mock<IPublishedMediaCache>().Object));
 
+                // JSON test data taken from Umbraco unit-test:
+                // https://github.com/umbraco/Umbraco-CMS/blob/dev-v7/src/Umbraco.Tests/PropertyEditors/ImageCropperTest.cs
+                string json = "{\"focalPoint\": {\"left\": 0.96,\"top\": 0.80827067669172936},\"src\": \"/media/1005/img_0671.jpg\",\"crops\": [{\"alias\":\"thumb\",\"width\": 100,\"height\": 100,\"coordinates\": {\"x1\": 0.58729977382575338,\"y1\": 0.055768992440203169,\"x2\": 0,\"y2\": 0.32457553600198386}}]}";
+                ImageCropDataSet dataSet = JsonConvert.DeserializeObject<ImageCropDataSet>(json);
+
+                this.Content = new MockPublishedContent
+                {
+                    Properties = new[]
+                    {
+                        new MockPublishedContentProperty(nameof(PublishedItem.PublishedContent), 1000),
+                        new MockPublishedContentProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001),
+                        new MockPublishedContentProperty(nameof(PublishedItem.Image), dataSet),
+                        new MockPublishedContentProperty(nameof(PublishedItem.Child), 3333)
+                    }
+                };
+
                 if (!Resolution.IsFrozen)
                 {
                     Resolution.Freeze();
                 }
             }
-
-            // JSON test data taken from Umbraco unit-test:
-            // https://github.com/umbraco/Umbraco-CMS/blob/dev-v7/src/Umbraco.Tests/PropertyEditors/ImageCropperTest.cs
-            string json = "{\"focalPoint\": {\"left\": 0.96,\"top\": 0.80827067669172936},\"src\": \"/media/1005/img_0671.jpg\",\"crops\": [{\"alias\":\"thumb\",\"width\": 100,\"height\": 100,\"coordinates\": {\"x1\": 0.58729977382575338,\"y1\": 0.055768992440203169,\"x2\": 0,\"y2\": 0.32457553600198386}}]}";
-            ImageCropDataSet dataSet = JsonConvert.DeserializeObject<ImageCropDataSet>(json);
-
-            this.Content = new MockPublishedContent
-            {
-                Properties = new[]
-                {
-                    new MockPublishedContentProperty(nameof(PublishedItem.PublishedContent), 1000),
-                    new MockPublishedContentProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001),
-                    new MockPublishedContentProperty(nameof(PublishedItem.Image), dataSet),
-                    new MockPublishedContentProperty(nameof(PublishedItem.Child), 3333)
-                }
-            };
         }
 
         private void InitMappers()
         {
-            MapperConfigRegistry.Mappers.Add(new PublishedItemMap());
-            MapperConfigRegistry.Mappers.Add(new LazyPublishedItemMap());
+            MapperConfigRegistry.AddMapper(new PublishedItemMap());
+            MapperConfigRegistry.AddMapper(new LazyPublishedItemMap());
         }
 
         public void Dispose()
         {
+            if (this.disposed)
+            {
+                return;
+            }
+
             this.TearDown();
+            this.disposed = true;
         }
     }
 }

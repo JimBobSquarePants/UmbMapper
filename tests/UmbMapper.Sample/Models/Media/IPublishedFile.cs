@@ -1,4 +1,9 @@
-﻿namespace UmbMapper.Sample.Models.Media
+﻿// <copyright file="IPublishedFile.cs" company="James Jackson-South">
+// Copyright (c) James Jackson-South and contributors.
+// Licensed under the Apache License, Version 2.0.
+// </copyright>
+
+namespace UmbMapper.Sample.Models.Media
 {
     /// <summary>
     /// Defines a contract specifiying the properties of a file in the media section.
