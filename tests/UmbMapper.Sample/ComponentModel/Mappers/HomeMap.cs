@@ -4,6 +4,7 @@
 // </copyright>
 
 using UmbMapper.PropertyMappers;
+using UmbMapper.PropertyMappers.Archetype;
 using UmbMapper.PropertyMappers.NuPickers;
 using UmbMapper.Sample.Models.Pages;
 
@@ -37,6 +38,7 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
 
             // Home properties
             this.AddMap(x => x.BodyText).AsLazy();
+            this.AddMap(x => x.Gallery).SetMapper<ArchetypeFactoryPropertyMapper>().AsLazy();
         }
     }
 }

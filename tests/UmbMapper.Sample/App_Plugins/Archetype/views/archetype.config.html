@@ -1,0 +1,103 @@
+<!-- Version 1.14.1 -->
+<div class="archetypeConfig" ng-controller="Imulus.ArchetypeConfigController">
+    <h2 class="archetype-headline"><img src="../App_Plugins/Archetype/assets/logo_50.png"/>Archetype<small>{{dllVersion}}</small><a href="https://twitter.com/archetypekit" target="_blank"><img src="../App_Plugins/Archetype/assets/twitter.png"/></a></h2>
+    <p>At a minimum your Archetype needs at least one fieldset with at least one property. You can configure it to allow for multiple types of fieldsets within a single Archetype and you can even add another Archetype as a property. Please use the link below for the full manual:</p>
+    <p><a class="manual-link" href="https://github.com/kgiszewski/ArchetypeManual" target="_blank">Archetype Manual</a></p>
+    <ul class="archetypeFieldsets" ui-sortable="sortableOptions" ng-model="archetypeConfigRenderModel.fieldsets">
+        <li ng-repeat="fieldset in archetypeConfigRenderModel.fieldsets" ng-hide="fieldset.remove">
+            <div class="archetypeFieldsetWrapper" >
+                <div class="archetypeEditorControls" ng-show="archetypeConfigRenderModel.enableMultipleFieldsets">
+                    <i class="icon icon-add" ng-click="addFieldsetRow($index, $event)"></i>
+                    <i class="icon icon-delete" ng-click="removeFieldsetRow($index)" ng-show="canRemoveFieldset()"></i>
+                    <i class="icon icon-navigation handle" ng-show="canSortFieldset()"></i>
+                </div>
+                <div class="archetypeFieldsetTitle" ng-click="focusFieldset(fieldset)">{{fieldset.label}}</div>
+                <div class="archetypeFieldsetCollapser" ng-hide="fieldset.collapse && fieldset.label" ng-if="isLoaded(fieldset)">
+                    <div class="archetypeFieldsetOption">
+                        <label for="archetypeFieldLabel_{{$index}}"><archetype-localize key="label">Label</archetype-localize></label>
+                        <input type="text" id="archetypeFieldLabel_{{$index}}" ng-model="fieldset.label" on-keyup="autoPopulateAlias(fieldset)" />
+                        <small>The label shown to the editors when adding a new fieldset.</small>
+                    </div>
+                    <div class="archetypeFieldsetOption">
+                        <label for="archetypeFieldAlias_{{$index}}"><archetype-localize key="alias">Alias</archetype-localize></label>
+                        <input type="text" id="archetypeFieldAlias_{{$index}}" ng-model="fieldset.alias" on-keyup="markAliasDirty(fieldset)" required/>
+                        <small>The alias used to identify the fieldset when rendering.</small>
+                    </div>
+                    <div class="archetypeFieldsetOption" ng-show="archetypeConfigRenderModel.fieldsetGroups.length">
+                        <label for="archetypeFieldsetGroup_{{$index}}"><archetype-localize key="fieldsetGroup">Group</archetype-localize></label>
+                        <select id="archetypeFieldsetGroup_{{$index}}" ng-model="fieldset.group" ng-options="fieldsetGroup as fieldsetGroup.name for fieldsetGroup in archetypeConfigRenderModel.fieldsetGroups"></select>
+                    </div>
+                    <div class="archetypeFieldsetOption">
+                        <label for="archetypeFieldLabelTemplate_{{$index}}"><archetype-localize key="labelTemplate">Label Template</archetype-localize></label>
+                        <input type="text" id="archetypeFieldLabelTemplate_{{$index}}" ng-model="fieldset.labelTemplate" />
+                        <small>Generates labels per fieldset. Can contain property aliases, e.g. "Article: &#123;&#123;title&#125;&#125;".</small>
+                    </div>
+                    <div class="archetypeFieldsetOption">
+                        <label for="archetypeFieldPreview_{{$index}}">Preview image</label>
+                        <input type="text" id="archetypeFieldPreview_{{$index}}" ng-model="fieldset.previewImage" on-keyup="markAliasDirty(fieldset)" />
+                        <small>A relative path to a preview image, e.g. "/assets/fieldset.png".</small>
+                    </div>
+                    <div class="archetypeFieldsetOption" ng-show="archetypeConfigRenderModel.enableMultipleFieldsets">
+                        <label for="archetypeFieldIcon_{{$index}}"><archetype-localize key="icon">Icon</archetype-localize></label>
+                        <i class="fieldsetIcon icon ng-class:fieldset.icon"></i><a ng-click="selectIcon(fieldset)"><archetype-localize key="select">Select</archetype-localize>…</a>
+                    </div>
+                    <div class="archetypeFieldsetOption">
+                        <label><archetype-localize key="properties">Properties</archetype-localize></label>
+                    </div>
+                    <div class="archetypePropertiesWrapper">
+                        <ul ui-sortable="sortableOptions" ng-model="fieldset.properties">
+                            <li ng-repeat="property in fieldset.properties" ng-hide="property.remove">
+                                <div class="archetypeEditorControls">
+                                    <i class="icon icon-add" ng-click="addPropertyRow(fieldset, $index)"></i>
+                                    <i class="icon icon-delete" ng-click="removePropertyRow(fieldset, $index)" ng-show="canRemoveProperty(fieldset)"></i>
+                                    <i class="icon icon-navigation handle" ng-show="canSortProperty(fieldset)"></i>
+                                </div>
+                                <div class="archetypePropertyTitle" ng-click="focusProperty(fieldset.properties, property)">
+                                    {{property.label}} ({{property.alias}}) - <span>{{getDataTypeNameByGuid(property.dataTypeGuid)}}</span>
+                                </div>
+                                <div class="archetypePropertyCollapser" ng-hide="property.collapse && property.label">
+                                    <div>
+                                        <label for="archetypePropertyLabel_{{$parent.$index}}_{{$index}}"><archetype-localize key="label">Label</archetype-localize></label>
+                                        <input type="text" id="archetypePropertyLabel_{{$parent.$index}}_{{$index}}" ng-model="property.label" on-keyup="autoPopulateAlias(property)"/>
+                                    </div>
+                                    <div>
+                                        <label for="archetypePropertyAlias_{{$parent.$index}}_{{$index}}"><archetype-localize key="alias">Alias</archetype-localize></label>
+                                        <input type="text" id="archetypePropertyAlias_{{$parent.$index}}_{{$index}}" ng-model="property.alias" on-keyup="markAliasDirty(property)" required/>
+                                    </div>
+                                    <div>
+                                        <label for="archetypePropertyHelpText_{{$parent.$index}}_{{$index}}"><archetype-localize key="helpText">Help Text</archetype-localize></label>
+                                        <input type="text" id="archetypePropertyHelpText_{{$parent.$index}}_{{$index}}" ng-model="property.helpText" />
+                                    </div>
+                                    <div>
+                                        <label for="archetypePropertyDataType_{{$parent.$index}}_{{$index}}"><archetype-localize key="dataType">Datatype</archetype-localize></label>
+                                        <select id="archetypePropertyDataType_{{$parent.$index}}_{{$index}}" ng-model="property.dataTypeGuid" ng-options="datatype.guid as datatype.name for datatype in availableDataTypes | orderBy:'name'"></select>
+                                    </div>
+                                    <div>
+                                        <label for="archetypePropertyDefaultValue_{{$parent.$index}}_{{$index}}"><archetype-localize key="defaultValue">Default Value</archetype-localize></label>
+                                        <input type="text" id="archetypePropertyDefaultValue_{{$parent.$index}}_{{$index}}" ng-model="property.value" />
+                                    </div>
+                                    <div>
+                                        <label for="archetypePropertyRequired_{{$parent.$index}}_{{$index}}"><archetype-localize key="required">Required</archetype-localize></label>
+                                        <input type="checkbox" id="archetypePropertyRequired_{{$parent.$index}}_{{$index}}" ng-model="property.required" />
+                                    </div>
+                                    <div>
+                                        <label for="archetypePropertyRegEx_{{$parent.$index}}_{{$index}}"><archetype-localize key="regEx">RegEx Validation</archetype-localize></label>
+                                        <input type="text" id="archetypePropertyRegExValue_{{$parent.$index}}_{{$index}}" ng-model="property.regEx" />
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+
+    <div class="archetypeOptions">
+        <div>
+            <button class="btn btn-default" ng-click="showOptions($event, '../App_Plugins/archetype/views/archetype.config.fieldset.dialog.html')"><archetype-localize key="global_fieldset_options">Global Fieldset Options</archetype-localize></button>
+            <button class="btn btn-default" ng-click="showOptions($event, '../App_Plugins/archetype/views/archetype.config.stylescript.dialog.html')"><archetype-localize key="custom_style_script_options">Custom Style/Script Options</archetype-localize></button>
+            <button class="btn btn-default" ng-click="showOptions($event, '../App_Plugins/archetype/views/archetype.config.developer.dialog.html')"><archetype-localize key="developer_options">Developer Options</archetype-localize></button>
+        </div>
+    </div>
+</div>

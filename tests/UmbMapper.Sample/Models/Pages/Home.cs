@@ -3,7 +3,9 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
+using System.Collections.Generic;
 using System.Web;
+using UmbMapper.Sample.Models.Components;
 
 namespace UmbMapper.Sample.Models.Pages
 {
@@ -16,5 +18,10 @@ namespace UmbMapper.Sample.Models.Pages
         /// Gets or sets the main body copy
         /// </summary>
         public virtual IHtmlString BodyText { get; set; }
+
+        /// <summary>
+        /// Gets or sets the image gallery
+        /// </summary>
+        public virtual IEnumerable<Slide> Gallery { get; set; }
     }
 }

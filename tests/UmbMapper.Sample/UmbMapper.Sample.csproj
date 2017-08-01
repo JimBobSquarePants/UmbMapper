@@ -47,6 +47,9 @@
     <CodeAnalysisRuleSet>..\..\UmbMapper.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Archetype, Version=1.14.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Archetype.Binaries.1.14.1\lib\net40\Archetype.dll</HintPath>
+    </Reference>
     <Reference Include="AutoMapper, Version=3.3.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.dll</HintPath>
     </Reference>
@@ -263,6 +266,37 @@
   </ItemGroup>
   <ItemGroup>
     <AdditionalFiles Include="..\..\stylecop.json" />
+    <Content Include="App_Plugins\Archetype\assets\logo_50.png" />
+    <Content Include="App_Plugins\Archetype\assets\twitter.png" />
+    <Content Include="App_Plugins\Archetype\css\archetype.css" />
+    <Content Include="App_Plugins\Archetype\js\archetype.js" />
+    <Content Include="App_Plugins\Archetype\langs\da-dk.js" />
+    <Content Include="App_Plugins\Archetype\langs\da.js" />
+    <Content Include="App_Plugins\Archetype\langs\de-de.js" />
+    <Content Include="App_Plugins\Archetype\langs\de.js" />
+    <Content Include="App_Plugins\Archetype\langs\en-gb.js" />
+    <Content Include="App_Plugins\Archetype\langs\en-us.js" />
+    <Content Include="App_Plugins\Archetype\langs\en.js" />
+    <Content Include="App_Plugins\Archetype\langs\es-es.js" />
+    <Content Include="App_Plugins\Archetype\langs\es.js" />
+    <Content Include="App_Plugins\Archetype\langs\fr-fr.js" />
+    <Content Include="App_Plugins\Archetype\langs\he-il.js" />
+    <Content Include="App_Plugins\Archetype\langs\it-it.js" />
+    <Content Include="App_Plugins\Archetype\langs\ja-jp.js" />
+    <Content Include="App_Plugins\Archetype\langs\ko-kr.js" />
+    <Content Include="App_Plugins\Archetype\langs\nb-no.js" />
+    <Content Include="App_Plugins\Archetype\langs\nl-nl.js" />
+    <Content Include="App_Plugins\Archetype\langs\pl-pl.js" />
+    <Content Include="App_Plugins\Archetype\langs\pt-br.js" />
+    <Content Include="App_Plugins\Archetype\langs\ru-ru.js" />
+    <Content Include="App_Plugins\Archetype\langs\sv-se.js" />
+    <Content Include="App_Plugins\Archetype\langs\zh-cn.js" />
+    <Content Include="App_Plugins\Archetype\views\archetype.config.developer.dialog.html" />
+    <Content Include="App_Plugins\Archetype\views\archetype.config.fieldset.dialog.html" />
+    <Content Include="App_Plugins\Archetype\views\archetype.config.html" />
+    <Content Include="App_Plugins\Archetype\views\archetype.config.stylescript.dialog.html" />
+    <Content Include="App_Plugins\Archetype\views\archetype.default.html" />
+    <Content Include="App_Plugins\Archetype\views\archetype.html" />
     <Content Include="App_Plugins\NestedContent\Css\nestedcontent.css" />
     <Content Include="App_Plugins\NestedContent\Js\nestedcontent.controllers.js" />
     <Content Include="App_Plugins\NestedContent\Js\nestedcontent.directives.js" />
@@ -349,11 +383,13 @@
   <ItemGroup>
     <Compile Include="ComponentModel\Mappers\HomeMap.cs" />
     <Compile Include="ComponentModel\Mappers\PublishedImageMap.cs" />
+    <Compile Include="ComponentModel\Mappers\SlideMap.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Events\UmbMapperEvents.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Helpers\UrlHelpers.cs" />
+    <Compile Include="Models\Components\Slide.cs" />
     <Compile Include="Models\Media\IPublishedFile.cs" />
     <Compile Include="Models\Media\PublishedImage.cs" />
     <Compile Include="Models\Pages\Home.cs" />
@@ -373,6 +409,10 @@
     <Analyzer Include="..\..\packages\StyleCop.Analyzers.1.1.0-beta004\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\src\UmbMapper.Archetype\UmbMapper.Archetype.csproj">
+      <Project>{66ce4fe8-9abd-42c5-b31b-495050402c7f}</Project>
+      <Name>UmbMapper.Archetype</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\src\UmbMapper.NuPickers\UmbMapper.NuPickers.csproj">
       <Project>{0858e0a4-a161-47ad-88e5-5bf1dbdbd225}</Project>
       <Name>UmbMapper.NuPickers</Name>
@@ -382,9 +422,7 @@
       <Name>UmbMapper</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Models\Components\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

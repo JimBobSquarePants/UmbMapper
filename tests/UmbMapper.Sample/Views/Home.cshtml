@@ -1,5 +1,22 @@
-﻿@inherits UmbracoViewPage<UmbMapper.Sample.RenderModels.RenderPage<UmbMapper.Sample.Models.Pages.Home>>
+﻿@using UmbMapper.Sample.Models.Components
+@inherits UmbracoViewPage<UmbMapper.Sample.RenderModels.RenderPage<UmbMapper.Sample.Models.Pages.Home>>
 
 <h1>@Model.Content.Name</h1>
 
 @Model.Content.BodyText
+
+<h2>Gallery</h2>
+<p>The gallery items are mapped from Archetype</p>
+
+@if (Model.Content.Gallery.Any())
+{
+    foreach (Slide slide in Model.Content.Gallery)
+    {
+        <figure>
+            <img src="@slide.Image.Crops.Src" alt="@slide.Image.Name" width="150" />
+            <figcaption>
+                @slide.Description
+            </figcaption>
+        </figure>
+    }
+}
