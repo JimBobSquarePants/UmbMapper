@@ -28,10 +28,9 @@ build:
   verbosity: minimal
 
 after_build:
-  - ps: |
-  nuget pack build\nuspecs\UmbMapper.nuspec -version "$env:PackageVersion"
-  nuget pack build\nuspecs\UmbMapper.NuPickers.nuspec -version "$env:PackageVersion"
-  nuget pack build\nuspecs\UmbMapper.Archetype.nuspec -version "$env:PackageVersion"
+  - ps: nuget pack build\nuspecs\UmbMapper.nuspec -version "$env:PackageVersion"
+  - ps: nuget pack build\nuspecs\UmbMapper.NuPickers.nuspec -version "$env:PackageVersion"
+  - ps: nuget pack build\nuspecs\UmbMapper.Archetype.nuspec -version "$env:PackageVersion"
 
 artifacts:
   - path: 'build\nuspecs\*.nupkg'
