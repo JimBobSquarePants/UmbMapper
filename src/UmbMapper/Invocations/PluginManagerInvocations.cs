@@ -41,7 +41,7 @@ namespace UmbMapper.Invocations
                 DelegateCache[key] = f;
             }
 
-            return (IEnumerable<Type>)((Func<bool, IEnumerable<Assembly>, object>)f)(cacheResult, specificAssemblies);
+            return ((Func<bool, IEnumerable<Assembly>, IEnumerable<Type>>)f)(cacheResult, specificAssemblies);
         }
 
         /// <summary>
@@ -55,7 +55,7 @@ namespace UmbMapper.Invocations
         /// <returns>
         /// <returns>The return value of the method that this delegate encapsulates.</returns>
         /// </returns>
-        private static Func<T1, T2, object> CreateGenericResolveMethod<T1, T2>(MethodInfo method)
+        private static Func<T1, T2, IEnumerable<Type>> CreateGenericResolveMethod<T1, T2>(MethodInfo method)
         {
             ParameterInfo[] parameter = method.GetParameters();
             ParameterExpression cacheResult = Expression.Parameter(typeof(bool), "cacheResult");
@@ -67,8 +67,8 @@ namespace UmbMapper.Invocations
                 Expression.Convert(cacheResult, parameter[0].ParameterType),
                 Expression.Convert(specificAssemblies, parameter[1].ParameterType));
 
-            return Expression.Lambda<Func<T1, T2, object>>(
-                Expression.Convert(methodCall, typeof(object)), // TODO: Clean this up, we shouldn't need to cast
+            return Expression.Lambda<Func<T1, T2, IEnumerable<Type>>>(
+                methodCall,
                 cacheResult,
                 specificAssemblies).Compile();
         }

@@ -14,8 +14,6 @@ namespace UmbMapper.Tests
         {
             IEnumerable<Type> types = PluginManagerInvocations.ResolveTypes(typeof(PublishedItem));
 
-            types = PluginManagerInvocations.ResolveTypes(typeof(PublishedItem));
-
             Assert.NotNull(types);
             Assert.True(types.Contains(typeof(PublishedItem)));
         }

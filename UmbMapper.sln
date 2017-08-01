@@ -10,6 +10,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project", "Project", "{0331E607-4CC2-48B7-BA82-02FEBEC44F17}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		appveyor.yml = appveyor.yml
 		UmbMapper.ruleset = UmbMapper.ruleset
 	EndProjectSection
 EndProject
