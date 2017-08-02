@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using UmbMapper.Extensions;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
@@ -35,7 +36,7 @@ namespace UmbMapper.PropertyMappers
             foreach (string name in this.Aliases)
             {
                 value = this.CheckConvertType(content.GetPropertyValue(name, this.Recursive));
-                if (value != null)
+                if (!value.IsNullOrEmptyString())
                 {
                     if (this.PropertyType.IsInstanceOfType(value))
                     {
@@ -45,7 +46,7 @@ namespace UmbMapper.PropertyMappers
             }
 
             // Then try class properties
-            if (value == null || value == this.DefaultValue)
+            if (value.IsNullOrEmptyString() || value == this.DefaultValue)
             {
                 Type contentType = content.GetType();
                 string key = contentType.AssemblyQualifiedName;
@@ -64,7 +65,7 @@ namespace UmbMapper.PropertyMappers
                     foreach (string name in this.Aliases)
                     {
                         value = this.CheckConvertType(accessor.GetValue(name, content));
-                        if (value != null && !value.Equals(this.DefaultValue))
+                        if (!value.IsNullOrEmptyString() && !value.Equals(this.DefaultValue))
                         {
                             break;
                         }
