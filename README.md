@@ -13,7 +13,7 @@ Samples project login
 - Username : admin
 - Password : umbmapper!
 
-It's not battle tested yet, so no releases, All my unit test pass though so it's very stable already. 
+It's not fully battle tested yet, so no releases (well, MyGet so far), All my unit test pass though so it's very stable already. 
 
 **There are many more to write though, may you could help?**
 
@@ -70,6 +70,41 @@ public class LazyPublishedItemMap : MapperConfig<LazyPublishedItem>
 }
 ```
 
+For simpler classes there are more terse mapping methods available
+
+``` csharp
+public class LazyPublishedItemMap : MapperConfig<LazyPublishedItem>
+{
+    public LazyPublishedItemMap()
+    {
+        this.AddMappings(
+            x => x.Id,
+            x => x.Name,
+            x => x.DocumentTypeAlias,
+            x => x.Level).ForEachIndexed((x, i) => x.AsLazy());
+
+        this.AddMappings(
+            x => x.SortOrder,
+            x => x.CreateDate,
+            x => x.UpdateDate).ForEach(x => x.AsLazy());
+    }
+}
+```
+
+Or for really, really simple classes
+
+``` csharp
+public class LazyPublishedItemMap : MapperConfig<LazyPublishedItem>
+{
+    public LazyPublishedItemMap()
+    {
+        this.MapAll().ForEachIndexed((x, i) => x.AsLazy());
+
+        this.MapAll().ForEach(x => x.AsLazy());
+    }
+}
+```
+
 What's going on here? 
 
 ### Configuration 
@@ -79,6 +114,8 @@ The `AddMap()` method and subsequent methods called in the mapper constructor ea
 The various mapping configuration options are as follows:
 
 - `AddMap()` Instructs the mapper to map the property.
+- `AddMappings()` Instructs the mapper to map the collection of properties.
+- `MapAll()` Instructs the mapper to map all the the properties in the class.
 - `SetAlias()` Instructs the mapper what aliases to look for in the document type. The order given is the checking order. Case-insentive.
 - `SetMapper()` Instructs the mapper what specific `IPropertyMapper` implementation to use for mapping the property. All properties are initially automatically mapped using the `UmbracoPickerPropertyMapper`.
 - `SetCulture()` Instructs the mapper what culture to use when mapping values. Defaults to the current culture contained withing the `UmbracoContext`.
