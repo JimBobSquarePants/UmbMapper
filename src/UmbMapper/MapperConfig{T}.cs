@@ -42,16 +42,16 @@ namespace UmbMapper
         public Type MappedType { get; }
 
         /// <summary>
-        /// Adds the map to the property from an Umbraco property
+        /// Adds the map from the property to an equivalent Umbraco property
         /// </summary>
-        /// <param name="expression">The property to map</param>
+        /// <param name="propertyExpression">The property to map</param>
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
-        public PropertyMap<T> AddMap(Expression<Func<T, object>> expression)
+        public PropertyMap<T> AddMap(Expression<Func<T, object>> propertyExpression)
         {
             // The property access might be getting converted to object to match the func
             // If so, get the operand and see if that's a member expression
-            MemberExpression member = expression.Body as MemberExpression
-                ?? (expression.Body as UnaryExpression)?.Operand as MemberExpression;
+            MemberExpression member = propertyExpression.Body as MemberExpression
+                ?? (propertyExpression.Body as UnaryExpression)?.Operand as MemberExpression;
 
             if (member == null)
             {
@@ -61,6 +61,50 @@ namespace UmbMapper
             var map = new PropertyMap<T>(member.Member as PropertyInfo);
             this.maps.Add(map);
             return map;
+        }
+
+        /// <summary>
+        /// Adds the map from each property to an equivalent Umbraco property
+        /// </summary>
+        /// <param name="propertyExpressions">The properties to map</param>
+        /// <returns>The <see cref="IEnumerable{T}"/></returns>
+        public IEnumerable<PropertyMap<T>> AddMappings(params Expression<Func<T, object>>[] propertyExpressions)
+        {
+            if (propertyExpressions == null)
+            {
+                yield break;
+            }
+
+            foreach (Expression<Func<T, object>> property in propertyExpressions)
+            {
+                // The property access might be getting converted to object to match the func
+                // If so, get the operand and see if that's a member expression
+                MemberExpression member = property.Body as MemberExpression
+                                          ?? (property.Body as UnaryExpression)?.Operand as MemberExpression;
+
+                if (member == null)
+                {
+                    throw new ArgumentException("Action must be a member expression.");
+                }
+
+                var map = new PropertyMap<T>(member.Member as PropertyInfo);
+                this.maps.Add(map);
+                yield return map;
+            }
+        }
+
+        /// <summary>
+        /// Adds a map from each property in the class to an equivalent Umbraco property
+        /// </summary>
+        /// <returns>The <see cref="IEnumerable{T}"/></returns>
+        public IEnumerable<PropertyMap<T>> MapAll()
+        {
+            foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags))
+            {
+                var map = new PropertyMap<T>(property);
+                this.maps.Add(map);
+                yield return map;
+            }
         }
 
         /// <inheritdoc/>

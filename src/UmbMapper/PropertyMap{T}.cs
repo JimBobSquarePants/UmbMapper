@@ -26,6 +26,11 @@ namespace UmbMapper
         /// <param name="property">The property to map</param>
         public PropertyMap(PropertyInfo property)
         {
+            if (!property.CanWrite)
+            {
+                throw new InvalidOperationException($"Property {property} in class {typeof(T).Name} must be writable in order to be mapped");
+            }
+
             this.Info = new PropertyMapInfo(property);
         }
 

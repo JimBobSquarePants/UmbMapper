@@ -21,14 +21,18 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
         public HomeMap()
         {
             // Inherited properties
-            this.AddMap(x => x.Id).AsLazy();
-            this.AddMap(x => x.Name).AsLazy();
-            this.AddMap(x => x.DocumentTypeAlias).AsLazy();
-            this.AddMap(x => x.Level).AsLazy();
-            this.AddMap(x => x.SortOrder).AsLazy();
-            this.AddMap(x => x.CreateDate).AsLazy();
-            this.AddMap(x => x.UpdateDate).AsLazy();
-            this.AddMap(x => x.BrowserWebsiteTitle).AsLazy();
+            this.AddMappings(
+                x => x.Id,
+                x => x.Name,
+                x => x.DocumentTypeAlias,
+                x => x.Level).ForEachIndexed((x, i) => x.AsLazy());
+
+            this.AddMappings(
+                x => x.SortOrder,
+                x => x.CreateDate,
+                x => x.UpdateDate,
+                x => x.BrowserWebsiteTitle).ForEach(x => x.AsLazy());
+
             this.AddMap(x => x.BrowserPageTitle).SetAlias(x => x.BrowserPageTitle, x => x.Name).AsLazy();
             this.AddMap(x => x.SwitchTitleOrder).AsLazy();
             this.AddMap(x => x.BrowserDescription).AsLazy();

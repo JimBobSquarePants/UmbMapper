@@ -235,6 +235,7 @@
     <Compile Include="IMapperConfig.cs" />
     <Compile Include="Invocations\PluginManagerInvocations.cs" />
     <Compile Include="MapperConfigRegistry.cs" />
+    <Compile Include="PropertyMapExtensions.cs" />
     <Compile Include="PropertyMappers\DocTypeFactoryPropertyMapper.cs" />
     <Compile Include="PropertyMappers\EnumPropertyMapper.cs" />
     <Compile Include="PropertyMappers\FactoryPropertyMapperBase.cs" />
