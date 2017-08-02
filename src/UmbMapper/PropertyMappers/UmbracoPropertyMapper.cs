@@ -31,40 +31,40 @@ namespace UmbMapper.PropertyMappers
         /// <inheritdoc/>
         public override object Map(IPublishedContent content, object value)
         {
-            // First try class properties
-            Type contentType = content.GetType();
-            string key = contentType.AssemblyQualifiedName;
-
-            if (key != null)
+            // First try custom properties
+            foreach (string name in this.Aliases)
             {
-                FastPropertyAccessor accessor;
-                ContentAccessorCache.TryGetValue(key, out accessor);
-
-                if (accessor == null)
+                value = this.CheckConvertType(content.GetPropertyValue(name, this.Recursive));
+                if (value != null)
                 {
-                    accessor = new FastPropertyAccessor(contentType);
-                    ContentAccessorCache.TryAdd(key, accessor);
-                }
-
-                foreach (string name in this.Aliases)
-                {
-                    value = this.CheckConvertType(accessor.GetValue(name, content));
-                    if (value != null && !value.Equals(this.DefaultValue))
+                    if (this.PropertyType.IsInstanceOfType(value))
                     {
                         break;
                     }
                 }
             }
 
-            // Then try custom properties
+            // Then try class properties
             if (value == null || value == this.DefaultValue)
             {
-                foreach (string name in this.Aliases)
+                Type contentType = content.GetType();
+                string key = contentType.AssemblyQualifiedName;
+
+                if (key != null)
                 {
-                    value = this.CheckConvertType(content.GetPropertyValue(name, this.Recursive));
-                    if (value != null)
+                    FastPropertyAccessor accessor;
+                    ContentAccessorCache.TryGetValue(key, out accessor);
+
+                    if (accessor == null)
                     {
-                        if (this.PropertyType.IsInstanceOfType(value))
+                        accessor = new FastPropertyAccessor(contentType);
+                        ContentAccessorCache.TryAdd(key, accessor);
+                    }
+
+                    foreach (string name in this.Aliases)
+                    {
+                        value = this.CheckConvertType(accessor.GetValue(name, content));
+                        if (value != null && !value.Equals(this.DefaultValue))
                         {
                             break;
                         }
