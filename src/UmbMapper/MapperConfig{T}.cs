@@ -192,7 +192,7 @@ namespace UmbMapper
                 }
 
                 // If the property value is an IEnumerable<IPublishedContent>, then we can map it to the target type.
-                if (value.GetType().IsEnumerableOfType(typeof(IPublishedContent)) && info.IsEnumerableType)
+                if (value != null && value.GetType().IsEnumerableOfType(typeof(IPublishedContent)) && info.IsEnumerableType)
                 {
                     Type genericType = info.PropertyType.GetEnumerableType();
                     if (genericType != null && genericType.IsClass)
