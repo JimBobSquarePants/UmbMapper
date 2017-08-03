@@ -17,7 +17,7 @@ namespace UmbMapper
     /// Provides the mechanism for mapping a property from the Umbraco published content
     /// </summary>
     /// <typeparam name="T">The type of object to map</typeparam>
-    public class PropertyMap<T>
+    public class PropertyMap<T> : IEquatable<PropertyMap<T>>
         where T : class, new()
     {
         /// <summary>
@@ -151,6 +151,57 @@ namespace UmbMapper
         {
             this.Info.DefaultValue = value;
             return this;
+        }
+
+        /// <inheritdoc/>
+        public bool Equals(PropertyMap<T> other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return Equals(this.Info, other.Info) && Equals(this.PropertyMapper, other.PropertyMapper);
+        }
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != this.GetType())
+            {
+                return false;
+            }
+
+            return this.Equals((PropertyMap<T>)obj);
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return GetHashCode(this);
+        }
+
+        private static int GetHashCode(PropertyMap<T> map)
+        {
+            unchecked
+            {
+                return ((map.Info != null ? map.Info.GetHashCode() : 0) * 397) ^ (map.PropertyMapper != null ? map.PropertyMapper.GetHashCode() : 0);
+            }
         }
     }
 }

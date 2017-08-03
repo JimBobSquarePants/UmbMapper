@@ -42,6 +42,11 @@ namespace UmbMapper
         public Type MappedType { get; }
 
         /// <summary>
+        /// Gets the collection of mappings registered with the mapper
+        /// </summary>
+        public IReadOnlyCollection<PropertyMap<T>> Mappings => this.maps;
+
+        /// <summary>
         /// Adds the map from the property to an equivalent Umbraco property
         /// </summary>
         /// <param name="propertyExpression">The property to map</param>
@@ -72,9 +77,10 @@ namespace UmbMapper
         {
             if (propertyExpressions == null)
             {
-                yield break;
+                return Enumerable.Empty<PropertyMap<T>>();
             }
 
+            var mapsTemp = new List<PropertyMap<T>>();
             foreach (Expression<Func<T, object>> property in propertyExpressions)
             {
                 // The property access might be getting converted to object to match the func
@@ -88,9 +94,11 @@ namespace UmbMapper
                 }
 
                 var map = new PropertyMap<T>(member.Member as PropertyInfo);
+                mapsTemp.Add(map);
                 this.maps.Add(map);
-                yield return map;
             }
+
+            return this.maps.Intersect(mapsTemp);
         }
 
         /// <summary>
@@ -103,8 +111,9 @@ namespace UmbMapper
             {
                 var map = new PropertyMap<T>(property);
                 this.maps.Add(map);
-                yield return map;
             }
+
+            return this.maps;
         }
 
         /// <inheritdoc/>

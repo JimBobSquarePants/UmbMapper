@@ -260,6 +260,8 @@
     <Compile Include="Mapping\LazyMappingTests.cs" />
     <Compile Include="Mapping\Models\LazyPublishedItem.cs" />
     <Compile Include="Mapping\Models\LazyPublishedItemMap.cs" />
+    <Compile Include="Mapping\Models\PublishedItemMapMany.cs" />
+    <Compile Include="Mapping\Models\PublishedItemMapAll.cs" />
     <Compile Include="PluginManagerInvocationTests.cs" />
     <Compile Include="TypeInferenceTests.cs" />
     <Compile Include="Mapping\EnumMappingTests.cs" />

@@ -13,7 +13,7 @@ namespace UmbMapper.PropertyMappers
     /// <summary>
     /// Contains the propererties required for mapping an Umbraco property
     /// </summary>
-    public class PropertyMapInfo
+    public class PropertyMapInfo : IEquatable<PropertyMapInfo>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyMapInfo"/> class.
@@ -79,5 +79,74 @@ namespace UmbMapper.PropertyMappers
         /// Gets the culture
         /// </summary>
         public CultureInfo Culture { get; internal set; }
+
+        /// <inheritdoc/>
+        public bool Equals(PropertyMapInfo other)
+        {
+            if (ReferenceEquals(null, other))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, other))
+            {
+                return true;
+            }
+
+            return Equals(this.Property, other.Property)
+                && this.PropertyType == other.PropertyType
+                && this.IsEnumerableType == other.IsEnumerableType
+                && this.IsCastableEnumerableType == other.IsCastableEnumerableType
+                && this.IsEnumerableOfKeyValueType == other.IsEnumerableOfKeyValueType
+                && Equals(this.Aliases, other.Aliases)
+                && this.Recursive == other.Recursive
+                && this.Lazy == other.Lazy && Equals(this.DefaultValue, other.DefaultValue)
+                && Equals(this.Culture, other.Culture);
+        }
+
+        /// <inheritdoc/>
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj))
+            {
+                return false;
+            }
+
+            if (ReferenceEquals(this, obj))
+            {
+                return true;
+            }
+
+            if (obj.GetType() != this.GetType())
+            {
+                return false;
+            }
+
+            return this.Equals((PropertyMapInfo)obj);
+        }
+
+        /// <inheritdoc/>
+        public override int GetHashCode()
+        {
+            return GetHashCode(this);
+        }
+
+        private static int GetHashCode(PropertyMapInfo info)
+        {
+            unchecked
+            {
+                int hashCode = info.Property != null ? info.Property.GetHashCode() : 0;
+                hashCode = (hashCode * 397) ^ (info.PropertyType != null ? info.PropertyType.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ info.IsEnumerableType.GetHashCode();
+                hashCode = (hashCode * 397) ^ info.IsCastableEnumerableType.GetHashCode();
+                hashCode = (hashCode * 397) ^ info.IsEnumerableOfKeyValueType.GetHashCode();
+                hashCode = (hashCode * 397) ^ (info.Aliases != null ? info.Aliases.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ info.Recursive.GetHashCode();
+                hashCode = (hashCode * 397) ^ info.Lazy.GetHashCode();
+                hashCode = (hashCode * 397) ^ (info.DefaultValue != null ? info.DefaultValue.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (info.Culture != null ? info.Culture.GetHashCode() : 0);
+                return hashCode;
+            }
+        }
     }
 }
