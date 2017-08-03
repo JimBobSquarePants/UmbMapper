@@ -24,5 +24,11 @@ namespace UmbMapper.Tests.Mapping.Models
         public ImageCropDataSet Image { get; set; }
 
         public PublishedItem Child { get; set; }
+
+        public RelatedLink RelatedLink { get; set; }
+
+        public RelatedLinks RelatedLinks { get; set; }
+
+        public RelatedLinks NullRelatedLinks { get; set; }
     }
 }

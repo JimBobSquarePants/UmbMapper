@@ -24,6 +24,7 @@ namespace UmbMapper.PropertyMappers
             this.Property = property;
             this.PropertyType = property.PropertyType;
             this.IsEnumerableType = this.PropertyType.IsEnumerableType();
+            this.IsConvertableEnumerableType = this.PropertyType.IsConvertableEnumerableType();
             this.IsCastableEnumerableType = this.PropertyType.IsCastableEnumerableType();
             this.IsEnumerableOfKeyValueType = this.PropertyType.IsEnumerableOfKeyValueType();
         }
@@ -42,6 +43,12 @@ namespace UmbMapper.PropertyMappers
         /// Gets a value indicating whether the specified type is an enumerable type.
         /// </summary>
         public bool IsEnumerableType { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the specified type is an enumerable type that is safe to convert
+        /// from <see cref="IEnumerable{T}"/> to a single item following processing via a mapper.
+        /// </summary>
+        public bool IsConvertableEnumerableType { get; }
 
         /// <summary>
         /// Gets a value indicating whether the specified type is an enumerable type that is safe to cast

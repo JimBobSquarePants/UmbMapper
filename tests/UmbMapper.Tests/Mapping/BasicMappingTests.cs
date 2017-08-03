@@ -1,7 +1,9 @@
 ﻿using System;
+using AutoMapper.Internal;
 using UmbMapper.Extensions;
 using UmbMapper.Tests.Mapping.Models;
 using UmbMapper.Tests.Mocks;
+using Umbraco.Web.Models;
 using Xunit;
 
 namespace UmbMapper.Tests.Mapping
@@ -68,6 +70,19 @@ namespace UmbMapper.Tests.Mapping
 
             Assert.Equal(created, result.CreateDate);
             Assert.Equal(created, result.UpdateDate);
+        }
+
+        [Fact]
+        public void MapperCanMapRelatedLinks()
+        {
+            MockPublishedContent content = this.support.Content;
+
+            PublishedItem result = content.MapTo<PublishedItem>();
+
+            Assert.NotNull(result.RelatedLink);
+            Assert.NotNull(result.RelatedLinks);
+
+            Assert.True(result.RelatedLinks.GetType().IsEnumerableOfType(typeof(RelatedLink)));
         }
     }
 }

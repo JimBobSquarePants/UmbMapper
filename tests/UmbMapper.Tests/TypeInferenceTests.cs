@@ -5,6 +5,7 @@ using System.Linq;
 using UmbMapper.Extensions;
 using UmbMapper.Tests.Mocks;
 using Umbraco.Core.Models;
+using Umbraco.Web.Models;
 using Xunit;
 
 namespace UmbMapper.Tests
@@ -49,13 +50,14 @@ namespace UmbMapper.Tests
         [InlineData(typeof(HashSet<string>), true)]
         [InlineData(typeof(Enumerable), false)]
         [InlineData(typeof(Dictionary<string, string>), true)]
+        [InlineData(typeof(RelatedLinks), true)]
         public void TestIsEnumerableType(Type input, bool expected)
         {
             Assert.Equal(expected, input.IsEnumerableType());
         }
 
         /// <summary>
-        /// Tests the <see cref="TypeInferenceExtensions.IsEnumerableType"/> method.
+        /// Tests the <see cref="TypeInferenceExtensions.IsCastableEnumerableType"/> method.
         /// </summary>
         /// <param name="input">The input type</param>
         /// <param name="expected">The expected result.</param>
@@ -69,13 +71,35 @@ namespace UmbMapper.Tests
         [InlineData(typeof(HashSet<string>), true)]
         [InlineData(typeof(Enumerable), false)]
         [InlineData(typeof(Dictionary<string, string>), false)]
+        [InlineData(typeof(RelatedLinks), false)]
         public void TestIsCastableEnumerableType(Type input, bool expected)
         {
             Assert.Equal(expected, input.IsCastableEnumerableType());
         }
 
         /// <summary>
-        /// Tests the <see cref="TypeInferenceExtensions.IsEnumerableType"/> method.
+        /// Tests the <see cref="TypeInferenceExtensions.IsConvertableEnumerableType"/> method.
+        /// </summary>
+        /// <param name="input">The input type</param>
+        /// <param name="expected">The expected result.</param>
+        [Theory]
+        [InlineData(typeof(string), false)]
+        [InlineData(typeof(bool), false)]
+        [InlineData(typeof(int), false)]
+        [InlineData(typeof(long), false)]
+        [InlineData(typeof(List<string>), true)]
+        [InlineData(typeof(Collection<string>), true)]
+        [InlineData(typeof(HashSet<string>), true)]
+        [InlineData(typeof(Enumerable), false)]
+        [InlineData(typeof(Dictionary<string, string>), true)]
+        [InlineData(typeof(RelatedLinks), true)]
+        public void TestIsConvertableEnumerableType(Type input, bool expected)
+        {
+            Assert.Equal(expected, input.IsConvertableEnumerableType());
+        }
+
+        /// <summary>
+        /// Tests the <see cref="TypeInferenceExtensions.IsEnumerableOfKeyValueType"/> method.
         /// </summary>
         /// <param name="input">The input type</param>
         /// <param name="expected">The expected result.</param>

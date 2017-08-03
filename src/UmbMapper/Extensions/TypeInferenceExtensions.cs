@@ -122,8 +122,24 @@ namespace UmbMapper.Extensions
         }
 
         /// <summary>
+        /// Determines whether the specified type is an enumerable type that is safe to convert
+        /// from <see cref="IEnumerable{T}"/> to a single item following processing via a mapper
+        /// <remarks>
+        /// This should exclude <see cref="T:string"/>
+        /// </remarks>
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>True if the type is a convertable-safe, enumerable type; otherwise, false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsConvertableEnumerableType(this Type type)
+        {
+            // We don't want to try to convert strings but everything else should be safe
+            return type.IsEnumerableType() && type != typeof(string);
+        }
+
+        /// <summary>
         /// Determines whether the specified type is an enumerable type that is safe to cast
-        /// following processing via a type converter.
+        /// following processing via a mapper.
         /// <remarks>
         /// This should exclude <see cref="T:string"/>, <see cref="T:Dictionary{,}"/>
         /// </remarks>

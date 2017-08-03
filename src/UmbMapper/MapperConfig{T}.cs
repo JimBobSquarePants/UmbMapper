@@ -171,7 +171,7 @@ namespace UmbMapper
                 value = SantizeValue(value, info);
                 value = RecursivelyMap(value, info);
 
-                if (info.PropertyType.IsAssignableFrom(value))
+                if (value != null)
                 {
                     propertyAccessor.SetValue(map.PropertyMapper.Property.Name, result, value);
                 }
@@ -208,10 +208,11 @@ namespace UmbMapper
         private static object SantizeValue(object value, PropertyMapInfo info)
         {
             bool propertyIsCastableEnumerable = info.IsCastableEnumerableType;
+            bool propertyIsConvertableEnumerable = info.IsConvertableEnumerableType;
 
             if (value != null)
             {
-                bool valueIsCastableEnumerable = value.GetType().IsCastableEnumerableType();
+                bool valueIsConvertableEnumerable = value.GetType().IsConvertableEnumerableType();
 
                 // You cannot set an enumerable of type from an empty object array.
                 // This should allow the casting back of IEnumerable<T> to an empty List<T> Collection<T> etc.
@@ -223,7 +224,7 @@ namespace UmbMapper
                 }
 
                 // Ensure only a single item is returned when requested.
-                if (valueIsCastableEnumerable && !propertyIsCastableEnumerable)
+                if (valueIsConvertableEnumerable && !propertyIsConvertableEnumerable)
                 {
                     // Property is not enumerable, but value is, so grab first item
                     IEnumerator enumerator = ((IEnumerable)value).GetEnumerator();
@@ -231,7 +232,7 @@ namespace UmbMapper
                 }
 
                 // And now check for the reverse situation.
-                if (!valueIsCastableEnumerable && propertyIsCastableEnumerable)
+                if (!valueIsConvertableEnumerable && propertyIsConvertableEnumerable)
                 {
                     var array = Array.CreateInstance(value.GetType(), 1);
                     array.SetValue(value, 0);

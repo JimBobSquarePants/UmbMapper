@@ -84,7 +84,7 @@ namespace UmbMapper.Tests.Mocks
                         { CanResolveBeforeFrozen = true };
                 }
 
-                return new PublishedContentType("MockContentType", this.Properties.Select(x => new PublishedPropertyType(x.PropertyTypeAlias, "MockPropertyType")));
+                return new PublishedContentType("MockContentType", null, this.Properties.Select(x => new PublishedPropertyType(x.PropertyTypeAlias, "MockPropertyType")));
             }
             set => this.contentType = value;
         }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using Moq;
@@ -99,6 +100,16 @@ namespace UmbMapper.Tests.Mapping
                 // https://github.com/umbraco/Umbraco-CMS/blob/dev-v7/src/Umbraco.Tests/PropertyEditors/ImageCropperTest.cs
                 string json = "{\"focalPoint\": {\"left\": 0.96,\"top\": 0.80827067669172936},\"src\": \"/media/1005/img_0671.jpg\",\"crops\": [{\"alias\":\"thumb\",\"width\": 100,\"height\": 100,\"coordinates\": {\"x1\": 0.58729977382575338,\"y1\": 0.055768992440203169,\"x2\": 0,\"y2\": 0.32457553600198386}}]}";
                 ImageCropDataSet dataSet = JsonConvert.DeserializeObject<ImageCropDataSet>(json);
+                var link = new RelatedLink
+                {
+                    Caption = "Test Caption",
+                    Content = null,
+                    Id = 98765,
+                    IsDeleted = true,
+                    IsInternal = true,
+                    Link = "test link",
+                    NewWindow = true
+                };
 
                 this.Content = new MockPublishedContent
                 {
@@ -107,7 +118,12 @@ namespace UmbMapper.Tests.Mapping
                         new MockPublishedContentProperty(nameof(PublishedItem.PublishedContent), 1000),
                         new MockPublishedContentProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001),
                         new MockPublishedContentProperty(nameof(PublishedItem.Image), dataSet),
-                        new MockPublishedContentProperty(nameof(PublishedItem.Child), 3333)
+                        new MockPublishedContentProperty(nameof(PublishedItem.Child), 3333),
+
+                        // We're deliberately switching these values to test enumerable conversion
+                        new MockPublishedContentProperty(nameof(PublishedItem.RelatedLink), new RelatedLinks(new List<RelatedLink>{link},nameof(PublishedItem.RelatedLink))),
+                        new MockPublishedContentProperty(nameof(PublishedItem.RelatedLinks), link),
+                        new MockPublishedContentProperty(nameof(PublishedItem.NullRelatedLinks), null),
                     }
                 };
 

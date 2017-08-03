@@ -15,6 +15,9 @@ namespace UmbMapper.Tests.Mapping.Models
             this.AddMap(p => p.PublishedContent).SetMapper<UmbracoPickerPropertyMapper>();
             this.AddMap(p => p.Image).SetMapper<UmbracoPropertyMapper>();
             this.AddMap(p => p.Child).SetMapper<UmbracoPickerPropertyMapper>();
+            this.AddMap(p => p.RelatedLinks);
+            this.AddMap(p => p.RelatedLink);
+            this.AddMap(p => p.NullRelatedLinks);
         }
     }
 }
