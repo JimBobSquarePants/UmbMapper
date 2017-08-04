@@ -166,7 +166,7 @@ namespace UmbMapper
                 return true;
             }
 
-            return Equals(this.Info, other.Info) && Equals(this.PropertyMapper, other.PropertyMapper);
+            return this.Info.Equals(other.Info) && Equals(this.PropertyMapper, other.PropertyMapper);
         }
 
         /// <inheritdoc/>

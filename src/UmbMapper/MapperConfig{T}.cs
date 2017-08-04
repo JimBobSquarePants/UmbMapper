@@ -72,6 +72,7 @@ namespace UmbMapper
             }
 
             var map = new PropertyMap<T>(member.Member as PropertyInfo);
+            this.CheckDuplicateMappings(map);
             this.maps.Add(map);
             return map;
         }
@@ -102,6 +103,7 @@ namespace UmbMapper
                 }
 
                 var map = new PropertyMap<T>(member.Member as PropertyInfo);
+                this.CheckDuplicateMappings(map);
                 mapsTemp.Add(map);
                 this.maps.Add(map);
             }
@@ -118,6 +120,7 @@ namespace UmbMapper
             foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags))
             {
                 var map = new PropertyMap<T>(property);
+                this.CheckDuplicateMappings(map);
                 this.maps.Add(map);
             }
 
@@ -287,6 +290,14 @@ namespace UmbMapper
                     UmbracoConfig.For.UmbracoSettings(),
                     UrlProviderResolver.Current.Providers,
                     false);
+            }
+        }
+
+        private void CheckDuplicateMappings(PropertyMap<T> map)
+        {
+            if (this.maps.Any(x => x.Info.Property.Name == map.Info.Property.Name))
+            {
+                throw new InvalidOperationException($"Property '{map.Info.Property.Name}' in class '{typeof(T).Name}' has already added to the mapper.");
             }
         }
     }

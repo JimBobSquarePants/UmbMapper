@@ -4,7 +4,9 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Reflection;
 using UmbMapper.Extensions;
 
@@ -65,7 +67,7 @@ namespace UmbMapper.PropertyMappers
         /// <summary>
         /// Gets the property aliases
         /// </summary>
-        public string[] Aliases { get; internal set; }
+        public string[] Aliases { get; internal set; } = new string[0];
 
         /// <summary>
         /// Gets a value indicating whether to map the property recursively up the tree
@@ -85,7 +87,7 @@ namespace UmbMapper.PropertyMappers
         /// <summary>
         /// Gets the culture
         /// </summary>
-        public CultureInfo Culture { get; internal set; }
+        public CultureInfo Culture { get; internal set; } = CultureInfo.InvariantCulture;
 
         /// <inheritdoc/>
         public bool Equals(PropertyMapInfo other)
@@ -100,15 +102,16 @@ namespace UmbMapper.PropertyMappers
                 return true;
             }
 
-            return Equals(this.Property, other.Property)
+            return this.Property.Name == other.Property.Name
                 && this.PropertyType == other.PropertyType
                 && this.IsEnumerableType == other.IsEnumerableType
                 && this.IsCastableEnumerableType == other.IsCastableEnumerableType
                 && this.IsEnumerableOfKeyValueType == other.IsEnumerableOfKeyValueType
-                && Equals(this.Aliases, other.Aliases)
+                && this.Aliases.SequenceEqual(other.Aliases)
                 && this.Recursive == other.Recursive
-                && this.Lazy == other.Lazy && Equals(this.DefaultValue, other.DefaultValue)
-                && Equals(this.Culture, other.Culture);
+                && this.Lazy == other.Lazy
+                && Equals(this.DefaultValue, other.DefaultValue)
+                && this.Culture.Name == other.Culture.Name;
         }
 
         /// <inheritdoc/>
