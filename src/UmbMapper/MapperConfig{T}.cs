@@ -6,14 +6,22 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Web;
+using System.Web.Hosting;
 using UmbMapper.Extensions;
 using UmbMapper.Invocations;
 using UmbMapper.PropertyMappers;
 using UmbMapper.Proxy;
+using Umbraco.Core;
+using Umbraco.Core.Configuration;
 using Umbraco.Core.Models;
+using Umbraco.Web;
+using Umbraco.Web.Routing;
+using Umbraco.Web.Security;
 
 namespace UmbMapper
 {
@@ -150,6 +158,10 @@ namespace UmbMapper
 
         private static object MapProperty(PropertyMap<T> map, IPublishedContent content, FastPropertyAccessor propertyAccessor, object result)
         {
+            // Users might want to use lazy loading with API controllers that do not inherit from UmBracoAPIController.
+            // Certain mappers like Archtype require the context so we want to ensure it exists.
+            EnsureUmbracoContext();
+
             // We don't have to explictly set a mapper.
             if (map.PropertyMapper == null)
             {
@@ -261,6 +273,21 @@ namespace UmbMapper
             }
 
             return value;
+        }
+
+        private static void EnsureUmbracoContext()
+        {
+            if (UmbracoContext.Current == null)
+            {
+                var dummyHttpContext = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
+                UmbracoContext.EnsureContext(
+                    dummyHttpContext,
+                    ApplicationContext.Current,
+                    new WebSecurity(dummyHttpContext, ApplicationContext.Current),
+                    UmbracoConfig.For.UmbracoSettings(),
+                    UrlProviderResolver.Current.Providers,
+                    false);
+            }
         }
     }
 }
