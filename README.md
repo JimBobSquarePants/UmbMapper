@@ -20,7 +20,7 @@ UmbMapper maps `IPublishedContent` instances from the Umbraco Published Content 
 So far it's made up of the following libraries
 
 - [**UmbMapper**](https://www.nuget.org/packages/UmbMapper) - The main mapping library, Maps all default Umbraco dataTypes and almost anything that uses a `PropertyValueConverter` to POCO equivalents.
-- [**UmbMapper.ArcheType**](https://www.nuget.org/packages/UmbMapper.ArchType) - Allows the mapping of ArcheType models to POCO equivalents.
+- [**UmbMapper.ArcheType**](https://www.nuget.org/packages/UmbMapper.ArcheType) - Allows the mapping of ArcheType models to POCO equivalents.
 - [**UmbMapper.NuPickers**](https://www.nuget.org/packages/UmbMapper.NuPickers) - Allows the mapping of NuPicker models to POCO equivalents.
 
 ## Consuming The Libraries
