@@ -6,16 +6,26 @@ Written as a consequence of a flu-induced vision and driven by a desire for clea
 
 I've since added some fine polish!
 
-**Please checkout the repo; I'm looking for API and code reviews :+1:**
+**Please checkout the repo; I'm looking for API and code reviews, unit tests also!! :+1:**
 
 Samples project login
 
 - Username : admin
 - Password : umbmapper!
 
-It's not fully battle tested yet, so no releases (well, MyGet so far), All my unit test pass though so it's very stable already. 
+## What does it do?
 
-**There are many more to write though, may you could help?**
+UmbMapper maps `IPublishedContent` instances from the Umbraco Published Content Cache to strongly typed classes. It does so in an efficient manner with very little overhead.
+
+So far it's made up of the following libraries
+
+- [**UmbMapper**](https://www.nuget.org/packages/UmbMapper) - The main mapping library, Maps all default Umbraco dataTypes and almost anything that uses a `PropertyValueConverter` to POCO equivalents.
+- [**UmbMapper.ArcheType**](https://www.nuget.org/packages/UmbMapper.ArchType) - Allows the mapping of ArcheType models to POCO equivalents.
+- [**UmbMapper.NuPickers**](https://www.nuget.org/packages/UmbMapper.NuPickers) - Allows the mapping of NuPicker models to POCO equivalents.
+
+## Consuming The Libraries
+
+Nightlies are available on [Myget](https://www.myget.org/gallery/umbmapper) with battle tested releases available on [Nuget](https://www.nuget.org/packages/UmbMapper).
 
 ## The API
 
