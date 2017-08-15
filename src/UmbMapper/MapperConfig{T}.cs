@@ -71,9 +71,12 @@ namespace UmbMapper
                 throw new ArgumentException("Action must be a member expression.");
             }
 
-            var map = new PropertyMap<T>(member.Member as PropertyInfo);
-            this.CheckDuplicateMappings(map);
-            this.maps.Add(map);
+            PropertyMap<T> map;
+            if (!this.GetOrCreateMap(member.Member as PropertyInfo, out map))
+            {
+                this.maps.Add(map);
+            }
+
             return map;
         }
 
@@ -102,10 +105,12 @@ namespace UmbMapper
                     throw new ArgumentException("Action must be a member expression.");
                 }
 
-                var map = new PropertyMap<T>(member.Member as PropertyInfo);
-                this.CheckDuplicateMappings(map);
-                mapsTemp.Add(map);
-                this.maps.Add(map);
+                PropertyMap<T> map;
+                if (!this.GetOrCreateMap(member.Member as PropertyInfo, out map))
+                {
+                    mapsTemp.Add(map);
+                    this.maps.Add(map);
+                }
             }
 
             return this.maps.Intersect(mapsTemp);
@@ -119,9 +124,11 @@ namespace UmbMapper
         {
             foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags))
             {
-                var map = new PropertyMap<T>(property);
-                this.CheckDuplicateMappings(map);
-                this.maps.Add(map);
+                PropertyMap<T> map;
+                if (!this.GetOrCreateMap(property, out map))
+                {
+                    this.maps.Add(map);
+                }
             }
 
             return this.maps;
@@ -293,12 +300,18 @@ namespace UmbMapper
             }
         }
 
-        private void CheckDuplicateMappings(PropertyMap<T> map)
+        private bool GetOrCreateMap(PropertyInfo property, out PropertyMap<T> map)
         {
-            if (this.maps.Any(x => x.Info.Property.Name == map.Info.Property.Name))
+            bool exists = true;
+            map = this.maps.FirstOrDefault(x => x.Info.Property.Name == property.Name);
+
+            if (map == null)
             {
-                throw new InvalidOperationException($"Property '{map.Info.Property.Name}' in class '{typeof(T).Name}' has already added to the mapper.");
+                exists = false;
+                map = new PropertyMap<T>(property);
             }
+
+            return exists;
         }
     }
 }

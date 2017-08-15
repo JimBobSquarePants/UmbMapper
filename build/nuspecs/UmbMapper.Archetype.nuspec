@@ -15,6 +15,7 @@
     <tags>Umbraco</tags>
     <dependencies>
       <dependency id="UmbracoCms.Core" version="7.3.2" />
+      <dependency id="UmbMapper" version="0.5.8" />
       <dependency id="Archetype.Binaries" version="1.14.1" />
     </dependencies>
   </metadata>
