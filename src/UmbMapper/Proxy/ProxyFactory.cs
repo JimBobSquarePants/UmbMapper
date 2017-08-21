@@ -34,21 +34,17 @@ namespace UmbMapper.Proxy
         /// Creates an instance of the proxy class for the given <see cref="Type"/>.
         /// </summary>
         /// <param name="baseType">The base <see cref="Type"/> to proxy.</param>
-        /// <param name="interceptor">The <see cref="IInterceptor"/> to intercept properties with.</param>
         /// <param name="content">The <see cref="IPublishedContent"/> to pass as a parameter.</param>
         /// <returns>
         /// The proxy <see cref="Type"/> instance.
         /// </returns>
-        public object CreateProxy(Type baseType, IInterceptor interceptor, IPublishedContent content = null)
+        public IProxy CreateProxy(Type baseType, IPublishedContent content = null)
         {
             Type proxyType = this.CreateProxyType(baseType);
 
             object result = content == null ? proxyType.GetInstance() : proxyType.GetInstance(content);
 
-            var proxy = (IProxy)result;
-            proxy.Interceptor = interceptor;
-
-            return result;
+            return (IProxy)result;
         }
 
         /// <summary>

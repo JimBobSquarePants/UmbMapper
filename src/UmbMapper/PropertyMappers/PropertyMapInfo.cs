@@ -80,9 +80,9 @@ namespace UmbMapper.PropertyMappers
         public bool Lazy { get; internal set; }
 
         /// <summary>
-        /// Gets a value indicating whether the property is evaluated via a function
+        /// Gets a value indicating whether the property is evaluated via a predicate
         /// </summary>
-        public bool HasFunction { get; internal set; }
+        public bool HasPredicate { get; internal set; }
 
         /// <summary>
         /// Gets the default value
@@ -115,7 +115,7 @@ namespace UmbMapper.PropertyMappers
                 && this.Aliases.SequenceEqual(other.Aliases)
                 && this.Recursive == other.Recursive
                 && this.Lazy == other.Lazy
-                && this.HasFunction == other.HasFunction
+                && this.HasPredicate == other.HasPredicate
                 && Equals(this.DefaultValue, other.DefaultValue)
                 && this.Culture.Name == other.Culture.Name;
         }
@@ -159,7 +159,7 @@ namespace UmbMapper.PropertyMappers
                 hashCode = (hashCode * 397) ^ (info.Aliases != null ? info.Aliases.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ info.Recursive.GetHashCode();
                 hashCode = (hashCode * 397) ^ info.Lazy.GetHashCode();
-                hashCode = (hashCode * 397) ^ info.HasFunction.GetHashCode();
+                hashCode = (hashCode * 397) ^ info.HasPredicate.GetHashCode();
                 hashCode = (hashCode * 397) ^ (info.DefaultValue != null ? info.DefaultValue.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (info.Culture != null ? info.Culture.GetHashCode() : 0);
                 return hashCode;

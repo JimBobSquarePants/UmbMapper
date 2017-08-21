@@ -31,6 +31,7 @@ namespace UmbMapper.Tests.Mapping
             Assert.NotNull(result);
             Assert.IsAssignableFrom<IProxy>(result);
             Assert.NotNull(result.Slug);
+            Assert.True(result.Slug == result.Name.ToLowerInvariant());
         }
     }
 }

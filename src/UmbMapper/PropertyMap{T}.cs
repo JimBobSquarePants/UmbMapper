@@ -114,11 +114,11 @@ namespace UmbMapper
         /// <summary>
         /// Sets the property mapping predicate. Used for mapping from known values in the current instance.
         /// </summary>
-        /// <param name="predicate">The mapping function </param>
+        /// <param name="predicate">The mapping predicate</param>
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
         public PropertyMap<T> MapFromInstance(Func<T, object> predicate)
         {
-            this.Info.HasFunction = true;
+            this.Info.HasPredicate = true;
             this.Predicate = predicate;
             return this;
         }

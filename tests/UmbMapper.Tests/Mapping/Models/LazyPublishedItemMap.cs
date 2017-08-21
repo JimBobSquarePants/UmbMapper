@@ -9,7 +9,7 @@ namespace UmbMapper.Tests.Mapping.Models
         public LazyPublishedItemMap()
         {
             this.AddMap(p => p.Id).AsLazy();
-            this.AddMap(p => p.Name);
+            this.AddMap(p => p.Name).AsLazy();
             this.AddMap(p => p.Slug).MapFromInstance(item => item.Name.ToLowerInvariant());
             this.AddMap(p => p.CreateDate).AsLazy();
             this.AddMap(p => p.UpdateDate).SetAlias(p => p.UpdateDate, p => p.CreateDate).AsLazy();

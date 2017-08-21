@@ -34,6 +34,10 @@ namespace UmbMapper
     {
         private readonly FastPropertyAccessor propertyAccessor;
         private readonly List<PropertyMap<T>> maps;
+        private IEnumerable<PropertyMap<T>> lazyMaps;
+        private bool hasChecked = false;
+        private bool hasLazy;
+        private bool hasFunction;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MapperConfig{T}"/> class.
@@ -139,34 +143,48 @@ namespace UmbMapper
         {
             object result = this.MappedType.GetInstance();
 
+            // Check once only
             // Gather any lazily mapped properties and assign the lazy mapping
-            IEnumerable<PropertyMap<T>> lazyMaps = this.maps.Where(m => m.Info.Lazy).ToArray();
-            if (lazyMaps.Any())
+            if (!this.hasChecked)
             {
-                // A dictionary to store lazily invoked values.
+                this.lazyMaps = this.maps.Where(m => m.Info.Lazy).ToArray();
+                this.hasLazy = this.lazyMaps.Any();
+                this.hasFunction = this.maps.Any(m => m.Info.HasPredicate);
+                this.hasChecked = true;
+            }
+
+            IProxy proxy = null;
+            if (this.hasLazy || this.hasFunction)
+            {
+                // Create a proxy instance to replace our object.
+                var factory = new ProxyFactory();
+                proxy = factory.CreateProxy(this.MappedType);
+
+                // A dictionary to store lazily invoked value results
                 var lazyProperties = new Dictionary<string, Lazy<object>>();
-                foreach (PropertyMap<T> map in lazyMaps)
+                foreach (PropertyMap<T> map in this.lazyMaps)
                 {
+                    // Prevent closure allocation
                     object localResult = result;
-                    lazyProperties.Add(map.Info.Property.Name, new Lazy<object>(() => MapProperty(map, content, this.propertyAccessor, localResult)));
+                    lazyProperties.Add(map.Info.Property.Name, new Lazy<object>(() => MapProperty(map, content, this.propertyAccessor, localResult, proxy)));
                 }
 
-                // Create a proxy instance to replace our object.
+                // Set the interceptor and replace our result with the proxy
                 var interceptor = new LazyInterceptor(result, lazyProperties);
-                var factory = new ProxyFactory();
-                result = factory.CreateProxy(this.MappedType, interceptor);
+                proxy.Interceptor = interceptor;
+                result = proxy;
             }
 
             // Now map the non-lazy properties
             foreach (PropertyMap<T> map in this.maps.Where(m => !m.Info.Lazy))
             {
-                MapProperty(map, content, this.propertyAccessor, result);
+                MapProperty(map, content, this.propertyAccessor, result, proxy);
             }
 
             return result;
         }
 
-        private static object MapProperty(PropertyMap<T> map, IPublishedContent content, FastPropertyAccessor propertyAccessor, object result)
+        private static object MapProperty(PropertyMap<T> map, IPublishedContent content, FastPropertyAccessor propertyAccessor, object result, IProxy proxy)
         {
             // Users might want to use lazy loading with API controllers that do not inherit from UmBracoAPIController.
             // Certain mappers like Archtype require the context so we want to ensure it exists.
@@ -175,9 +193,10 @@ namespace UmbMapper
             object value = null;
 
             // If we have a mapping function, use that and skip Umbraco
-            if (map.Info.HasFunction)
+            if (map.Info.HasPredicate)
             {
-                value = map.Predicate.Invoke((T)result);
+                // If we have a proxy we have to go via that class to get lazy mapped properties
+                value = proxy == null ? map.Predicate.Invoke((T)result) : map.Predicate.Invoke((T)proxy);
             }
             else
             {
