@@ -31,7 +31,7 @@ Nightlies are available on [Myget](https://www.myget.org/gallery/umbmapper) with
 
 > *A POCO should be exactly that.* - Rudyard Kipling
 
-Models are clean without any knowledge of the Umbraco backoffice. They require no additional attribtion to determine mapping logic.
+Models are clean without any knowledge of the Umbraco backoffice. They require no additional attribution to determine mapping logic.
 
 Here's an example class, nothing fancy!
 
@@ -41,6 +41,8 @@ public class LazyPublishedItem
     public virtual int Id { get; set; }
 
     public virtual string Name { get; set; }
+
+    public virtual string Slug { get; set; }
 
     public virtual DateTime CreateDate { get; set; }
 
@@ -69,6 +71,7 @@ public class LazyPublishedItemMap : MapperConfig<LazyPublishedItem>
     {
         this.AddMap(p => p.Id).AsLazy();
         this.AddMap(p => p.Name).AsLazy();
+        this.AddMap(p => p.Slug).MapFromInstance(item => item.Name.ToUrlSlug()).AsLazy();
         this.AddMap(p => p.CreateDate).AsLazy();
         this.AddMap(p => p.UpdateDate).SetAlias(p => p.UpdateDate, p => p.CreateDate).AsLazy();
         this.AddMap(p => p.PlaceOrder).SetMapper<EnumPropertyMapper>().AsLazy();
@@ -126,16 +129,17 @@ The various mapping configuration options are as follows:
 - `AddMap()` Instructs the mapper to map the property.
 - `AddMappings()` Instructs the mapper to map the collection of properties.
 - `MapAll()` Instructs the mapper to map all the the properties in the class.
-- `SetAlias()` Instructs the mapper what aliases to look for in the document type. The order given is the checking order. Case-insentive.
+- `MapFromInstance()` Instructs the mapper to map from the given `Func<T,object>` where `T` is the current object instance.
+- `SetAlias()` Instructs the mapper what aliases to look for in the document type. The order given is the checking order. Case-insensitive.
 - `SetMapper()` Instructs the mapper what specific `IPropertyMapper` implementation to use for mapping the property. All properties are initially automatically mapped using the `UmbracoPickerPropertyMapper`.
 - `SetCulture()` Instructs the mapper what culture to use when mapping values. Defaults to the current culture contained withing the `UmbracoContext`.
-- `AsRecursive()` Instructs the mapper to recursively trverse up the document tree looking for a value to map.
+- `AsRecursive()` Instructs the mapper to recursively traverse up the document tree looking for a value to map.
 - `AsLazy()` Instructs the mapper to map the property lazily using dynamic proxy generation.
 
 Available `IPropertyMapper`implementations all inherit from the `PropertyMapperBase` class and are as follows:
 
 - `UmbracoPickerPropertyMapper` The default mapper, maps directly from Umbraco's Published Content Cache via `GetPropertyValue`. Runs automatically.
-- `EnumPropertyMapper` Maps to enum values. Can handle both interger and string values.
+- `EnumPropertyMapper` Maps to enum values. Can handle both integer and string values.
 - `UmbracoPickerPropertyMapper` Maps from all the Umbraco built-in pickers.
 - `DocTypeFactoryPropertyMapper` Allows mapping from mixed `IPublishedContent` sources like Nested Content. Inherits `FactoryPropertyMapperBase`.
 
@@ -159,6 +163,11 @@ public static T MapTo<T>(this IPublishedContent content)
 
 // Map a single run-time known type instance.
 public static object MapTo(this IPublishedContent content, Type type)
+```
+Registering a mapper is as easy as follows
+
+```
+MapperConfigRegistry.AddMapper(new LazyPublishedItemMap());
 ```
 
 ## Performance

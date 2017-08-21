@@ -1,6 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<plugins>
-  <baseType type="UmbMapper.Tests.Models.PublishedItem" resolutionType="FindAllTypes">
-    <add type="UmbMapper.Tests.Models.PublishedItem, Umbraco.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
-  </baseType>
-</plugins>
+UmbMapper.Tests.Mapping.Models.PublishedItem
+
+UmbMapper.Tests.Mapping.Models.PublishedItem, Umbraco.Tests, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+
