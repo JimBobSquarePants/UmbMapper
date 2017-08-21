@@ -172,21 +172,31 @@ namespace UmbMapper
             // Certain mappers like Archtype require the context so we want to ensure it exists.
             EnsureUmbracoContext();
 
-            // We don't have to explictly set a mapper.
-            if (map.PropertyMapper == null)
-            {
-                map.PropertyMapper = new UmbracoPropertyMapper(map.Info);
-            }
-
-            // Ensure the property mapper is always invoked first
             object value = null;
-            if (!(map.PropertyMapper is UmbracoPropertyMapper))
+
+            // If we have a mapping function, use that and skip Umbraco
+            if (map.Info.HasFunction)
             {
-                value = new UmbracoPropertyMapper(map.Info).Map(content, null);
+                value = map.Predicate.Invoke((T)result);
+            }
+            else
+            {
+                // We don't have to explictly set a mapper.
+                if (map.PropertyMapper == null)
+                {
+                    map.PropertyMapper = new UmbracoPropertyMapper(map.Info);
+                }
+
+                // Ensure the property mapper is always invoked first
+                if (!(map.PropertyMapper is UmbracoPropertyMapper))
+                {
+                    value = new UmbracoPropertyMapper(map.Info).Map(content, null);
+                }
+
+                // Other mappers
+                value = map.PropertyMapper.Map(content, value);
             }
 
-            // Other mappers
-            value = map.PropertyMapper.Map(content, value);
             if (value != null)
             {
                 PropertyMapInfo info = map.Info;
@@ -195,7 +205,7 @@ namespace UmbMapper
 
                 if (value != null)
                 {
-                    propertyAccessor.SetValue(map.PropertyMapper.Property.Name, result, value);
+                    propertyAccessor.SetValue(map.Info.Property.Name, result, value);
                 }
             }
 

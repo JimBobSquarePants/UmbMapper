@@ -11,6 +11,8 @@ namespace UmbMapper.Tests.Mapping.Models
 
         public virtual string Name { get; set; }
 
+        public virtual string Slug { get; set; }
+
         public virtual DateTime CreateDate { get; set; }
 
         public virtual DateTime UpdateDate { get; set; }

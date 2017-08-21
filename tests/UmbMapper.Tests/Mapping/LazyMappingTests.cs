@@ -22,5 +22,15 @@ namespace UmbMapper.Tests.Mapping
             Assert.NotNull(result);
             Assert.IsAssignableFrom<IProxy>(result);
         }
+
+        [Fact]
+        public void MapLazyFunctions()
+        {
+            LazyPublishedItem result = this.support.Content.MapTo<LazyPublishedItem>();
+
+            Assert.NotNull(result);
+            Assert.IsAssignableFrom<IProxy>(result);
+            Assert.NotNull(result.Slug);
+        }
     }
 }
