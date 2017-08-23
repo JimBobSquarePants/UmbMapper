@@ -172,12 +172,12 @@ Registering a mapper is as easy as follows
 
 ``` csharp
 // Add the mapper we created to the registry
-UmbMapper.AddMapper(new LazyPublishedItemMap());
+UmbMapperRegistry.AddMapper(new LazyPublishedItemMap());
 
 // For simple classes you don't need to create a mapper. 
 // The registry will automatically create one based on the default conventional logic.
 // Mappers added this way automatically use lazy mapping for `virtual` properties.
-UmbMapper.AddMapperFor<SimpleItem>;
+UmbMapperRegistry.AddMapperFor<SimpleItem>;
 ```
 
 ## Performance

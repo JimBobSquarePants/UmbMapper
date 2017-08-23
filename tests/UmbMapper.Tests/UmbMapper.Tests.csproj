@@ -263,8 +263,8 @@
     <Compile Include="Mapping\EnumMappingTests.cs" />
     <Compile Include="Mapping\BasicMappingTests.cs" />
     <Compile Include="FastPropertyAccessorTests.cs" />
-    <Compile Include="Mapping\MapperConfigRegistryTests.cs" />
-    <Compile Include="Mapping\MapperConfigTests.cs" />
+    <Compile Include="Mapping\UmbMapperRegistryTests.cs" />
+    <Compile Include="Mapping\UmbMapperConfigTests.cs" />
     <Compile Include="Mocks\MockPublishedContentProperty.cs" />
     <Compile Include="Mocks\MockPublishedContent.cs" />
     <Compile Include="Mapping\Models\PlaceOrder.cs" />

@@ -1,4 +1,4 @@
-﻿// <copyright file="MapperConfigLocker.cs" company="James Jackson-South">
+﻿// <copyright file="UmbMapperConfigLocker.cs" company="James Jackson-South">
 // Copyright (c) James Jackson-South and contributors.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
@@ -9,7 +9,7 @@ namespace UmbMapper
     /// Provides a static locker for use when initializing maps. Used to avoid creating multiple items for
     /// the generic mapping class.
     /// </summary>
-    internal class MapperConfigLocker
+    internal class UmbMapperConfigLocker
     {
         /// <summary>
         /// The object to lock against

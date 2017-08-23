@@ -73,7 +73,7 @@ namespace UmbMapper.Extensions
             }
 
             IUmbMapperConfig mapper;
-            UmbMapper.Mappers.TryGetValue(type, out mapper);
+            UmbMapperRegistry.Mappers.TryGetValue(type, out mapper);
 
             if (mapper == null)
             {

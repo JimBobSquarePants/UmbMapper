@@ -1,4 +1,4 @@
-﻿// <copyright file="UmbMapper.cs" company="James Jackson-South">
+﻿// <copyright file="UmbMapperRegistry.cs" company="James Jackson-South">
 // Copyright (c) James Jackson-South and contributors.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
@@ -13,7 +13,7 @@ namespace UmbMapper
     /// <summary>
     /// The registry for mapper configurations
     /// </summary>
-    public static class UmbMapper
+    public static class UmbMapperRegistry
     {
         /// <summary>
         /// Gets the collection of mappers

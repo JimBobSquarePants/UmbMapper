@@ -5,7 +5,7 @@ using Xunit;
 
 namespace UmbMapper.Tests.Mapping
 {
-    public class MapperConfigTests
+    public class UmbMapperConfigTests
     {
         [Fact]
         public void MapperConfigCapturesValues()

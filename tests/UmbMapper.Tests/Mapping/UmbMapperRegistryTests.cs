@@ -6,24 +6,24 @@ using Xunit;
 
 namespace UmbMapper.Tests.Mapping
 {
-    public class MapperConfigRegistryTests
+    public class UmbMapperRegistryTests
     {
         [Fact]
-        public void MapperConfigRegistryCanStoreMapper()
+        public void UmbMapperRegistryCanStoreMapper()
         {
-            UmbMapper.AddMapper(new PublishedItemMap());
-            Assert.True(UmbMapper.CurrentMappers().Any(m => m.MappedType == typeof(PublishedItem)));
+            UmbMapperRegistry.AddMapper(new PublishedItemMap());
+            Assert.True(UmbMapperRegistry.CurrentMappers().Any(m => m.MappedType == typeof(PublishedItem)));
         }
 
         [Fact]
-        public void MapperConfigCanMapAll()
+        public void UmbMapperCanMapAll()
         {
             var mapper = new PublishedItemMapAll();
             Assert.True(mapper.Mappings.Any());
         }
 
         [Fact]
-        public void MapperConfigCanMapMany()
+        public void UmbMapperCanMapMany()
         {
             var mapper = new PublishedItemMapMany();
             IReadOnlyCollection<PropertyMap<PublishedItem>> currentMaps = mapper.Mappings;
@@ -39,11 +39,13 @@ namespace UmbMapper.Tests.Mapping
 
             Assert.True(maps.Count() == 4);
 
-            Assert.True(mapper.Mappings.Count == currentCount + 4);
+            // Original map list count is unchanged
+            Assert.True(mapper.Mappings.Count == currentCount);
 
             maps.ForEach(x => x.SetMapper<UmbracoPickerPropertyMapper>());
 
             Assert.True(mapper.Mappings.Any(m => m.PropertyMapper is UmbracoPickerPropertyMapper));
+            Assert.True(mapper.Mappings.Count(m => m.PropertyMapper is UmbracoPickerPropertyMapper) == 4);
         }
     }
 }

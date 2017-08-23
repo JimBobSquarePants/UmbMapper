@@ -115,11 +115,13 @@ namespace UmbMapper
                 PropertyMap<T> map;
                 if (!this.GetOrCreateMap(member.Member as PropertyInfo, out map))
                 {
-                    mapsTemp.Add(map);
                     this.maps.Add(map);
                 }
+
+                mapsTemp.Add(map);
             }
 
+            // We only want to return the new maps for subsequent augmentation
             return this.maps.Intersect(mapsTemp);
         }
 
@@ -181,7 +183,7 @@ namespace UmbMapper
         void IUmbMapperConfig.Init()
         {
             // We run the initialization code here so we don't have to run it per mapping.
-            lock (MapperConfigLocker.Locker)
+            lock (UmbMapperConfigLocker.Locker)
             {
                 if (this.hasChecked)
                 {

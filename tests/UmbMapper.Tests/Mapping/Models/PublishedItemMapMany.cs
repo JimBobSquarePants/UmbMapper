@@ -6,10 +6,9 @@ namespace UmbMapper.Tests.Mapping.Models
     {
         public PublishedItemMapMany()
         {
-            this.AddMap(p => p.Id).SetMapper<UmbracoPropertyMapper>();
-            this.AddMap(p => p.Name).SetMapper<UmbracoPropertyMapper>();
-            this.AddMap(p => p.CreateDate).SetMapper<UmbracoPropertyMapper>();
-            this.AddMap(p => p.UpdateDate).SetAlias(p => p.UpdateDate, p => p.CreateDate).SetMapper<UmbracoPropertyMapper>();
+            this.MapAll();
+
+            this.AddMap(p => p.UpdateDate).SetAlias(p => p.UpdateDate, p => p.CreateDate);
             this.AddMap(p => p.PlaceOrder).SetMapper<EnumPropertyMapper>();
 
             //this.AddMappings(

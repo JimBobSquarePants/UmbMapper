@@ -234,8 +234,8 @@
     <Compile Include="FastPropertyAccessor.cs" />
     <Compile Include="IUmbMapperConfig.cs" />
     <Compile Include="Invocations\PluginManagerInvocations.cs" />
-    <Compile Include="MapperConfigLocker.cs" />
-    <Compile Include="UmbMapper.cs" />
+    <Compile Include="UmbMapperConfigLocker.cs" />
+    <Compile Include="UmbMapperRegistry.cs" />
     <Compile Include="PropertyMapExtensions.cs" />
     <Compile Include="PropertyMappers\DocTypeFactoryPropertyMapper.cs" />
     <Compile Include="PropertyMappers\EnumPropertyMapper.cs" />

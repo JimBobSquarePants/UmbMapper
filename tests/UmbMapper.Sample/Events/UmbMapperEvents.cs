@@ -25,9 +25,9 @@ namespace UmbMapper.Sample.Events
         /// </param>
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
-            UmbMapper.AddMapper(new PublishedImageMap());
-            UmbMapper.AddMapper(new SlideMap());
-            UmbMapper.AddMapper(new HomeMap());
+            UmbMapperRegistry.AddMapper(new PublishedImageMap());
+            UmbMapperRegistry.AddMapper(new SlideMap());
+            UmbMapperRegistry.AddMapper(new HomeMap());
         }
     }
 }

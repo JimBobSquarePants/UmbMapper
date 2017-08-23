@@ -42,7 +42,7 @@ namespace UmbMapper.Tests.Mapping
             {
                 UmbracoContext.Current = null;
                 ApplicationContext.Current = null;
-                UmbMapper.ClearMappers();
+                UmbMapperRegistry.ClearMappers();
                 PublishedCachesResolver.Reset();
 
                 if (Resolution.IsFrozen)
@@ -141,9 +141,9 @@ namespace UmbMapper.Tests.Mapping
 
         private void InitMappers()
         {
-            UmbMapper.AddMapper(new PublishedItemMap());
-            UmbMapper.AddMapper(new LazyPublishedItemMap());
-            UmbMapper.AddMapperFor<AutoMappedItem>();
+            UmbMapperRegistry.AddMapper(new PublishedItemMap());
+            UmbMapperRegistry.AddMapper(new LazyPublishedItemMap());
+            UmbMapperRegistry.AddMapperFor<AutoMappedItem>();
         }
 
         public void Dispose()
