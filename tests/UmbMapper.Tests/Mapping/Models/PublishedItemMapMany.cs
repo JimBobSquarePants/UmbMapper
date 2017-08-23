@@ -2,7 +2,7 @@
 
 namespace UmbMapper.Tests.Mapping.Models
 {
-    public class PublishedItemMapMany : MapperConfig<PublishedItem>
+    public class PublishedItemMapMany : UmbMapperConfig<PublishedItem>
     {
         public PublishedItemMapMany()
         {

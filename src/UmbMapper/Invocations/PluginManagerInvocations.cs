@@ -37,7 +37,7 @@ namespace UmbMapper.Invocations
             Delegate f;
             if (!DelegateCache.TryGetValue(key, out f))
             {
-                f = CreateGenericResolveMethod<bool, IEnumerable<Assembly>>(ResolveMethod.MakeGenericMethod(type));
+                f = CreateGenericResolveMethod(ResolveMethod.MakeGenericMethod(type));
                 DelegateCache[key] = f;
             }
 
@@ -50,12 +50,10 @@ namespace UmbMapper.Invocations
         /// <param name="method">
         /// The <see cref="MethodInfo"/> to generate.
         /// </param>
-        /// <typeparam name="T1">The type of the first parameter of the method that this delegate encapsulates.This type parameter is contravariant. That is, you can use either the type you specified or any type that is less derived. For more information about covariance and contravariance, see Covariance and Contravariance in Generics.</typeparam>
-        /// <typeparam name="T2">The type of the second parameter of the method that this delegate encapsulates.</typeparam>
         /// <returns>
         /// <returns>The return value of the method that this delegate encapsulates.</returns>
         /// </returns>
-        private static Func<T1, T2, IEnumerable<Type>> CreateGenericResolveMethod<T1, T2>(MethodInfo method)
+        private static Func<bool, IEnumerable<Assembly>, IEnumerable<Type>> CreateGenericResolveMethod(MethodInfo method)
         {
             ParameterInfo[] parameter = method.GetParameters();
             ParameterExpression cacheResult = Expression.Parameter(typeof(bool), "cacheResult");
@@ -67,7 +65,7 @@ namespace UmbMapper.Invocations
                 Expression.Convert(cacheResult, parameter[0].ParameterType),
                 Expression.Convert(specificAssemblies, parameter[1].ParameterType));
 
-            return Expression.Lambda<Func<T1, T2, IEnumerable<Type>>>(
+            return Expression.Lambda<Func<bool, IEnumerable<Assembly>, IEnumerable<Type>>>(
                 methodCall,
                 cacheResult,
                 specificAssemblies).Compile();

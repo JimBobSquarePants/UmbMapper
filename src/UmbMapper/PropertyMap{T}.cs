@@ -24,6 +24,7 @@ namespace UmbMapper
         /// Initializes a new instance of the <see cref="PropertyMap{T}"/> class.
         /// </summary>
         /// <param name="property">The property to map</param>
+        /// <exception cref="InvalidOperationException">Thrown if <paramref name="property"/> is not writable.</exception>
         public PropertyMap(PropertyInfo property)
         {
             if (!property.CanWrite)
@@ -148,6 +149,7 @@ namespace UmbMapper
         /// Instructs the mapper to lazily map the property
         /// </summary>
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
+        /// <exception cref="InvalidOperationException">Thrown if the property is not marked as <code>virtual</code></exception>
         public PropertyMap<T> AsLazy()
         {
             if (!this.Info.Property.ShouldAttemptLazyLoad())
@@ -211,6 +213,20 @@ namespace UmbMapper
         public override int GetHashCode()
         {
             return GetHashCode(this);
+        }
+
+        /// <summary>
+        /// Instructs the mapper to lazily map the property. This method will ignore any non <code>virtual</code> properties without warning.
+        /// </summary>
+        /// <returns>The <see cref="PropertyMap{T}"/></returns>
+        internal PropertyMap<T> AsAutoLazy()
+        {
+            if (this.Info.Property.ShouldAttemptLazyLoad())
+            {
+                this.Info.Lazy = true;
+            }
+
+            return this;
         }
 
         private static int GetHashCode(PropertyMap<T> map)

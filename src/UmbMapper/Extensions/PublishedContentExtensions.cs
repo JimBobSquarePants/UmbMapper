@@ -72,8 +72,8 @@ namespace UmbMapper.Extensions
                 throw new ArgumentNullException(nameof(content));
             }
 
-            IMapperConfig mapper;
-            MapperConfigRegistry.Mappers.TryGetValue(type, out mapper);
+            IUmbMapperConfig mapper;
+            UmbMapper.Mappers.TryGetValue(type, out mapper);
 
             if (mapper == null)
             {

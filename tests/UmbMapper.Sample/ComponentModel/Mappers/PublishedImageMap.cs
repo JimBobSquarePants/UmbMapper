@@ -11,7 +11,7 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
     /// <summary>
     /// Configures mapping of published images
     /// </summary>
-    public class PublishedImageMap : MapperConfig<PublishedImage>
+    public class PublishedImageMap : UmbMapperConfig<PublishedImage>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PublishedImageMap"/> class.

@@ -4,7 +4,7 @@ using Umbraco.Core;
 
 namespace UmbMapper.Tests.Mapping.Models
 {
-    public class LazyPublishedItemMap : MapperConfig<LazyPublishedItem>
+    public class LazyPublishedItemMap : UmbMapperConfig<LazyPublishedItem>
     {
         public LazyPublishedItemMap()
         {

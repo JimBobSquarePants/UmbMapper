@@ -24,6 +24,8 @@ namespace UmbMapper.Tests.Mapping
     public class UmbracoSupport : IDisposable
     {
         private bool disposed;
+        private RelatedLink link;
+        private ImageCropDataSet dataSet;
 
         public UmbracoSupport()
         {
@@ -32,7 +34,7 @@ namespace UmbMapper.Tests.Mapping
             this.InitMappers();
         }
 
-        public MockPublishedContent Content { get; private set; }
+        public MockPublishedContent Content => GetContent();
 
         private void TearDown()
         {
@@ -40,7 +42,7 @@ namespace UmbMapper.Tests.Mapping
             {
                 UmbracoContext.Current = null;
                 ApplicationContext.Current = null;
-                MapperConfigRegistry.Clear();
+                UmbMapper.ClearMappers();
                 PublishedCachesResolver.Reset();
 
                 if (Resolution.IsFrozen)
@@ -99,8 +101,8 @@ namespace UmbMapper.Tests.Mapping
                 // JSON test data taken from Umbraco unit-test:
                 // https://github.com/umbraco/Umbraco-CMS/blob/dev-v7/src/Umbraco.Tests/PropertyEditors/ImageCropperTest.cs
                 string json = "{\"focalPoint\": {\"left\": 0.96,\"top\": 0.80827067669172936},\"src\": \"/media/1005/img_0671.jpg\",\"crops\": [{\"alias\":\"thumb\",\"width\": 100,\"height\": 100,\"coordinates\": {\"x1\": 0.58729977382575338,\"y1\": 0.055768992440203169,\"x2\": 0,\"y2\": 0.32457553600198386}}]}";
-                ImageCropDataSet dataSet = JsonConvert.DeserializeObject<ImageCropDataSet>(json);
-                var link = new RelatedLink
+                this.dataSet = JsonConvert.DeserializeObject<ImageCropDataSet>(json);
+                this.link = new RelatedLink
                 {
                     Caption = "Test Caption",
                     Content = null,
@@ -111,22 +113,6 @@ namespace UmbMapper.Tests.Mapping
                     NewWindow = true
                 };
 
-                this.Content = new MockPublishedContent
-                {
-                    Properties = new[]
-                    {
-                        new MockPublishedContentProperty(nameof(PublishedItem.PublishedContent), 1000),
-                        new MockPublishedContentProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001),
-                        new MockPublishedContentProperty(nameof(PublishedItem.Image), dataSet),
-                        new MockPublishedContentProperty(nameof(PublishedItem.Child), 3333),
-
-                        // We're deliberately switching these values to test enumerable conversion
-                        new MockPublishedContentProperty(nameof(PublishedItem.RelatedLink), new RelatedLinks(new List<RelatedLink>{link},nameof(PublishedItem.RelatedLink))),
-                        new MockPublishedContentProperty(nameof(PublishedItem.RelatedLinks), link),
-                        new MockPublishedContentProperty(nameof(PublishedItem.NullRelatedLinks), null),
-                    }
-                };
-
                 if (!Resolution.IsFrozen)
                 {
                     Resolution.Freeze();
@@ -134,10 +120,30 @@ namespace UmbMapper.Tests.Mapping
             }
         }
 
+        public MockPublishedContent GetContent()
+        {
+            return new MockPublishedContent
+            {
+                Properties = new[]
+                {
+                    new MockPublishedContentProperty(nameof(PublishedItem.PublishedContent), 1000),
+                    new MockPublishedContentProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001),
+                    new MockPublishedContentProperty(nameof(PublishedItem.Image), this.dataSet),
+                    new MockPublishedContentProperty(nameof(PublishedItem.Child), 3333),
+
+                    // We're deliberately switching these values to test enumerable conversion
+                    new MockPublishedContentProperty(nameof(PublishedItem.RelatedLink), new RelatedLinks(new List<RelatedLink>{link},nameof(PublishedItem.RelatedLink))),
+                    new MockPublishedContentProperty(nameof(PublishedItem.RelatedLinks), this.link),
+                    new MockPublishedContentProperty(nameof(PublishedItem.NullRelatedLinks), null),
+                }
+            };
+        }
+
         private void InitMappers()
         {
-            MapperConfigRegistry.AddMapper(new PublishedItemMap());
-            MapperConfigRegistry.AddMapper(new LazyPublishedItemMap());
+            UmbMapper.AddMapper(new PublishedItemMap());
+            UmbMapper.AddMapper(new LazyPublishedItemMap());
+            UmbMapper.AddMapperFor<AutoMappedItem>();
         }
 
         public void Dispose()

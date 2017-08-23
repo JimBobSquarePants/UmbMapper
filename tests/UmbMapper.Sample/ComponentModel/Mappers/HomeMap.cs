@@ -13,7 +13,7 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
     /// <summary>
     /// Configures mapping for the home page
     /// </summary>
-    public class HomeMap : MapperConfig<Home>
+    public class HomeMap : UmbMapperConfig<Home>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeMap"/> class.

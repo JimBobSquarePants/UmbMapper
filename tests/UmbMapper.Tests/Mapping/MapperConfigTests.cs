@@ -10,7 +10,7 @@ namespace UmbMapper.Tests.Mapping
         [Fact]
         public void MapperConfigCapturesValues()
         {
-            var config = new MapperConfig<PublishedItem>();
+            var config = new UmbMapperConfig<PublishedItem>();
 
             PropertyMap<PublishedItem> idMapper = config.AddMap(p => p.Id);
             PropertyMap<PublishedItem> nameMapper = config.AddMap(p => p.Name);
@@ -28,7 +28,7 @@ namespace UmbMapper.Tests.Mapping
         [Fact]
         public void MapperThrowsWhenLazyIsNotVirtual()
         {
-            var config = new MapperConfig<PublishedItem>();
+            var config = new UmbMapperConfig<PublishedItem>();
 
             Assert.Throws(typeof(InvalidOperationException), () =>
             {
@@ -39,14 +39,14 @@ namespace UmbMapper.Tests.Mapping
         [Fact]
         public void MapperAllowsLazyVirtual()
         {
-            var config = new MapperConfig<LazyPublishedItem>();
+            var config = new UmbMapperConfig<LazyPublishedItem>();
             config.AddMap(p => p.Id).AsLazy();
         }
 
         [Fact]
         public void MapperConfigSetsPropertyMappers()
         {
-            var config = new MapperConfig<PublishedItem>();
+            var config = new UmbMapperConfig<PublishedItem>();
 
             PropertyMap<PublishedItem> idMapper = config.AddMap(p => p.Id).SetMapper<UmbracoPropertyMapper>();
             PropertyMap<PublishedItem> nameMapper = config.AddMap(p => p.Name).SetMapper<UmbracoPropertyMapper>();

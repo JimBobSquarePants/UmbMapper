@@ -1,4 +1,4 @@
-﻿// <copyright file="MapperConfig{T}.cs" company="James Jackson-South">
+﻿// <copyright file="UmbMapperConfig{T}.cs" company="James Jackson-South">
 // Copyright (c) James Jackson-South and contributors.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
@@ -29,20 +29,21 @@ namespace UmbMapper
     /// Configures mapping of type properties to Umbraco properties
     /// </summary>
     /// <typeparam name="T">The type of object to map</typeparam>
-    public class MapperConfig<T> : IMapperConfig
+    public class UmbMapperConfig<T> : IUmbMapperConfig
         where T : class, new()
     {
         private readonly FastPropertyAccessor propertyAccessor;
         private readonly List<PropertyMap<T>> maps;
         private IEnumerable<PropertyMap<T>> lazyMaps;
-        private bool hasChecked = false;
+        private IEnumerable<PropertyMap<T>> nonLazyMaps;
+        private bool hasChecked;
         private bool hasLazy;
-        private bool hasFunction;
+        private bool hasPredicate;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MapperConfig{T}"/> class.
+        /// Initializes a new instance of the <see cref="UmbMapperConfig{T}"/> class.
         /// </summary>
-        public MapperConfig()
+        public UmbMapperConfig()
         {
             Type type = typeof(T);
             this.MappedType = type;
@@ -63,6 +64,7 @@ namespace UmbMapper
         /// </summary>
         /// <param name="propertyExpression">The property to map</param>
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
+        /// <exception cref="ArgumentException">Thrown if the expression is not a property member expression.</exception>
         public PropertyMap<T> AddMap(Expression<Func<T, object>> propertyExpression)
         {
             // The property access might be getting converted to object to match the func
@@ -89,6 +91,7 @@ namespace UmbMapper
         /// </summary>
         /// <param name="propertyExpressions">The properties to map</param>
         /// <returns>The <see cref="IEnumerable{T}"/></returns>
+        /// <exception cref="ArgumentException">Thrown if the expression is not a property member expression.</exception>
         public IEnumerable<PropertyMap<T>> AddMappings(params Expression<Func<T, object>>[] propertyExpressions)
         {
             if (propertyExpressions == null)
@@ -139,22 +142,12 @@ namespace UmbMapper
         }
 
         /// <inheritdoc/>
-        public object Map(IPublishedContent content)
+        object IUmbMapperConfig.Map(IPublishedContent content)
         {
             object result = this.MappedType.GetInstance();
-
-            // Check once only
-            // Gather any lazily mapped properties and assign the lazy mapping
-            if (!this.hasChecked)
-            {
-                this.lazyMaps = this.maps.Where(m => m.Info.Lazy).ToArray();
-                this.hasLazy = this.lazyMaps.Any();
-                this.hasFunction = this.maps.Any(m => m.Info.HasPredicate);
-                this.hasChecked = true;
-            }
-
             IProxy proxy = null;
-            if (this.hasLazy || this.hasFunction)
+
+            if (this.hasLazy || this.hasPredicate)
             {
                 // Create a proxy instance to replace our object.
                 var factory = new ProxyFactory();
@@ -176,12 +169,49 @@ namespace UmbMapper
             }
 
             // Now map the non-lazy properties
-            foreach (PropertyMap<T> map in this.maps.Where(m => !m.Info.Lazy))
+            foreach (PropertyMap<T> map in this.nonLazyMaps)
             {
                 MapProperty(map, content, this.propertyAccessor, result, proxy);
             }
 
             return result;
+        }
+
+        /// <inheritdoc/>
+        void IUmbMapperConfig.Init()
+        {
+            // We run the initialization code here so we don't have to run it per mapping.
+            lock (MapperConfigLocker.Locker)
+            {
+                if (this.hasChecked)
+                {
+                    return;
+                }
+
+                this.lazyMaps = this.maps.Where(m => m.Info.Lazy).ToArray();
+                this.nonLazyMaps = this.maps.Where(m => !m.Info.Lazy).ToArray();
+                this.hasLazy = this.lazyMaps.Any();
+                this.hasPredicate = this.maps.Any(m => m.Info.HasPredicate);
+                this.hasChecked = true;
+            }
+        }
+
+        /// <summary>
+        /// Adds a map from each writable property in the class to an equivalent Umbraco property
+        /// </summary>
+        /// <returns>The <see cref="IEnumerable{T}"/></returns>
+        internal IEnumerable<PropertyMap<T>> MapAllWritable()
+        {
+            foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags).Where(p => p.CanWrite))
+            {
+                PropertyMap<T> map;
+                if (!this.GetOrCreateMap(property, out map))
+                {
+                    this.maps.Add(map);
+                }
+            }
+
+            return this.maps;
         }
 
         private static object MapProperty(PropertyMap<T> map, IPublishedContent content, FastPropertyAccessor propertyAccessor, object result, IProxy proxy)

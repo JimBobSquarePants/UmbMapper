@@ -11,7 +11,7 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
     /// <summary>
     /// Configures mapping for the gallery slides page
     /// </summary>
-    public class SlideMap : MapperConfig<Slide>
+    public class SlideMap : UmbMapperConfig<Slide>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SlideMap"/> class.

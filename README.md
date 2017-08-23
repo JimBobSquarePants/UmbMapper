@@ -86,7 +86,7 @@ public class LazyPublishedItemMap : MapperConfig<LazyPublishedItem>
 For simpler classes there are more terse mapping methods available
 
 ``` csharp
-public class LazyPublishedItemMap : MapperConfig<LazyPublishedItem>
+public class LazyPublishedItemMap : UmbMapperConfig<LazyPublishedItem>
 {
     public LazyPublishedItemMap()
     {
@@ -104,10 +104,10 @@ public class LazyPublishedItemMap : MapperConfig<LazyPublishedItem>
 }
 ```
 
-Or for really, really simple classes
+Or
 
 ``` csharp
-public class LazyPublishedItemMap : MapperConfig<LazyPublishedItem>
+public class LazyPublishedItemMap : UmbMapperConfig<LazyPublishedItem>
 {
     public LazyPublishedItemMap()
     {
@@ -117,6 +117,8 @@ public class LazyPublishedItemMap : MapperConfig<LazyPublishedItem>
     }
 }
 ```
+
+**For simple classes where no additional mapping logic is required you don't even need an UmbMapperConfig. See *Registering a mapper* below.**
 
 What's going on here? 
 
@@ -164,10 +166,18 @@ public static T MapTo<T>(this IPublishedContent content)
 // Map a single run-time known type instance.
 public static object MapTo(this IPublishedContent content, Type type)
 ```
+
 Registering a mapper is as easy as follows
 
-```
-MapperConfigRegistry.AddMapper(new LazyPublishedItemMap());
+
+``` csharp
+// Add the mapper we created to the registry
+UmbMapper.AddMapper(new LazyPublishedItemMap());
+
+// For simple classes you don't need to create a mapper. 
+// The registry will automatically create one based on the default conventional logic.
+// Mappers added this way automatically use lazy mapping for `virtual` properties.
+UmbMapper.AddMapperFor<SimpleItem>;
 ```
 
 ## Performance
@@ -183,8 +193,3 @@ Additional performance boosting can be delivered using lazy mapping
 If a mapper is configured using the `AsLazy()` instruction and the class contains properties using the `virtual` keyword, the mapper will generate a dynamic proxy class at run-time to represent the type we are mapping to. This class actually inherits our target class and you'll be able to see it by attaching a debugger.
 
 Any properties configured with lazy mapping are not actually mapped until you specifically call the getter on the property. (Via means of `MethodInfo` interception using terribly complicated `Reflection.Emit`) this means that we can map large collections with very limited overheads.
-
-
-
-
-
