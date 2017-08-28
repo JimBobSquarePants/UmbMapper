@@ -3,8 +3,10 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
+using UmbMapper.PublishedContentModelFactory;
 using UmbMapper.Sample.ComponentModel.Mappers;
 using Umbraco.Core;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper.Sample.Events
 {
@@ -14,8 +16,7 @@ namespace UmbMapper.Sample.Events
     public class UmbMapperEvents : ApplicationEventHandler
     {
         /// <summary>
-        /// Boot-up is completed, this allows you to perform any other boot-up logic required for the application.
-        /// Resolution is frozen so now they can be used to resolve instances.
+        /// All resolvers have been initialized but resolution is not frozen so they can be modified in this method
         /// </summary>
         /// <param name="umbracoApplication">
         /// The current <see cref="UmbracoApplicationBase"/>
@@ -23,11 +24,14 @@ namespace UmbMapper.Sample.Events
         /// <param name="applicationContext">
         /// The Umbraco <see cref="ApplicationContext"/> for the current application.
         /// </param>
-        protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             UmbMapperRegistry.AddMapper(new PublishedImageMap());
             UmbMapperRegistry.AddMapper(new SlideMap());
             UmbMapperRegistry.AddMapper(new HomeMap());
+
+            var factory = new UmbMapperPublishedContentModelFactory();
+            PublishedContentModelFactoryResolver.Current.SetFactory(factory);
         }
     }
 }

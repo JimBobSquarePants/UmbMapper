@@ -253,7 +253,9 @@
     <Compile Include="Mapping\ImageCropDataSetMappingTests.cs" />
     <Compile Include="Mapping\LazyMappingTests.cs" />
     <Compile Include="Mapping\Models\AutoMappedItem.cs" />
+    <Compile Include="Mapping\Models\BackedPublishedItem.cs" />
     <Compile Include="Mapping\Models\LazyPublishedItem.cs" />
+    <Compile Include="Mapping\Models\BackedPublishedItemMap.cs" />
     <Compile Include="Mapping\Models\LazyPublishedItemMap.cs" />
     <Compile Include="Mapping\Models\PublishedItemMapMany.cs" />
     <Compile Include="Mapping\Models\PublishedItemMapAll.cs" />

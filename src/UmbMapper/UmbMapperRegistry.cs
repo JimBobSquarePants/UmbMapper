@@ -47,7 +47,7 @@ namespace UmbMapper
         /// <remarks>Any properties marked <code>virtual</code> are automatically lazy mapped.</remarks>
         /// <typeparam name="T">The type of object to map</typeparam>
         public static void AddMapperFor<T>()
-            where T : class, new()
+            where T : class
         {
             if (Mappers.ContainsKey(typeof(T)))
             {

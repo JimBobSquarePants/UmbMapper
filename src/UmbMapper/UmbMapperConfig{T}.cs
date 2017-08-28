@@ -30,7 +30,7 @@ namespace UmbMapper
     /// </summary>
     /// <typeparam name="T">The type of object to map</typeparam>
     public class UmbMapperConfig<T> : IUmbMapperConfig
-        where T : class, new()
+        where T : class
     {
         private readonly FastPropertyAccessor propertyAccessor;
         private readonly List<PropertyMap<T>> maps;
@@ -39,6 +39,7 @@ namespace UmbMapper
         private bool hasChecked;
         private bool hasLazy;
         private bool hasPredicate;
+        private bool hasIPublishedContructor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbMapperConfig{T}"/> class.
@@ -47,6 +48,31 @@ namespace UmbMapper
         {
             Type type = typeof(T);
             this.MappedType = type;
+
+            // Check the validity of the mpped type constructor as early as possible.
+            bool validConstructor = false;
+            ParameterInfo[] constructorParams = this.MappedType.GetConstructorParameters();
+            if (constructorParams != null)
+            {
+                // Is it PublishedContentmModel or similar?
+                if (constructorParams.Length == 1 && constructorParams[0].ParameterType == typeof(IPublishedContent))
+                {
+                    this.hasIPublishedContructor = true;
+                }
+
+                if (constructorParams.Length == 0 || this.hasIPublishedContructor)
+                {
+                    validConstructor = true;
+                }
+            }
+
+            if (!validConstructor)
+            {
+                throw new InvalidOperationException(
+                    $"Cannot convert IPublishedContent to {this.MappedType} as it has no valid constructor. " +
+                    "A valid constructor is either an empty one, or one accepting a single IPublishedContent parameter.");
+            }
+
             this.propertyAccessor = new FastPropertyAccessor(type);
             this.maps = new List<PropertyMap<T>>();
         }
@@ -143,14 +169,16 @@ namespace UmbMapper
         /// <inheritdoc/>
         object IUmbMapperConfig.Map(IPublishedContent content)
         {
-            object result = this.MappedType.GetInstance();
+            // Handle both empty and IPublishedContent contructor
+            object result = this.hasIPublishedContructor ? this.MappedType.GetInstance(content) : this.MappedType.GetInstance();
+
             IProxy proxy = null;
 
             if (this.hasLazy || this.hasPredicate)
             {
                 // Create a proxy instance to replace our object.
                 var factory = new ProxyFactory();
-                proxy = factory.CreateProxy(this.MappedType);
+                proxy = this.hasIPublishedContructor ? factory.CreateProxy(this.MappedType, content) : factory.CreateProxy(this.MappedType);
 
                 // A dictionary to store lazily invoked value results
                 var lazyProperties = new Dictionary<string, Lazy<object>>();

@@ -25,7 +25,7 @@ namespace UmbMapper.Extensions
         /// The converted <see cref="IEnumerable{T}"/>.
         /// </returns>
         public static IEnumerable<T> MapTo<T>(this IEnumerable<IPublishedContent> content)
-            where T : class, new()
+            where T : class
         {
             return content.MapTo(typeof(T)).Select(x => x as T);
         }
@@ -53,7 +53,7 @@ namespace UmbMapper.Extensions
         /// <param name="content">The content to map</param>
         /// <returns>The <typeparamref name="T"/></returns>
         public static T MapTo<T>(this IPublishedContent content)
-            where T : class, new()
+            where T : class
         {
             Type type = typeof(T);
             return (T)MapTo(content, type);
@@ -72,8 +72,7 @@ namespace UmbMapper.Extensions
                 throw new ArgumentNullException(nameof(content));
             }
 
-            IUmbMapperConfig mapper;
-            UmbMapperRegistry.Mappers.TryGetValue(type, out mapper);
+            UmbMapperRegistry.Mappers.TryGetValue(type, out var mapper);
 
             if (mapper == null)
             {

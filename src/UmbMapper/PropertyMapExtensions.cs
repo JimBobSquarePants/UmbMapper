@@ -20,7 +20,7 @@ namespace UmbMapper
         /// <param name="source">The sequence of property mappings</param>
         /// <param name="action">The action to execute on each map.</param>
         public static void ForEach<T>(this IEnumerable<PropertyMap<T>> source, Action<PropertyMap<T>> action)
-            where T : class, new()
+            where T : class
         {
             if (source == null)
             {
@@ -47,7 +47,7 @@ namespace UmbMapper
         /// <param name="action">The action to execute on each map; the second parameter
         /// of the action represents the index of the source map.</param>
         public static void ForEachIndexed<T>(this IEnumerable<PropertyMap<T>> source, Action<PropertyMap<T>, int> action)
-            where T : class, new()
+            where T : class
         {
             if (source == null)
             {

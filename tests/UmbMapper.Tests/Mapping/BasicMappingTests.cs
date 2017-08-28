@@ -2,6 +2,7 @@
 using UmbMapper.Extensions;
 using UmbMapper.Tests.Mapping.Models;
 using UmbMapper.Tests.Mocks;
+using Umbraco.Web;
 using Umbraco.Web.Models;
 using Xunit;
 
@@ -92,7 +93,7 @@ namespace UmbMapper.Tests.Mapping
             content.Name = "AutoMapped";
             content.CreateDate = created;
             content.UpdateDate = created;
-            
+
             AutoMappedItem result = content.MapTo<AutoMappedItem>();
 
             Assert.NotNull(result);
@@ -100,6 +101,30 @@ namespace UmbMapper.Tests.Mapping
             Assert.Equal(content.Name, result.Name);
             Assert.Equal(content.CreateDate, result.CreateDate);
             Assert.Equal(content.UpdateDate, result.UpdateDate);
+        }
+
+        [Fact]
+        public void MapperCanMapPublishedModelType()
+        {
+            MockPublishedContent content = this.support.Content;
+            var created = new DateTime(2017, 1, 1);
+            content.Id = 98765;
+            content.Name = "BackMapped";
+            content.CreateDate = created;
+            content.UpdateDate = created;
+
+            BackedPublishedItem result = content.MapTo<BackedPublishedItem>();
+
+            Assert.NotNull(result);
+            Assert.Equal(content.Id, result.Id);
+            Assert.Equal(content.Name, result.Name);
+            Assert.Equal(content.CreateDate, result.CreateDate);
+            Assert.Equal(content.UpdateDate, result.UpdateDate);
+
+            Assert.NotNull(result.Slug);
+            Assert.True(result.Slug == result.Name.ToLowerInvariant());
+            Assert.NotNull(result.Image);
+            Assert.Equal(content.GetPropertyValue(nameof(BackedPublishedItem.Image)), result.Image);
         }
     }
 }

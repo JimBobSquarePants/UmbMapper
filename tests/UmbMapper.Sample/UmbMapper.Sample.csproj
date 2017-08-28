@@ -24,6 +24,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -342,9 +343,7 @@
     <Content Include="config\applications.config" />
     <Content Include="config\404handlers.config" />
     <Content Include="App_Plugins\NestedContent\package.manifest" />
-    <Content Include="Views\Site.cshtml">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
+    <Content Include="Views\Site.cshtml" />
     <Content Include="Views\Partials\Shared\_Meta.cshtml" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Home.cshtml" />
@@ -418,6 +417,10 @@
     <ProjectReference Include="..\..\src\UmbMapper.NuPickers\UmbMapper.NuPickers.csproj">
       <Project>{0858e0a4-a161-47ad-88e5-5bf1dbdbd225}</Project>
       <Name>UmbMapper.NuPickers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\UmbMapper.PublishedContentModelFactory\UmbMapper.PublishedContentModelFactory.csproj">
+      <Project>{d4d7dec8-23a5-408d-b602-7614410a46db}</Project>
+      <Name>UmbMapper.PublishedContentModelFactory</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\UmbMapper\UmbMapper.csproj">
       <Project>{70794e9c-5e67-48a0-994c-fd67c7758fb7}</Project>

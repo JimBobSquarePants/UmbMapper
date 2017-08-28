@@ -41,7 +41,7 @@ namespace UmbMapper.PropertyMappers
             bool propTypeIsEnumerable = propType.IsEnumerableType();
             Type baseType = propTypeIsEnumerable ? propType.GetEnumerableType() : propType;
 
-            var types = (IEnumerable<Type>)ApplicationContext.Current.ApplicationCache.StaticCache.GetCacheItem("DittoFactoryAttribute_ResolveTypes_" + baseType.AssemblyQualifiedName, () =>
+            var types = (IEnumerable<Type>)ApplicationContext.Current.ApplicationCache.StaticCache.GetCacheItem("UmbMapperFactoryAttribute_ResolveTypes_" + baseType.AssemblyQualifiedName, () =>
             {
                 // Workaround for http://issues.umbraco.org/issue/U4-9011
                 if (baseType.Assembly.IsAppCodeAssembly())

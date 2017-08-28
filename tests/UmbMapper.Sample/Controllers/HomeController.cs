@@ -20,7 +20,7 @@ namespace UmbMapper.Sample.Controllers
         // GET: Home
         public override ActionResult Index(RenderModel model)
         {
-            Home home = model.Content.MapTo<Home>();
+            var home = (Home)model.Content;
             var viewModel = new RenderPage<Home>(home);
 
             return this.CurrentTemplate(viewModel);

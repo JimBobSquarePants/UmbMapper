@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.26730.10
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper", "src\UmbMapper\UmbMapper.csproj", "{70794E9C-5E67-48A0-994C-FD67C7758FB7}"
 EndProject
@@ -23,6 +23,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper.NuPickers", "src\UmbMapper.NuPickers\UmbMapper.NuPickers.csproj", "{0858E0A4-A161-47AD-88E5-5BF1DBDBD225}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper.Archetype", "src\UmbMapper.Archetype\UmbMapper.Archetype.csproj", "{66CE4FE8-9ABD-42C5-B31B-495050402C7F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper.PublishedContentModelFactory", "src\UmbMapper.PublishedContentModelFactory\UmbMapper.PublishedContentModelFactory.csproj", "{D4D7DEC8-23A5-408D-B602-7614410A46DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -54,6 +56,10 @@ Global
 		{66CE4FE8-9ABD-42C5-B31B-495050402C7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{66CE4FE8-9ABD-42C5-B31B-495050402C7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{66CE4FE8-9ABD-42C5-B31B-495050402C7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D4D7DEC8-23A5-408D-B602-7614410A46DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D4D7DEC8-23A5-408D-B602-7614410A46DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D4D7DEC8-23A5-408D-B602-7614410A46DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D4D7DEC8-23A5-408D-B602-7614410A46DB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,5 +68,8 @@ Global
 		{A766687F-E06C-4389-9D5A-DB6F44FBC1E0} = {CAAF4CAF-EDCF-48B7-B705-632464F48B70}
 		{2CA212DD-8A24-4574-891C-2036F13B35AA} = {CAAF4CAF-EDCF-48B7-B705-632464F48B70}
 		{08B00C0A-E231-4166-BCD1-77E46AA0DC3C} = {CAAF4CAF-EDCF-48B7-B705-632464F48B70}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3E7B9D96-763B-4E1F-81B7-E6ECA8B1269E}
 	EndGlobalSection
 EndGlobal

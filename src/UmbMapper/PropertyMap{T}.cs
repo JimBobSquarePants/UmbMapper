@@ -18,7 +18,7 @@ namespace UmbMapper
     /// </summary>
     /// <typeparam name="T">The type of object to map</typeparam>
     public class PropertyMap<T> : IEquatable<PropertyMap<T>>
-        where T : class, new()
+        where T : class
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyMap{T}"/> class.
