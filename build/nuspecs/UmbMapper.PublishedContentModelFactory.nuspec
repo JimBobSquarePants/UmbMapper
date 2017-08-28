@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>UmbMapper.PublishedContentModelFactory</id>
+    <version>$version$</version>
+    <title>UmbMapper.PublishedContentModelFactory</title>
+    <authors>James Jackson-South and Contributors</authors>
+    <owners>James Jackson-South</owners>
+    <iconUrl>https://raw.githubusercontent.com/JimBobSquarePants/UmbMapper/develop/build/assets/logo/umbmapper-64.png</iconUrl>
+    <projectUrl>https://github.com/JimBobSquarePants/UmbMapper</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Extensions for UmbMapper to allow the mapping of IPublishedContent based classes using the IPublishedContentModelFactory.</description>
+    <releaseNotes>See the Github release for notes.</releaseNotes>
+    <copyright>Copyright © 2017</copyright>
+    <tags>Umbraco</tags>
+    <dependencies>
+      <dependency id="UmbracoCms.Core" version="7.3.2" />
+      <dependency id="UmbMapper" version="0.7.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="..\..\src\UmbMapper.PublishedContentModelFactory\bin\Release\UmbMapper.PublishedContentModelFactory.dll" target="lib\net452" />
+  </files>
+</package>
