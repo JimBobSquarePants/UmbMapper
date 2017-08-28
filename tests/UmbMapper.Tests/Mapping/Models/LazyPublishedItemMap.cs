@@ -10,7 +10,7 @@ namespace UmbMapper.Tests.Mapping.Models
         {
             this.AddMap(p => p.Id).AsLazy();
             this.AddMap(p => p.Name).AsLazy();
-            this.AddMap(p => p.Slug).MapFromInstance(item => item.Name.ToLowerInvariant());
+            this.AddMap(p => p.Slug).MapFromInstance((instance, content) => instance.Name.ToLowerInvariant());
             this.AddMap(p => p.CreateDate).AsLazy();
             this.AddMap(p => p.UpdateDate).SetAlias(p => p.UpdateDate, p => p.CreateDate).AsLazy();
             this.AddMap(p => p.PlaceOrder).SetMapper<EnumPropertyMapper>().AsLazy();

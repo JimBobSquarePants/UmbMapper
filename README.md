@@ -71,7 +71,7 @@ public class LazyPublishedItemMap : MapperConfig<LazyPublishedItem>
     {
         this.AddMap(p => p.Id).AsLazy();
         this.AddMap(p => p.Name).AsLazy();
-        this.AddMap(p => p.Slug).MapFromInstance(item => item.Name.ToUrlSlug()).AsLazy();
+        this.AddMap(p => p.Slug).MapFromInstance((instance, content) => instance.Name.ToLowerInvariant());
         this.AddMap(p => p.CreateDate).AsLazy();
         this.AddMap(p => p.UpdateDate).SetAlias(p => p.UpdateDate, p => p.CreateDate).AsLazy();
         this.AddMap(p => p.PlaceOrder).SetMapper<EnumPropertyMapper>().AsLazy();
@@ -131,7 +131,7 @@ The various mapping configuration options are as follows:
 - `AddMap()` Instructs the mapper to map the property.
 - `AddMappings()` Instructs the mapper to map the collection of properties.
 - `MapAll()` Instructs the mapper to map all the the properties in the class.
-- `MapFromInstance()` Instructs the mapper to map from the given `Func<T,object>` where `T` is the current object instance.
+- `MapFromInstance()` Instructs the mapper to map from the given `Func<T, IPublishedContent, object>` where `T` is the current object instance.
 - `SetAlias()` Instructs the mapper what aliases to look for in the document type. The order given is the checking order. Case-insensitive.
 - `SetMapper()` Instructs the mapper what specific `IPropertyMapper` implementation to use for mapping the property. All properties are initially automatically mapped using the `UmbracoPickerPropertyMapper`.
 - `SetCulture()` Instructs the mapper what culture to use when mapping values. Defaults to the current culture contained withing the `UmbracoContext`.

@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using UmbMapper.Extensions;
 using UmbMapper.PropertyMappers;
+using Umbraco.Core.Models;
 
 namespace UmbMapper
 {
@@ -48,7 +49,7 @@ namespace UmbMapper
         /// <summary>
         /// Gets the mapping predicate. Used for mapping from known values in the current instance.
         /// </summary>
-        public Func<T, object> Predicate { get; internal set; }
+        public Func<T, IPublishedContent, object> Predicate { get; internal set; }
 
         /// <summary>
         /// Sets the aliases to check against when mapping the property
@@ -72,12 +73,7 @@ namespace UmbMapper
                 MemberExpression member = expression.Body as MemberExpression
                                           ?? (expression.Body as UnaryExpression)?.Operand as MemberExpression;
 
-                if (member == null)
-                {
-                    throw new ArgumentException("Action must be a member expression.");
-                }
-
-                altNames[i] = member.Member.Name;
+                altNames[i] = member?.Member.Name ?? throw new ArgumentException("Action must be a member expression.");
             }
 
             this.Info.Aliases = altNames;
@@ -117,7 +113,7 @@ namespace UmbMapper
         /// </summary>
         /// <param name="predicate">The mapping predicate</param>
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
-        public PropertyMap<T> MapFromInstance(Func<T, object> predicate)
+        public PropertyMap<T> MapFromInstance(Func<T, IPublishedContent, object> predicate)
         {
             this.Info.HasPredicate = true;
             this.Predicate = predicate;

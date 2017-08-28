@@ -252,7 +252,7 @@ namespace UmbMapper
             if (map.Info.HasPredicate)
             {
                 // If we have a proxy we have to go via that class to get lazy mapped properties
-                value = proxy == null ? map.Predicate.Invoke((T)result) : map.Predicate.Invoke((T)proxy);
+                value = proxy == null ? map.Predicate.Invoke((T)result, content) : map.Predicate.Invoke((T)proxy, content);
             }
             else
             {
