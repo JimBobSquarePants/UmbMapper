@@ -242,10 +242,7 @@ namespace UmbMapper.Proxy
                                 first.GetParameters().Select(p => p.ParameterType).ToArray());
 
                 MethodBody body = first.GetMethodBody();
-                if (body != null)
-                {
-                    firstBytes = body.GetILAsByteArray();
-                }
+                firstBytes = body.GetILAsByteArray();
             }
 
             if (second != null && second.ReflectedType != null && second.DeclaringType != null)
@@ -257,10 +254,7 @@ namespace UmbMapper.Proxy
                                  second.GetParameters().Select(p => p.ParameterType).ToArray());
 
                 MethodBody body = second.GetMethodBody();
-                if (body != null)
-                {
-                    secondBytes = body.GetILAsByteArray();
-                }
+                secondBytes = body.GetILAsByteArray();
             }
 
             return firstBytes.SequenceEqual(secondBytes);

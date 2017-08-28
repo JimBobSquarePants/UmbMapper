@@ -36,8 +36,7 @@ namespace UmbMapper.PropertyMappers
 
             Type propertyType = this.PropertyType;
 
-            string strValue = value as string;
-            if (strValue != null)
+            if (value is string strValue)
             {
                 if (strValue.IndexOf(',') != -1)
                 {

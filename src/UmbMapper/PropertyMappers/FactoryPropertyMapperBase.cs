@@ -62,8 +62,7 @@ namespace UmbMapper.PropertyMappers
             });
 
             // Check for IEnumerable<IPublishedContent> value
-            var enumerableValue = value as IEnumerable<IPublishedContent>;
-            if (enumerableValue != null)
+            if (value is IEnumerable<IPublishedContent> enumerableValue)
             {
                 IEnumerable<object> items = enumerableValue.Select(x =>
                 {
@@ -77,8 +76,7 @@ namespace UmbMapper.PropertyMappers
             }
 
             // Check for IPublishedContent value
-            var ipublishedContentValue = value as IPublishedContent;
-            if (ipublishedContentValue != null)
+            if (value is IPublishedContent ipublishedContentValue)
             {
                 string typeName = this.ResolveTypeName(ipublishedContentValue);
                 Type type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));

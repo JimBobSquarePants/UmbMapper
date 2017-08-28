@@ -25,8 +25,7 @@ namespace UmbMapper.PropertyMappers.NuPickers
         /// <inheritdoc/>
         public override object Map(IPublishedContent content, object value)
         {
-            var picker = value as Picker;
-            value = picker != null ? picker.SavedValue : value;
+            value = value is Picker picker ? picker.SavedValue : value;
 
             return base.Map(content, value);
         }

@@ -77,8 +77,7 @@ namespace UmbMapper
                 throw new ArgumentException("Action must be a member expression.");
             }
 
-            PropertyMap<T> map;
-            if (!this.GetOrCreateMap(member.Member as PropertyInfo, out map))
+            if (!this.GetOrCreateMap(member.Member as PropertyInfo, out var map))
             {
                 this.maps.Add(map);
             }
@@ -112,8 +111,7 @@ namespace UmbMapper
                     throw new ArgumentException("Action must be a member expression.");
                 }
 
-                PropertyMap<T> map;
-                if (!this.GetOrCreateMap(member.Member as PropertyInfo, out map))
+                if (!this.GetOrCreateMap(member.Member as PropertyInfo, out var map))
                 {
                     this.maps.Add(map);
                 }
@@ -133,8 +131,7 @@ namespace UmbMapper
         {
             foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags))
             {
-                PropertyMap<T> map;
-                if (!this.GetOrCreateMap(property, out map))
+                if (!this.GetOrCreateMap(property, out var map))
                 {
                     this.maps.Add(map);
                 }
@@ -206,8 +203,7 @@ namespace UmbMapper
         {
             foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags).Where(p => p.CanWrite))
             {
-                PropertyMap<T> map;
-                if (!this.GetOrCreateMap(property, out map))
+                if (!this.GetOrCreateMap(property, out var map))
                 {
                     this.maps.Add(map);
                 }
@@ -268,8 +264,7 @@ namespace UmbMapper
             if (!info.PropertyType.IsInstanceOfType(value))
             {
                 // If the property value is an IPublishedContent, then we can map it to the target type.
-                var content = value as IPublishedContent;
-                if (content != null && info.PropertyType.IsClass)
+                if (value is IPublishedContent content && info.PropertyType.IsClass)
                 {
                     return content.MapTo(info.PropertyType);
                 }

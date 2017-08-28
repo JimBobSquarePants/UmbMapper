@@ -31,14 +31,12 @@ namespace UmbMapper.PropertyMappers.Archetype
                 return base.Map(content, value);
             }
 
-            var archetypeModel = value as ArchetypeModel;
-            if (archetypeModel != null)
+            if (value is ArchetypeModel archetypeModel)
             {
                 return base.Map(content, archetypeModel.ToPublishedContentSet());
             }
 
-            var archetypeFieldsetModel = value as ArchetypeFieldsetModel;
-            if (archetypeFieldsetModel != null)
+            if (value is ArchetypeFieldsetModel archetypeFieldsetModel)
             {
                 return base.Map(content, archetypeFieldsetModel.ToPublishedContent());
             }

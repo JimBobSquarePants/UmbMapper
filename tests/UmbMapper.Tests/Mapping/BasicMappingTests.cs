@@ -1,5 +1,4 @@
 ﻿using System;
-using AutoMapper.Internal;
 using UmbMapper.Extensions;
 using UmbMapper.Tests.Mapping.Models;
 using UmbMapper.Tests.Mocks;

@@ -53,8 +53,7 @@ namespace UmbMapper.PropertyMappers
 
                 if (key != null)
                 {
-                    FastPropertyAccessor accessor;
-                    ContentAccessorCache.TryGetValue(key, out accessor);
+                    ContentAccessorCache.TryGetValue(key, out var accessor);
 
                     if (accessor == null)
                     {

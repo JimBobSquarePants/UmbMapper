@@ -36,8 +36,7 @@ namespace UmbMapper.PropertyMappers
             }
 
             // Single IPublishedContent
-            var published = value as IPublishedContent;
-            if (published != null)
+            if (value is IPublishedContent published)
             {
                 return published;
             }
