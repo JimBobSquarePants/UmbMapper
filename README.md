@@ -188,7 +188,7 @@ For more information about the [IPublishedContentModelFactory](https://github.co
 
 UmbMapper comes with an implementation that can be configured as following.
 
-```
+``` csharp
 using UmbMapper.PublishedContentModelFactory;
 
 public class ConfigurePublishedContentModelFactory : ApplicationEventHandler
