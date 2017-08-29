@@ -272,16 +272,13 @@ namespace UmbMapper
                 value = map.PropertyMapper.Map(content, value);
             }
 
+            PropertyMapInfo info = map.Info;
+            value = SantizeValue(value, info);
+
             if (value != null)
             {
-                PropertyMapInfo info = map.Info;
-                value = SantizeValue(value, info);
                 value = RecursivelyMap(value, info);
-
-                if (value != null)
-                {
-                    propertyAccessor.SetValue(map.Info.Property.Name, result, value);
-                }
+                propertyAccessor.SetValue(map.Info.Property.Name, result, value);
             }
 
             return value;
@@ -298,7 +295,7 @@ namespace UmbMapper
                 }
 
                 // If the property value is an IEnumerable<IPublishedContent>, then we can map it to the target type.
-                if (value != null && value.GetType().IsEnumerableOfType(typeof(IPublishedContent)) && info.IsEnumerableType)
+                if (value.GetType().IsEnumerableOfType(typeof(IPublishedContent)) && info.IsEnumerableType)
                 {
                     Type genericType = info.PropertyType.GetEnumerableType();
                     if (genericType != null && genericType.IsClass)

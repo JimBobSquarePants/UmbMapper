@@ -32,7 +32,8 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
 
             // Home properties
             this.AddMap(x => x.BodyText).AsLazy();
-            this.AddMap(x => x.Gallery).SetMapper<ArchetypeFactoryPropertyMapper>().AsLazy();
+            this.AddMap(x => x.Gallery).AsLazy();
+            this.AddMap(x => x.ArchetypeGallery).SetMapper<ArchetypeFactoryPropertyMapper>().AsLazy();
         }
     }
 }

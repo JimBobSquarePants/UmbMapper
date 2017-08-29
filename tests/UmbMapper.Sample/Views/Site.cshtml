@@ -7,6 +7,18 @@
 <head>
     @Html.Partial("~/Views/Partials/Shared/_Meta.cshtml", Model)
     @RenderSection("HeaderAssets", false)
+    <style type="text/css">
+        .slides {
+            width: 100%;
+            overflow-y: auto;
+        }
+
+            .slides figure {
+                display: inline-block;
+                width: 200px;
+                vertical-align: top;
+            }
+    </style>
 </head>
 <body>
     @RenderBody()

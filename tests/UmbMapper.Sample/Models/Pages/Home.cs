@@ -29,6 +29,11 @@ namespace UmbMapper.Sample.Models.Pages
         /// <summary>
         /// Gets or sets the image gallery
         /// </summary>
+        public virtual IEnumerable<Slide> ArchetypeGallery { get; set; }
+
+        /// <summary>
+        /// Gets or sets the image gallery
+        /// </summary>
         public virtual IEnumerable<Slide> Gallery { get; set; }
     }
 }

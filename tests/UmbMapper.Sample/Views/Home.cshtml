@@ -6,17 +6,34 @@
 @Model.Content.BodyText
 
 <h2>Gallery</h2>
-<p>The gallery items are mapped from Archetype</p>
-
-@if (Model.Content.Gallery.Any())
-{
-    foreach (Slide slide in Model.Content.Gallery)
+<div class="slides">
+    <p>These gallery items are mapped from Nested Content</p>
+    @if (Model.Content.Gallery.Any())
     {
-        <figure>
-            <img src="@slide.Image.Crops.Src" alt="@slide.Image.Name" width="150" />
-            <figcaption>
-                @slide.Description
-            </figcaption>
-        </figure>
+        foreach (Slide slide in Model.Content.Gallery)
+        {
+            <figure>
+                <img src="@slide.Image.Crops.Src" alt="@slide.Image.Name" width="150" />
+                <figcaption>
+                    @slide.Description
+                </figcaption>
+            </figure>
+        }
     }
-}
+</div>
+
+<div class="slides">
+    <p>These gallery items are mapped from Archetype</p>
+    @if (Model.Content.ArchetypeGallery.Any())
+    {
+        foreach (Slide slide in Model.Content.ArchetypeGallery)
+        {
+            <figure>
+                <img src="@slide.Image.Crops.Src" alt="@slide.Image.Name" width="150" />
+                <figcaption>
+                    @slide.Description
+                </figcaption>
+            </figure>
+        }
+    }
+</div>

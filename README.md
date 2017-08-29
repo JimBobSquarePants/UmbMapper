@@ -22,6 +22,7 @@ So far it's made up of the following libraries
 - [**UmbMapper**](https://www.nuget.org/packages/UmbMapper) - The main mapping library, Maps all default Umbraco dataTypes and almost anything that uses a `PropertyValueConverter` to POCO equivalents.
 - [**UmbMapper.ArcheType**](https://www.nuget.org/packages/UmbMapper.ArcheType) - Allows the mapping of ArcheType models to POCO equivalents.
 - [**UmbMapper.NuPickers**](https://www.nuget.org/packages/UmbMapper.NuPickers) - Allows the mapping of NuPicker models to POCO equivalents.
+- [**UmbMapper.PublishedContentModelFactory**](https://www.nuget.org/packages/UmbMapper.PublishedContentModelFactory) - Allows the mapping of models using the Umbraco PublishedContentFactory.
 
 ## Consuming The Libraries
 
@@ -180,11 +181,35 @@ UmbMapperRegistry.AddMapper(new LazyPublishedItemMap());
 UmbMapperRegistry.AddMapperFor<SimpleItem>;
 ```
 
+## IPublishedContentModelFactory
+
+As of v7.1.4, Umbraco ships with using a default model factory for `IPublishedContent`.
+For more information about the [IPublishedContentModelFactory](https://github.com/zpqrtbnk/Zbu.ModelsBuilder/wiki/IPublishedContentModelFactory) please the "Zbu.ModelsBuilder" wiki:
+
+UmbMapper comes with an implementation that can be configured as following.
+
+```
+using UmbMapper.PublishedContentModelFactory;
+
+public class ConfigurePublishedContentModelFactory : ApplicationEventHandler
+{
+	protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+	{
+		// Important! This has to occur after mapper registration
+		var factory = new UmbMapperPublishedContentModelFactory();
+		PublishedContentModelFactoryResolver.Current.SetFactory(factory);
+	}
+}
+```
+
+> Note: It's recommended that you use lazy property mapping when using the `UmbMapperPublishedContentModelFactory` as it ensures that any `PropertyValueConverter`implementations 
+that have `UmbracoContext` based requirements may fail otherwise.
+
 ## Performance
 
 It should be blazingly quick. I've taken all the super fast bits I'd written in the Ditto library and was able to turbo charge them a little more. The underpinning logic is simple also and requires very little run-time work as the rules are already determined at compile-time.
 
-Additional performance boosting can be delivered using lazy mapping
+Additional performance boosting can be delivered using lazy mapping.
 
 ## Dynamic Proxies and Lazy Mapping
 

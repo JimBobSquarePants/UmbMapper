@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project", "Project", "{0331
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 		appveyor.yml = appveyor.yml
+		README.md = README.md
 		UmbMapper.ruleset = UmbMapper.ruleset
 	EndProjectSection
 EndProject
@@ -25,6 +26,14 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper.Archetype", "src\UmbMapper.Archetype\UmbMapper.Archetype.csproj", "{66CE4FE8-9ABD-42C5-B31B-495050402C7F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper.PublishedContentModelFactory", "src\UmbMapper.PublishedContentModelFactory\UmbMapper.PublishedContentModelFactory.csproj", "{D4D7DEC8-23A5-408D-B602-7614410A46DB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{9F4A651D-5C8F-4071-A13B-8196FCBB785C}"
+	ProjectSection(SolutionItems) = preProject
+		build\nuspecs\UmbMapper.Archetype.nuspec = build\nuspecs\UmbMapper.Archetype.nuspec
+		build\nuspecs\UmbMapper.NuPickers.nuspec = build\nuspecs\UmbMapper.NuPickers.nuspec
+		build\nuspecs\UmbMapper.nuspec = build\nuspecs\UmbMapper.nuspec
+		build\nuspecs\UmbMapper.PublishedContentModelFactory.nuspec = build\nuspecs\UmbMapper.PublishedContentModelFactory.nuspec
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

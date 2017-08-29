@@ -1,4 +1,4 @@
-version: 0.7.{build}
+version: 0.9.{build}
 image: Visual Studio 2017
 configuration: Release
 
@@ -31,6 +31,7 @@ after_build:
   - ps: nuget pack build\nuspecs\UmbMapper.nuspec -version "$env:PackageVersion"
   - ps: nuget pack build\nuspecs\UmbMapper.NuPickers.nuspec -version "$env:PackageVersion"
   - ps: nuget pack build\nuspecs\UmbMapper.Archetype.nuspec -version "$env:PackageVersion"
+  - ps: nuget pack build\nuspecs\UmbMapper.PublishedContentModelFactory.nuspec -version "$env:PackageVersion"
 
 artifacts:
   - path: 'UmbMapper*.nupkg'
