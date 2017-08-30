@@ -93,17 +93,7 @@ namespace UmbMapper
         /// <exception cref="ArgumentException">Thrown if the expression is not a property member expression.</exception>
         public PropertyMap<T> AddMap(Expression<Func<T, object>> propertyExpression)
         {
-            // The property access might be getting converted to object to match the func
-            // If so, get the operand and see if that's a member expression
-            MemberExpression member = propertyExpression.Body as MemberExpression
-                ?? (propertyExpression.Body as UnaryExpression)?.Operand as MemberExpression;
-
-            if (member == null)
-            {
-                throw new ArgumentException("Action must be a member expression.");
-            }
-
-            if (!this.GetOrCreateMap(member.Member as PropertyInfo, out var map))
+            if (!this.GetOrCreateMap(propertyExpression.ToPropertyInfo(), out var map))
             {
                 this.maps.Add(map);
             }
@@ -127,17 +117,7 @@ namespace UmbMapper
             var mapsTemp = new List<PropertyMap<T>>();
             foreach (Expression<Func<T, object>> property in propertyExpressions)
             {
-                // The property access might be getting converted to object to match the func
-                // If so, get the operand and see if that's a member expression
-                MemberExpression member = property.Body as MemberExpression
-                                          ?? (property.Body as UnaryExpression)?.Operand as MemberExpression;
-
-                if (member == null)
-                {
-                    throw new ArgumentException("Action must be a member expression.");
-                }
-
-                if (!this.GetOrCreateMap(member.Member as PropertyInfo, out var map))
+                if (!this.GetOrCreateMap(property.ToPropertyInfo(), out var map))
                 {
                     this.maps.Add(map);
                 }
@@ -164,6 +144,19 @@ namespace UmbMapper
             }
 
             return this.maps;
+        }
+
+        /// <summary>
+        /// Removes the property in the class from the collection of mapped properties
+        /// </summary>
+        /// <param name="propertyExpression">The property to map</param>
+        /// <returns>The <see cref="bool"/></returns>
+        public bool Ignore(Expression<Func<T, object>> propertyExpression)
+        {
+            var property = propertyExpression.ToPropertyInfo();
+            PropertyMap<T> map = this.maps.FirstOrDefault(m => m.Info.Property == property);
+
+            return map != null && this.maps.Remove(map);
         }
 
         /// <inheritdoc/>

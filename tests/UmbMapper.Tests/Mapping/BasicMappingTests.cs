@@ -126,5 +126,17 @@ namespace UmbMapper.Tests.Mapping
             Assert.NotNull(result.Image);
             Assert.Equal(content.GetPropertyValue(nameof(BackedPublishedItem.Image)), result.Image);
         }
+
+        [Fact]
+        public void MapperCanRemoveMap()
+        {
+            var map = new LazyPublishedItemMap();
+            int mapCount = map.Mappings.Count;
+
+            bool result = map.Ignore(x => x.CreateDate);
+
+            Assert.True(result);
+            Assert.Equal(mapCount - 1, map.Mappings.Count);
+        }
     }
 }

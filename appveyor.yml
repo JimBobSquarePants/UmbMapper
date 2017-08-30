@@ -35,3 +35,36 @@ after_build:
 
 artifacts:
   - path: 'UmbMapper*.nupkg'
+
+deploy:
+  - provider: NuGet
+    server: https://www.myget.org/F/umbmapper/api/v2/package
+    symbol_server: https://www.myget.org/F/umbmapper/symbols/api/v2/package
+    api_key:
+      secure: fz0rUrt3B1HczUC1ZehwVsrFSWX9WZGDQoueDztLte9/+yQG+BBU7UrO+coE8lUf
+    artifact: /.*\.nupkg/
+    on:
+      branch: develop
+
+  - provider: NuGet
+    api_key:
+      secure: kHataLiMb9nmJEdwBE4BTXvA4nOpoD3Fw14zVeDP6Vs0ZXpL7c8qeegMv/jMZECP
+    skip_symbols: false
+    artifact: /.*\.nupkg/
+    on:
+      branch: master
+      appveyor_repo_tag: true        # deploy on tag push only
+
+  - provider: GitHub
+    release: myproduct-v$(APPVEYOR_BUILD_VERSION)
+    auth_token:
+    secure: <your encrypted token> # your encrypted token from GitHub
+    artifact: /.*\.nupkg/            # upload all NuGet packages to release assets
+    draft: false
+    prerelease: false
+    on:
+      branch: master                 # release from master branch only
+      appveyor_repo_tag: true        # deploy on tag push only
+
+# prevent the double build when a branch has an active PR
+skip_branch_with_pr: true
