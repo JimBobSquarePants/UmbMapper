@@ -27,7 +27,6 @@ namespace UmbMapper.Proxy
         /// <param name="values">
         /// The dictionary of values containing the property name to replace and the value to replace it with.
         /// </param>
-        public LazyInterceptor(object target, Dictionary<string, Lazy<object>> values)
         public LazyInterceptor(FastPropertyAccessor propertyAccessor, Dictionary<string, Lazy<object>> values)
         {
             this.propertyAccessor = propertyAccessor;
