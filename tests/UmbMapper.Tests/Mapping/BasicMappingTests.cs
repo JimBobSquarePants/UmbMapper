@@ -128,6 +128,28 @@ namespace UmbMapper.Tests.Mapping
         }
 
         [Fact]
+        public void MapperCanMapInheritedMixedItems()
+        {
+            MockPublishedContent content = this.support.Content;
+            var created = new DateTime(2017, 1, 1);
+            content.Id = 98765;
+            content.Name = "InheritedMapped";
+            content.CreateDate = created;
+            content.UpdateDate = created;
+
+            InheritedPublishedItem result = content.MapTo<InheritedPublishedItem>();
+
+            Assert.NotNull(result);
+            Assert.Equal(content.Id, result.Id);
+            Assert.Equal(content.Name, result.Name);
+
+            Assert.NotNull(result.Slug);
+            Assert.True(result.Slug == result.Name.ToLowerInvariant());
+            Assert.NotNull(result.Image);
+            Assert.Equal(content.GetPropertyValue(nameof(BackedPublishedItem.Image)), result.Image);
+        }
+
+        [Fact]
         public void MapperCanRemoveMap()
         {
             var map = new LazyPublishedItemMap();

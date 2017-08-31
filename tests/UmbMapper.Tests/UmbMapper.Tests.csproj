@@ -255,6 +255,10 @@
     <Compile Include="Mapping\LazyMappingTests.cs" />
     <Compile Include="Mapping\Models\AutoMappedItem.cs" />
     <Compile Include="Mapping\Models\BackedPublishedItem.cs" />
+    <Compile Include="Mapping\Models\BasePublishedItem.cs" />
+    <Compile Include="Mapping\Models\BasePublishedItemMap.cs" />
+    <Compile Include="Mapping\Models\InheritedPublishedItem.cs" />
+    <Compile Include="Mapping\Models\InheritedPublishedItemMap.cs" />
     <Compile Include="Mapping\Models\LazyPublishedItem.cs" />
     <Compile Include="Mapping\Models\BackedPublishedItemMap.cs" />
     <Compile Include="Mapping\Models\LazyPublishedItemMap.cs" />

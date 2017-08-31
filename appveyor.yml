@@ -1,4 +1,4 @@
-version: 0.9.{build}
+version: 1.0.{build}
 image: Visual Studio 2017
 configuration: Release
 
@@ -53,17 +53,6 @@ deploy:
     artifact: /.*\.nupkg/
     on:
       branch: master
-      appveyor_repo_tag: true        # deploy on tag push only
-
-  - provider: GitHub
-    release: myproduct-v$(APPVEYOR_BUILD_VERSION)
-    auth_token:
-    secure: <your encrypted token> # your encrypted token from GitHub
-    artifact: /.*\.nupkg/            # upload all NuGet packages to release assets
-    draft: false
-    prerelease: false
-    on:
-      branch: master                 # release from master branch only
       appveyor_repo_tag: true        # deploy on tag push only
 
 # prevent the double build when a branch has an active PR

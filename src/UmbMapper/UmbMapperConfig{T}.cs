@@ -34,12 +34,14 @@ namespace UmbMapper
     {
         private readonly FastPropertyAccessor propertyAccessor;
         private readonly List<PropertyMap<T>> maps;
-        private IEnumerable<PropertyMap<T>> lazyMaps;
+        private readonly bool hasIPublishedContructor;
         private IEnumerable<PropertyMap<T>> nonLazyMaps;
+        private IEnumerable<PropertyMap<T>> lazyMaps;
+        private IEnumerable<PropertyMap<T>> nonLazyPredicateMaps;
+        private IEnumerable<PropertyMap<T>> lazyPredicateMaps;
         private bool hasChecked;
         private bool hasLazy;
         private bool hasPredicate;
-        private bool hasIPublishedContructor;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbMapperConfig{T}"/> class.
@@ -175,7 +177,17 @@ namespace UmbMapper
 
                 // A dictionary to store lazily invoked value results
                 var lazyProperties = new Dictionary<string, Lazy<object>>();
+
+                // First add any lazy mappings
                 foreach (PropertyMap<T> map in this.lazyMaps)
+                {
+                    // Prevent closure allocation
+                    object localResult = result;
+                    lazyProperties.Add(map.Info.Property.Name, new Lazy<object>(() => MapProperty(map, content, this.propertyAccessor, localResult, proxy)));
+                }
+
+                // Then lazy predicate mappings
+                foreach (PropertyMap<T> map in this.lazyPredicateMaps)
                 {
                     // Prevent closure allocation
                     object localResult = result;
@@ -185,16 +197,21 @@ namespace UmbMapper
                 // Set the interceptor and replace our result with the proxy
                 var interceptor = new LazyInterceptor(result, lazyProperties);
                 proxy.Interceptor = interceptor;
-                result = proxy;
             }
 
             // Now map the non-lazy properties
             foreach (PropertyMap<T> map in this.nonLazyMaps)
             {
-                MapProperty(map, content, this.propertyAccessor, result, proxy);
+                MapProperty(map, content, this.propertyAccessor, proxy ?? result, proxy);
             }
 
-            return result;
+            // Then non-lazy predicate mappings
+            foreach (PropertyMap<T> map in this.nonLazyPredicateMaps)
+            {
+                MapProperty(map, content, this.propertyAccessor, proxy ?? result, proxy);
+            }
+
+            return proxy ?? result;
         }
 
         /// <inheritdoc/>
@@ -208,10 +225,14 @@ namespace UmbMapper
                     return;
                 }
 
-                this.lazyMaps = this.maps.Where(m => m.Info.Lazy).ToArray();
-                this.nonLazyMaps = this.maps.Where(m => !m.Info.Lazy).ToArray();
+                // We need to organize mapping now into separate groups as ordering of mappings is important when using predicates.
+                this.nonLazyMaps = this.maps.Where(m => !m.Info.HasPredicate && !m.Info.Lazy).ToArray();
+                this.lazyMaps = this.maps.Where(m => !m.Info.HasPredicate && m.Info.Lazy).ToArray();
                 this.hasLazy = this.lazyMaps.Any();
-                this.hasPredicate = this.maps.Any(m => m.Info.HasPredicate);
+
+                this.nonLazyPredicateMaps = this.maps.Where(m => m.Info.HasPredicate && !m.Info.Lazy).ToArray();
+                this.lazyPredicateMaps = this.maps.Where(m => m.Info.HasPredicate && m.Info.Lazy).ToArray();
+                this.hasPredicate = this.nonLazyPredicateMaps.Any() || this.lazyPredicateMaps.Any();
                 this.hasChecked = true;
             }
         }
@@ -235,7 +256,7 @@ namespace UmbMapper
 
         private static object MapProperty(PropertyMap<T> map, IPublishedContent content, FastPropertyAccessor propertyAccessor, object result, IProxy proxy)
         {
-            // Users might want to use lazy loading with API controllers that do not inherit from UmBracoAPIController.
+            // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
             // Certain mappers like Archtype require the context so we want to ensure it exists.
             EnsureUmbracoContext();
 
@@ -271,7 +292,8 @@ namespace UmbMapper
             if (value != null)
             {
                 value = RecursivelyMap(value, info);
-                propertyAccessor.SetValue(map.Info.Property.Name, result, value);
+                map.Info.Property.SetValue(result, value);
+                // propertyAccessor.SetValue(map.Info.Property.Name, result, value);
             }
 
             return value;

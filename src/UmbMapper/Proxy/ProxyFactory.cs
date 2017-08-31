@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -88,12 +89,21 @@ namespace UmbMapper.Proxy
 
             // Define different behaviors for debug and release so that we can make debugging easier.
             var name = new AssemblyName(assemblyName);
+            AssemblyBuilder assemblyBuilder;
 #if DEBUG
-            AssemblyBuilder assemblyBuilder = currentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.RunAndSave);
+            assemblyBuilder = currentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.RunAndSave);
             ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName, $"{moduleName}.mod", true);
 
+            // Add a debuggable attribute to the assembly saying to disable optimizations
+            Type daType = typeof(DebuggableAttribute);
+            ConstructorInfo daCtor = daType.GetConstructor(new[] { typeof(DebuggableAttribute.DebuggingModes) });
+            var daBuilder = new CustomAttributeBuilder(
+                daCtor,
+                new object[] { DebuggableAttribute.DebuggingModes.DisableOptimizations | DebuggableAttribute.DebuggingModes.Default });
+            assemblyBuilder.SetCustomAttribute(daBuilder);
+
 #else
-            AssemblyBuilder assemblyBuilder = currentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
+            assemblyBuilder = currentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
             ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName);
 #endif
 
@@ -127,7 +137,12 @@ namespace UmbMapper.Proxy
             }
 
             // Create and return.
-            return typeBuilder.CreateType();
+            Type result = typeBuilder.CreateType();
+
+#if DEBUG
+            assemblyBuilder.Save(typeName + ".dll");
+#endif
+            return result;
         }
 
         /// <summary>

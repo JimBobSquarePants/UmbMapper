@@ -145,6 +145,7 @@ namespace UmbMapper.Tests.Mapping
             UmbMapperRegistry.AddMapper(new LazyPublishedItemMap());
             UmbMapperRegistry.AddMapperFor<AutoMappedItem>();
             UmbMapperRegistry.AddMapper(new BackedPublishedItemMap());
+            UmbMapperRegistry.AddMapper(new InheritedPublishedItemMap());
         }
 
         public void Dispose()
