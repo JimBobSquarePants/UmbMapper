@@ -179,6 +179,12 @@ namespace UmbMapper.Proxy
                     continue;
                 }
 
+                // Getters only
+                if (method.ReturnType == typeof(void))
+                {
+                    continue;
+                }
+
                 // We only want properties not methods that are not part of the excluded list.
                 PropertyInfo property = this.GetParentProperty(method);
                 if (property != null)

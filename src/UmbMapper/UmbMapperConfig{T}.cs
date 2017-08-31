@@ -32,7 +32,7 @@ namespace UmbMapper
     public class UmbMapperConfig<T> : IUmbMapperConfig
         where T : class
     {
-        private readonly FastPropertyAccessor propertyAccessor;
+        private FastPropertyAccessor propertyAccessor;
         private readonly List<PropertyMap<T>> maps;
         private readonly bool hasIPublishedContructor;
         private IEnumerable<PropertyMap<T>> nonLazyMaps;
@@ -42,6 +42,7 @@ namespace UmbMapper
         private bool hasChecked;
         private bool hasLazy;
         private bool hasPredicate;
+        private bool createProxy;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbMapperConfig{T}"/> class.
@@ -75,7 +76,7 @@ namespace UmbMapper
                     "A valid constructor is either an empty one, or one accepting a single IPublishedContent parameter.");
             }
 
-            this.propertyAccessor = new FastPropertyAccessor(type);
+            //this.propertyAccessor = new FastPropertyAccessor(type);
             this.maps = new List<PropertyMap<T>>();
         }
 
@@ -165,53 +166,66 @@ namespace UmbMapper
         object IUmbMapperConfig.Map(IPublishedContent content)
         {
             // Handle both empty and IPublishedContent contructor
-            object result = this.hasIPublishedContructor ? this.MappedType.GetInstance(content) : this.MappedType.GetInstance();
-
-            IProxy proxy = null;
-
-            if (this.hasLazy || this.hasPredicate)
+            object result;
+            if (this.createProxy)
             {
                 // Create a proxy instance to replace our object.
                 var factory = new ProxyFactory();
-                proxy = this.hasIPublishedContructor ? factory.CreateProxy(this.MappedType, content) : factory.CreateProxy(this.MappedType);
+                result = this.hasIPublishedContructor ? factory.CreateProxy(this.MappedType, content) : factory.CreateProxy(this.MappedType);
+            }
+            else
+            {
+                result = this.hasIPublishedContructor ? this.MappedType.GetInstance(content) : this.MappedType.GetInstance();
+            }
 
+            if (this.propertyAccessor == null)
+            {
+                this.propertyAccessor = new FastPropertyAccessor(result.GetType());
+            }
+
+            if (this.createProxy)
+            {
                 // A dictionary to store lazily invoked value results
                 var lazyProperties = new Dictionary<string, Lazy<object>>();
 
                 // First add any lazy mappings
                 foreach (PropertyMap<T> map in this.lazyMaps)
                 {
-                    // Prevent closure allocation
-                    object localResult = result;
-                    lazyProperties.Add(map.Info.Property.Name, new Lazy<object>(() => MapProperty(map, content, this.propertyAccessor, localResult, proxy)));
+                    lazyProperties.Add(map.Info.Property.Name, new Lazy<object>(() => MapProperty(map, content, result)));
                 }
 
                 // Then lazy predicate mappings
                 foreach (PropertyMap<T> map in this.lazyPredicateMaps)
                 {
-                    // Prevent closure allocation
-                    object localResult = result;
-                    lazyProperties.Add(map.Info.Property.Name, new Lazy<object>(() => MapProperty(map, content, this.propertyAccessor, localResult, proxy)));
+                    lazyProperties.Add(map.Info.Property.Name, new Lazy<object>(() => MapProperty(map, content, result)));
                 }
 
                 // Set the interceptor and replace our result with the proxy
-                var interceptor = new LazyInterceptor(result, lazyProperties);
-                proxy.Interceptor = interceptor;
+                var interceptor = new LazyInterceptor(this.propertyAccessor, lazyProperties);
+                ((IProxy)result).Interceptor = interceptor;
             }
 
             // Now map the non-lazy properties
             foreach (PropertyMap<T> map in this.nonLazyMaps)
             {
-                MapProperty(map, content, this.propertyAccessor, proxy ?? result, proxy);
+                object value = MapProperty(map, content, result);
+                if (value != null)
+                {
+                    this.propertyAccessor.SetValue(map.Info.Property.Name, result, value);
+                }
             }
 
             // Then non-lazy predicate mappings
             foreach (PropertyMap<T> map in this.nonLazyPredicateMaps)
             {
-                MapProperty(map, content, this.propertyAccessor, proxy ?? result, proxy);
+                object value = MapProperty(map, content, result);
+                if (value != null)
+                {
+                    this.propertyAccessor.SetValue(map.Info.Property.Name, result, value);
+                }
             }
 
-            return proxy ?? result;
+            return result;
         }
 
         /// <inheritdoc/>
@@ -233,6 +247,8 @@ namespace UmbMapper
                 this.nonLazyPredicateMaps = this.maps.Where(m => m.Info.HasPredicate && !m.Info.Lazy).ToArray();
                 this.lazyPredicateMaps = this.maps.Where(m => m.Info.HasPredicate && m.Info.Lazy).ToArray();
                 this.hasPredicate = this.nonLazyPredicateMaps.Any() || this.lazyPredicateMaps.Any();
+                this.createProxy = this.hasLazy || this.hasPredicate;
+
                 this.hasChecked = true;
             }
         }
@@ -254,7 +270,7 @@ namespace UmbMapper
             return this.maps;
         }
 
-        private static object MapProperty(PropertyMap<T> map, IPublishedContent content, FastPropertyAccessor propertyAccessor, object result, IProxy proxy)
+        private static object MapProperty(PropertyMap<T> map, IPublishedContent content, object result)
         {
             // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
             // Certain mappers like Archtype require the context so we want to ensure it exists.
@@ -265,8 +281,7 @@ namespace UmbMapper
             // If we have a mapping function, use that and skip Umbraco
             if (map.Info.HasPredicate)
             {
-                // If we have a proxy we have to go via that class to get lazy mapped properties
-                value = proxy == null ? map.Predicate.Invoke((T)result, content) : map.Predicate.Invoke((T)proxy, content);
+                value = map.Predicate.Invoke((T)result, content);
             }
             else
             {
@@ -292,8 +307,6 @@ namespace UmbMapper
             if (value != null)
             {
                 value = RecursivelyMap(value, info);
-                map.Info.Property.SetValue(result, value);
-                // propertyAccessor.SetValue(map.Info.Property.Name, result, value);
             }
 
             return value;
@@ -383,17 +396,19 @@ namespace UmbMapper
 
         private static void EnsureUmbracoContext()
         {
-            if (UmbracoContext.Current == null)
+            if (UmbracoContext.Current != null)
             {
-                var dummyHttpContext = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
-                UmbracoContext.EnsureContext(
-                    dummyHttpContext,
-                    ApplicationContext.Current,
-                    new WebSecurity(dummyHttpContext, ApplicationContext.Current),
-                    UmbracoConfig.For.UmbracoSettings(),
-                    UrlProviderResolver.Current.Providers,
-                    false);
+                return;
             }
+
+            var dummyHttpContext = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
+            UmbracoContext.EnsureContext(
+                dummyHttpContext,
+                ApplicationContext.Current,
+                new WebSecurity(dummyHttpContext, ApplicationContext.Current),
+                UmbracoConfig.For.UmbracoSettings(),
+                UrlProviderResolver.Current.Providers,
+                false);
         }
 
         private bool GetOrCreateMap(PropertyInfo property, out PropertyMap<T> map)

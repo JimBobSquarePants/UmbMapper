@@ -26,7 +26,7 @@ namespace UmbMapper.Proxy
         /// </summary>
         private static readonly MethodInfo InterceptorMethod = typeof(IInterceptor).GetMethod(
             "Intercept",
-            new[] { typeof(MethodBase), typeof(object) });
+            new[] { typeof(MethodBase), typeof(IProxy) });
 
         /// <summary>
         /// The get method from handle method.
@@ -55,7 +55,6 @@ namespace UmbMapper.Proxy
         {
             // Get the method parameters for any setters.
             ParameterInfo[] parameters = method.GetParameters();
-            ParameterInfo parameter = parameters.FirstOrDefault();
 
             // Define attributes.
             const MethodAttributes methodAttributes = MethodAttributes.Public |
@@ -93,26 +92,17 @@ namespace UmbMapper.Proxy
             il.MarkLabel(skipThrow);
 
             // This is equivalent to:
-            // For get
-            // return return (PropertyType) interceptor.Intercept(methodof(BaseType.get_Property), null);
-            // For set
-            // interceptor.Intercept(methodof(BaseType.set_Property), value);
+            // return return (PropertyType) interceptor.Intercept(methodof(BaseType.get_Property), this);
             il.Emit(OpCodes.Ldtoken, method);
             il.Emit(OpCodes.Call, GetMethodFromHandle);
-            il.Emit(parameter == null ? OpCodes.Ldnull : OpCodes.Ldarg_1);
+
+            // TODO: Fix this
+            // What I want to do is pass the IProxy instance to the intercept method that is intercepting the getter.
+            il.Emit(OpCodes.Ldarg_1);
             il.Emit(OpCodes.Callvirt, InterceptorMethod);
 
-            // Setter only.
-            if (method.ReturnType == typeof(void))
-            {
-                il.Emit(OpCodes.Pop);
-            }
-            else
-            {
-                // Unbox the object back to the corrct type.
-                il.Emit(OpCodes.Unbox_Any, method.ReturnType);
-            }
-
+            // Unbox the object back to the correct type.
+            il.Emit(OpCodes.Unbox_Any, method.ReturnType);
             il.Emit(OpCodes.Ret);
         }
     }

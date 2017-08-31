@@ -4,6 +4,7 @@
     {
         public InheritedPublishedItemMap()
         {
+            this.AddMap(x => x.Image).AsLazy();
             this.AddMap(p => p.Slug).MapFromInstance((instance, content) => instance.Name.ToLowerInvariant());
         }
     }
