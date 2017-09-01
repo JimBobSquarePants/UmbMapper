@@ -1,17 +1,6 @@
 # <img src="https://raw.githubusercontent.com/JimBobSquarePants/UmbMapper/develop/build/assets/logo/umbmapper-64.png" width="52" height="52" alt="UmbMapper Logo"/> UmbMapper
 
-This repository contains a convention based published content mapper for Umbraco.
-
-Written as a consequence of a flu-induced vision and driven by a desire for clean separation of concerns in my code I knocked the initial upload together in less than 48 hours in a Robert Louis Stevenson-esque torrent of writing. 
-
-I've since added some fine polish!
-
-**Please checkout the repo; I'm looking for API and code reviews, unit tests also!! :+1:**
-
-Samples project login
-
-- Username : admin
-- Password : umbmapper!
+This repository contains a fast, simple to use, convention based published content mapper for Umbraco.
 
 ## What does it do?
 
@@ -27,6 +16,11 @@ So far it's made up of the following libraries
 ## Consuming The Libraries
 
 Nightlies are available on [Myget](https://www.myget.org/gallery/umbmapper) with battle tested releases available on [Nuget](https://www.nuget.org/packages/UmbMapper).
+
+Samples project login
+
+- Username : admin
+- Password : umbmapper!
 
 ## The API
 
@@ -119,7 +113,7 @@ public class LazyPublishedItemMap : UmbMapperConfig<LazyPublishedItem>
 }
 ```
 
-**For simple classes where no additional mapping logic is required you don't even need an UmbMapperConfig. See *Registering a mapper* below.**
+**For many simple classes where no additional mapping logic is required you don't even need an UmbMapperConfig. See *Registering a mapper* below.**
 
 What's going on here? 
 
@@ -133,6 +127,7 @@ The various mapping configuration options are as follows:
 - `AddMappings()` Instructs the mapper to map the collection of properties.
 - `MapAll()` Instructs the mapper to map all the the properties in the class.
 - `MapFromInstance()` Instructs the mapper to map from the given `Func<T, IPublishedContent, object>` where `T` is the current object instance.
+- `Ignore()` Removes a property from the collection of property maps.
 - `SetAlias()` Instructs the mapper what aliases to look for in the document type. The order given is the checking order. Case-insensitive.
 - `SetMapper()` Instructs the mapper what specific `IPropertyMapper` implementation to use for mapping the property. All properties are initially automatically mapped using the `UmbracoPickerPropertyMapper`.
 - `SetCulture()` Instructs the mapper what culture to use when mapping values. Defaults to the current culture contained withing the `UmbracoContext`.
@@ -143,10 +138,10 @@ Available `IPropertyMapper`implementations all inherit from the `PropertyMapperB
 
 - `UmbracoPickerPropertyMapper` The default mapper, maps directly from Umbraco's Published Content Cache via `GetPropertyValue`. Runs automatically.
 - `EnumPropertyMapper` Maps to enum values. Can handle both integer and string values.
-- `UmbracoPickerPropertyMapper` Maps from all the Umbraco built-in pickers.
+- `UmbracoPickerPropertyMapper` Maps from all the Umbraco built-in legacy pickers. Not required for any of the pickers from v7.6+
 - `DocTypeFactoryPropertyMapper` Allows mapping from mixed `IPublishedContent` sources like Nested Content. Inherits `FactoryPropertyMapperBase`.
 
-These mappers handle most use cases since they rely initially on Umbraco's `PropertyValueConverter` API. Additional mappers can be easily created though.
+These mappers handle most use cases since they rely initially on Umbraco's `PropertyValueConverter` API. Additional mappers can be easily created though. Check the source for examples.
 
 ### Calling a Mapper
 
@@ -155,14 +150,14 @@ There are four extension methods that have been added to the `IPublishedContent`
 ``` csharp
 // Map a collection of a compile-time known type instances.
 public static IEnumerable<T> MapTo<T>(this IEnumerable<IPublishedContent> content)
-    where T : class, new()
+    where T : class
 
 // Map a collection of a run-time known type instances.
 public static IEnumerable<object> MapTo(this IEnumerable<IPublishedContent> content, Type type)
 
 // Map a single compile-time known type instance.
 public static T MapTo<T>(this IPublishedContent content)
-    where T : class, new()
+    where T : class
 
 // Map a single run-time known type instance.
 public static object MapTo(this IPublishedContent content, Type type)
@@ -207,7 +202,7 @@ that have `UmbracoContext` based requirements may fail otherwise.
 
 ## Performance
 
-It should be blazingly quick. I've taken all the super fast bits I'd written in the Ditto library and was able to turbo charge them a little more. The underpinning logic is simple also and requires very little run-time work as the rules are already determined at compile-time.
+UmbMapper is blazingly quick. I've taken all the super fast bits I'd written in the Ditto library and was able to turbo charge them a little more. The underpinning logic is simple also and requires very little run-time work as the rules are already determined at compile-time.
 
 Additional performance boosting can be delivered using lazy mapping.
 
