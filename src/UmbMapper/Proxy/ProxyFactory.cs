@@ -35,13 +35,14 @@ namespace UmbMapper.Proxy
         /// Creates an instance of the proxy class for the given <see cref="Type"/>.
         /// </summary>
         /// <param name="baseType">The base <see cref="Type"/> to proxy.</param>
+        /// <param name="properties">The collection of property names to map.</param>
         /// <param name="content">The <see cref="IPublishedContent"/> to pass as a parameter.</param>
         /// <returns>
         /// The proxy <see cref="Type"/> instance.
         /// </returns>
-        public IProxy CreateProxy(Type baseType, IPublishedContent content = null)
+        public IProxy CreateProxy(Type baseType, IEnumerable<string> properties, IPublishedContent content = null)
         {
-            Type proxyType = this.CreateProxyType(baseType);
+            Type proxyType = this.CreateProxyType(baseType, properties);
 
             object result = content == null ? proxyType.GetInstance() : proxyType.GetInstance(content);
 
@@ -52,17 +53,18 @@ namespace UmbMapper.Proxy
         /// Creates the proxy class or returns already created class from the cache.
         /// </summary>
         /// <param name="baseType">The base <see cref="Type"/> to proxy.</param>
+        /// <param name="properties">The collection of property names to map.</param>
         /// <returns>
         /// The proxy <see cref="Type"/>.
         /// </returns>
-        private Type CreateProxyType(Type baseType)
+        private Type CreateProxyType(Type baseType, IEnumerable<string> properties)
         {
             try
             {
                 // ConcurrentDictionary.GetOrAdd() is not atomic so we'll be doubly sure.
                 Locker.EnterWriteLock();
 
-                return ProxyCache.GetOrAdd(baseType, c => this.CreateUncachedProxyType(baseType));
+                return ProxyCache.GetOrAdd(baseType, c => this.CreateUncachedProxyType(baseType, properties));
             }
             finally
             {
@@ -73,13 +75,12 @@ namespace UmbMapper.Proxy
         /// <summary>
         /// Creates an un-cached proxy class.
         /// </summary>
-        /// <param name="baseType">
-        /// The base <see cref="Type"/> to proxy.
-        /// </param>
+        /// <param name="baseType">The base <see cref="Type"/> to proxy.</param>
+        /// <param name="properties">The collection of property names to map.</param>
         /// <returns>
         /// The proxy <see cref="Type"/>.
         /// </returns>
-        private Type CreateUncachedProxyType(Type baseType)
+        private Type CreateUncachedProxyType(Type baseType, IEnumerable<string> properties)
         {
             // Create a dynamic assembly and module to store the proxy.
             AppDomain currentDomain = AppDomain.CurrentDomain;
@@ -127,10 +128,13 @@ namespace UmbMapper.Proxy
             // Emit the IProxy IInterceptor property.
             FieldInfo interceptorField = InterceptorEmitter.Emit(typeBuilder);
 
-            // Emit each property that is to be intercepted.
+            // Collect and filter our list of properties to intercept.
             MethodInfo[] methods = baseType.GetMethods(UmbMapperConstants.MappableFlags);
-            IEnumerable<MethodInfo> proxyList = this.BuildPropertyList(methods);
 
+            IEnumerable<MethodInfo> proxyList = this.BuildPropertyList(methods)
+                .Where(m => properties.Contains(m.Name.Substring(4), StringComparer.OrdinalIgnoreCase));
+
+            // Emit each property that is to be intercepted.
             foreach (MethodInfo methodInfo in proxyList)
             {
                 PropertyEmitter.Emit(typeBuilder, methodInfo, interceptorField);
@@ -175,12 +179,6 @@ namespace UmbMapper.Proxy
 
                 // Only virtual methods can be intercepted.
                 if (!method.IsVirtual && !method.IsAbstract)
-                {
-                    continue;
-                }
-
-                // Getters only
-                if (method.ReturnType == typeof(void))
                 {
                     continue;
                 }

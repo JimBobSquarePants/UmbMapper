@@ -17,14 +17,12 @@ namespace UmbMapper.Proxy
         /// <summary>
         /// Intercepts the <see cref="MethodBase"/> in the proxy to return a replaced value.
         /// </summary>
-        /// <param name="methodBase">
-        /// The <see cref="MethodBase"/> containing information about the current
-        /// invoked property.
+        /// <param name="methodBase">The <see cref="MethodBase"/> containing information about the current invoked property.
         /// </param>
-        /// <param name="proxy">The proxied instance.</param>
+        /// <param name="value">The object to set property to.</param>
         /// <returns>
         /// The <see cref="object"/> replacing the original implementation value.
         /// </returns>
-        object Intercept(MethodBase methodBase, IProxy proxy);
+        object Intercept(MethodBase methodBase, object value);
     }
 }

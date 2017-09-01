@@ -14,51 +14,54 @@ namespace UmbMapper.Proxy
     /// </summary>
     internal class LazyInterceptor : IInterceptor
     {
-        /// <summary>
-        /// The lazy dictionary.
-        /// </summary>
         private readonly Dictionary<string, Lazy<object>> lazyDictionary = new Dictionary<string, Lazy<object>>();
-        private readonly FastPropertyAccessor propertyAccessor;
+        private readonly Dictionary<string, object> nonLazyDictionary = new Dictionary<string, object>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LazyInterceptor"/> class.
         /// </summary>
-        /// <param name="propertyAccessor">The property accessor</param>
         /// <param name="values">
         /// The dictionary of values containing the property name to replace and the value to replace it with.
         /// </param>
-        public LazyInterceptor(FastPropertyAccessor propertyAccessor, Dictionary<string, Lazy<object>> values)
+        public LazyInterceptor(Dictionary<string, Lazy<object>> values)
         {
-            this.propertyAccessor = propertyAccessor;
             foreach (KeyValuePair<string, Lazy<object>> pair in values)
             {
                 this.lazyDictionary.Add(pair.Key, pair.Value);
             }
         }
 
-        /// <summary>
-        /// Intercepts the <see cref="MethodBase"/> in the proxy to return a replaced value.
-        /// </summary>
-        /// <param name="methodBase">
-        /// The <see cref="MethodBase"/> containing information about the current
-        /// invoked property.
-        /// </param>
-        /// <param name="proxy">The proxied instance.</param>
-        /// <returns>
-        /// The <see cref="object"/> replacing the original implementation value.
-        /// </returns>
-        public object Intercept(MethodBase methodBase, IProxy proxy)
+        /// <inheritdoc />
+        public object Intercept(MethodBase methodBase, object value)
         {
+            const string getter = "get_";
+            const string setter = "set_";
             string name = methodBase.Name;
             string key = name.Substring(4);
 
             // Attempt to get the value from the lazy members.
-            if (this.lazyDictionary.ContainsKey(key))
+            if (name.StartsWith(getter))
             {
-                object value = this.lazyDictionary[key].Value;
-                this.propertyAccessor.SetValue(key, proxy, value);
-                this.lazyDictionary.Remove(key);
-                return value;
+                if (this.lazyDictionary.ContainsKey(key))
+                {
+                    return this.lazyDictionary[key].Value;
+                }
+
+                if (this.nonLazyDictionary.ContainsKey(key))
+                {
+                    return this.nonLazyDictionary[key];
+                }
+            }
+
+            // Set the value, remove the old lazy value.
+            if (name.StartsWith(setter))
+            {
+                if (this.lazyDictionary.ContainsKey(key))
+                {
+                    this.lazyDictionary.Remove(key);
+                }
+
+                this.nonLazyDictionary[key] = value;
             }
 
             return null;

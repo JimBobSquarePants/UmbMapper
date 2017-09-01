@@ -32,13 +32,13 @@ namespace UmbMapper
     public class UmbMapperConfig<T> : IUmbMapperConfig
         where T : class
     {
-        private FastPropertyAccessor propertyAccessor;
         private readonly List<PropertyMap<T>> maps;
         private readonly bool hasIPublishedContructor;
         private IEnumerable<PropertyMap<T>> nonLazyMaps;
         private IEnumerable<PropertyMap<T>> lazyMaps;
         private IEnumerable<PropertyMap<T>> nonLazyPredicateMaps;
         private IEnumerable<PropertyMap<T>> lazyPredicateMaps;
+        private FastPropertyAccessor propertyAccessor;
         private bool hasChecked;
         private bool hasLazy;
         private bool hasPredicate;
@@ -76,7 +76,6 @@ namespace UmbMapper
                     "A valid constructor is either an empty one, or one accepting a single IPublishedContent parameter.");
             }
 
-            //this.propertyAccessor = new FastPropertyAccessor(type);
             this.maps = new List<PropertyMap<T>>();
         }
 
@@ -171,7 +170,13 @@ namespace UmbMapper
             {
                 // Create a proxy instance to replace our object.
                 var factory = new ProxyFactory();
-                result = this.hasIPublishedContructor ? factory.CreateProxy(this.MappedType, content) : factory.CreateProxy(this.MappedType);
+
+                // Collect the properties to intercept
+                var names = new List<string>();
+                names.AddRange(this.lazyMaps.Select(m => m.Info.Property.Name));
+                names.AddRange(this.lazyPredicateMaps.Select(m => m.Info.Property.Name));
+
+                result = this.hasIPublishedContructor ? factory.CreateProxy(this.MappedType, names, content) : factory.CreateProxy(this.MappedType, names);
             }
             else
             {
@@ -201,7 +206,7 @@ namespace UmbMapper
                 }
 
                 // Set the interceptor and replace our result with the proxy
-                var interceptor = new LazyInterceptor(this.propertyAccessor, lazyProperties);
+                var interceptor = new LazyInterceptor(lazyProperties);
                 ((IProxy)result).Interceptor = interceptor;
             }
 

@@ -34,10 +34,10 @@ namespace UmbMapper.Proxy
         private static readonly MethodInfo GetMethodFromHandle = typeof(MethodBase).GetMethod("GetMethodFromHandle", new[] { typeof(RuntimeMethodHandle) });
 
         /// <summary>
-        /// The <see cref="NotImplementedException"/> constructor.
+        /// The <see cref="ArgumentNullException"/> constructor.
         /// </summary>
-        private static readonly ConstructorInfo NotImplementedConstructor =
-            typeof(NotImplementedException).GetConstructor(new Type[0]);
+        private static readonly ConstructorInfo ArgumentNullExceptionConstructor =
+            typeof(ArgumentNullException).GetConstructor(new Type[0]);
 
         /// <summary>
         /// Uses reflection to emit the given <see cref="MethodInfo"/> body for interception.
@@ -55,6 +55,7 @@ namespace UmbMapper.Proxy
         {
             // Get the method parameters for any setters.
             ParameterInfo[] parameters = method.GetParameters();
+            ParameterInfo parameter = parameters.FirstOrDefault();
 
             // Define attributes.
             const MethodAttributes methodAttributes = MethodAttributes.Public |
@@ -79,30 +80,48 @@ namespace UmbMapper.Proxy
             // IInterceptor interceptor = ((IProxy)this).Interceptor;
             // if (interceptor == null)
             // {
-            //    throw new NotImplementedException();
+            //    throw new ArgumentNullException();
             // }
-            il.Emit(OpCodes.Ldarg_0);
-            il.Emit(OpCodes.Callvirt, GetInterceptor);
+            il.Emit(OpCodes.Ldarg_0); // this
+            il.Emit(OpCodes.Callvirt, GetInterceptor); // .Interceptor
             Label skipThrow = il.DefineLabel();
             il.Emit(OpCodes.Dup);
             il.Emit(OpCodes.Ldnull);
             il.Emit(OpCodes.Bne_Un, skipThrow);
-            il.Emit(OpCodes.Newobj, NotImplementedConstructor);
+            il.Emit(OpCodes.Newobj, ArgumentNullExceptionConstructor);
             il.Emit(OpCodes.Throw);
             il.MarkLabel(skipThrow);
 
             // This is equivalent to:
-            // return return (PropertyType) interceptor.Intercept(methodof(BaseType.get_Property), this);
+            // return return (PropertyType) interceptor.Intercept(methodof(BaseType.get_Property), null);
             il.Emit(OpCodes.Ldtoken, method);
             il.Emit(OpCodes.Call, GetMethodFromHandle);
 
-            // TODO: Fix this
-            // What I want to do is pass the IProxy instance to the intercept method that is intercepting the getter.
-            il.Emit(OpCodes.Ldarg_1);
-            il.Emit(OpCodes.Callvirt, InterceptorMethod);
+            if (parameter == null)
+            {
+                // Getter
+                // return interceptor.Intercept(MethodBase.GetMethodFromHandle(typeof(BaseType).GetMethod("get_PropertyName").MethodHandle), null);
+                il.Emit(OpCodes.Ldnull);
+                il.Emit(OpCodes.Callvirt, InterceptorMethod);
 
-            // Unbox the object back to the correct type.
-            il.Emit(OpCodes.Unbox_Any, method.ReturnType);
+                // Unbox the object back to the correct type.
+                il.Emit(OpCodes.Unbox_Any, method.ReturnType);
+            }
+            else
+            {
+                // Setter
+                // interceptor.Intercept(MethodBase.GetMethodFromHandle(typeof(BaseType).GetMethod("set_PropertyName", new Type[] { typeof(PropertyType) }).MethodHandle), value);
+                il.Emit(OpCodes.Ldarg_1);
+
+                if (parameter.ParameterType.IsValueType)
+                {
+                    il.Emit(OpCodes.Box, parameter.ParameterType);
+                }
+
+                il.Emit(OpCodes.Callvirt, InterceptorMethod);
+                il.Emit(OpCodes.Pop); // Clear the stack
+            }
+
             il.Emit(OpCodes.Ret);
         }
     }
