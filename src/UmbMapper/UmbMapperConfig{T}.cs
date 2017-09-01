@@ -164,7 +164,7 @@ namespace UmbMapper
         /// <inheritdoc/>
         object IUmbMapperConfig.Map(IPublishedContent content)
         {
-            // Handle both empty and IPublishedContent contructor
+            // Handles both empty and IPublishedContent contructor
             object result;
             if (this.createProxy)
             {
@@ -252,8 +252,8 @@ namespace UmbMapper
                 this.nonLazyPredicateMaps = this.maps.Where(m => m.Info.HasPredicate && !m.Info.Lazy).ToArray();
                 this.lazyPredicateMaps = this.maps.Where(m => m.Info.HasPredicate && m.Info.Lazy).ToArray();
                 this.hasPredicate = this.nonLazyPredicateMaps.Any() || this.lazyPredicateMaps.Any();
-                this.createProxy = this.hasLazy || this.hasPredicate;
 
+                this.createProxy = this.hasLazy || this.hasPredicate;
                 this.hasChecked = true;
             }
         }
