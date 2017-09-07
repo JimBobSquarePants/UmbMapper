@@ -7,7 +7,7 @@ using UmbMapper.Invocations;
 using UmbMapper.PropertyMappers;
 using Umbraco.Core;
 
-namespace UmbMapper.Benchmarks
+namespace UmbMapper.Tests.Benchmarks
 {
     /// <summary>
     /// We use two different types to resolve both with the same inheritence tree. 

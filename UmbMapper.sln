@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26730.10
+VisualStudioVersion = 15.0.26730.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper", "src\UmbMapper\UmbMapper.csproj", "{70794E9C-5E67-48A0-994C-FD67C7758FB7}"
 EndProject
@@ -14,8 +14,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Project", "Project", "{0331
 		README.md = README.md
 		UmbMapper.ruleset = UmbMapper.ruleset
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper.Benchmarks", "tests\UmbMapper.Benchmarks\UmbMapper.Benchmarks.csproj", "{2CA212DD-8A24-4574-891C-2036F13B35AA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{CAAF4CAF-EDCF-48B7-B705-632464F48B70}"
 EndProject
@@ -49,10 +47,6 @@ Global
 		{A766687F-E06C-4389-9D5A-DB6F44FBC1E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A766687F-E06C-4389-9D5A-DB6F44FBC1E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A766687F-E06C-4389-9D5A-DB6F44FBC1E0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2CA212DD-8A24-4574-891C-2036F13B35AA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2CA212DD-8A24-4574-891C-2036F13B35AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2CA212DD-8A24-4574-891C-2036F13B35AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2CA212DD-8A24-4574-891C-2036F13B35AA}.Release|Any CPU.Build.0 = Release|Any CPU
 		{08B00C0A-E231-4166-BCD1-77E46AA0DC3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{08B00C0A-E231-4166-BCD1-77E46AA0DC3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{08B00C0A-E231-4166-BCD1-77E46AA0DC3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -75,7 +69,6 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{A766687F-E06C-4389-9D5A-DB6F44FBC1E0} = {CAAF4CAF-EDCF-48B7-B705-632464F48B70}
-		{2CA212DD-8A24-4574-891C-2036F13B35AA} = {CAAF4CAF-EDCF-48B7-B705-632464F48B70}
 		{08B00C0A-E231-4166-BCD1-77E46AA0DC3C} = {CAAF4CAF-EDCF-48B7-B705-632464F48B70}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution

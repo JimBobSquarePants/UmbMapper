@@ -2,7 +2,7 @@
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
 
-namespace UmbMapper.Benchmarks
+namespace UmbMapper.Tests.Benchmarks
 {
     public class PropertyAccessors
     {

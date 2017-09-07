@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<plugins>
-  <baseType type="UmbMapper.PropertyMappers.UmbracoPropertyMapper" resolutionType="FindAllTypes">
-    <add type="UmbMapper.PropertyMappers.UmbracoPropertyMapper, UmbMapper, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
-  </baseType>
-</plugins>

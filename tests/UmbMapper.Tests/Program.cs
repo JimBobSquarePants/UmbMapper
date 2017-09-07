@@ -1,6 +1,6 @@
 ﻿using BenchmarkDotNet.Running;
 
-namespace UmbMapper.Benchmarks
+namespace UmbMapper.Tests
 {
     class Program
     {
