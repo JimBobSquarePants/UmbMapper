@@ -5,6 +5,7 @@ using UmbMapper.Extensions;
 using UmbMapper.Tests.Mapping;
 using Umbraco.Core.Models;
 using Umbraco.Web.Models;
+using Zone.UmbracoMapper;
 
 namespace UmbMapper.Tests.Benchmarks
 {
@@ -12,12 +13,15 @@ namespace UmbMapper.Tests.Benchmarks
     {
         private UmbracoSupport support;
         private IPublishedContent content;
+        private IUmbracoMapper umbracoMapper;
 
         [GlobalSetup]
         public void Setup()
         {
             this.support = new UmbracoSupport();
             this.content = this.support.Content;
+
+            this.umbracoMapper = new UmbracoMapper();
             UmbMapperRegistry.AddMapperFor<TestClass>();
         }
 
@@ -31,6 +35,14 @@ namespace UmbMapper.Tests.Benchmarks
         public int MapUsingUmbMapper()
         {
             return this.content.MapTo<TestClass>().Id;
+        }
+
+        [Benchmark]
+        public int MapUsingUmbracoMapper()
+        {
+            var testClass = new TestClass();
+            this.umbracoMapper.Map(this.content, testClass);
+            return testClass.Id;
         }
 
         [Benchmark(Baseline = true)]
