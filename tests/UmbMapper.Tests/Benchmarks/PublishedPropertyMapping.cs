@@ -10,14 +10,21 @@ namespace UmbMapper.Tests.Benchmarks
 {
     public class PublishedPropertyMapping
     {
+        private UmbracoSupport support;
         private IPublishedContent content;
 
         [GlobalSetup]
         public void Setup()
         {
-            var support = new UmbracoSupport();
-            this.content = support.Content;
+            this.support = new UmbracoSupport();
+            this.content = this.support.Content;
             UmbMapperRegistry.AddMapperFor<TestClass>();
+        }
+
+        [GlobalCleanup]
+        public void Cleanup()
+        {
+            this.support?.Dispose();
         }
 
         [Benchmark]
@@ -31,7 +38,6 @@ namespace UmbMapper.Tests.Benchmarks
         {
             return this.content.As<TestClass>().Id;
         }
-
 
         public class TestClass
         {
