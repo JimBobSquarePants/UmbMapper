@@ -202,7 +202,7 @@ that have `UmbracoContext` based requirements may fail otherwise.
 
 ## Performance
 
-UmbMapper is blazingly quick. I've taken all the super fast bits I'd written in the Ditto library and was able to turbo charge them a little more. The underpinning logic is simple also and requires very little run-time work as the rules are already determined at compile-time.
+**UmbMapper is blazingly quick**. I've taken all the super fast bits I'd written in the Ditto library and was able to turbo charge them a little more. The underpinning logic is simple also and requires very little run-time work as the rules are already determined at compile-time.
 
 Additional performance boosting can be delivered using lazy mapping.
 
