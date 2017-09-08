@@ -4,6 +4,7 @@ using Our.Umbraco.Ditto;
 using UmbMapper.Extensions;
 using UmbMapper.Tests.Mapping;
 using Umbraco.Core.Models;
+using Umbraco.Web;
 using Umbraco.Web.Models;
 using Zone.UmbracoMapper;
 
@@ -31,6 +32,21 @@ namespace UmbMapper.Tests.Benchmarks
             this.support?.Dispose();
         }
 
+        [Benchmark(Baseline = true)]
+        public int ManualMapping()
+        {
+            var testClass = new TestClass
+            {
+                Id = this.content.Id,
+                Name = this.content.Name,
+                Image = this.content.GetPropertyValue<ImageCropDataSet>("image"),
+                CreateDate = this.content.CreateDate,
+                UpdateDate = this.content.UpdateDate
+            };
+
+            return testClass.Id;
+        }
+
         [Benchmark]
         public int MapUsingUmbMapper()
         {
@@ -45,7 +61,7 @@ namespace UmbMapper.Tests.Benchmarks
             return testClass.Id;
         }
 
-        [Benchmark(Baseline = true)]
+        [Benchmark]
         public int MapUsingDitto()
         {
             return this.content.As<TestClass>().Id;

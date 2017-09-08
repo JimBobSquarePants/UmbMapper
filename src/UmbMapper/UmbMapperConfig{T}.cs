@@ -40,8 +40,7 @@ namespace UmbMapper
         private IEnumerable<PropertyMap<T>> lazyPredicateMaps;
         private List<string> lazyNames;
         private FastPropertyAccessor propertyAccessor;
-        private ProxyFactory proxyFactorytory;
-        private Dictionary<string, Lazy<object>> lazyProperties;
+        private ProxyFactory proxyFactory;
         private bool hasChecked;
         private bool hasLazy;
         private bool hasPredicate;
@@ -173,8 +172,8 @@ namespace UmbMapper
             {
                 // Create a proxy instance to replace our object.
                 result = this.hasIPublishedContructor
-                    ? this.proxyFactorytory.CreateProxy(this.MappedType, this.lazyNames, content)
-                    : this.proxyFactorytory.CreateProxy(this.MappedType, this.lazyNames);
+                    ? this.proxyFactory.CreateProxy(this.MappedType, this.lazyNames, content)
+                    : this.proxyFactory.CreateProxy(this.MappedType, this.lazyNames);
 
                 // We now know the type so create a property accessor
                 if (this.propertyAccessor == null)
@@ -183,19 +182,20 @@ namespace UmbMapper
                 }
 
                 // First add any lazy mappings
+                var lazyProperties = new Dictionary<string, Lazy<object>>();
                 foreach (PropertyMap<T> map in this.lazyMaps)
                 {
-                    this.lazyProperties[map.Info.Property.Name] = new Lazy<object>(() => MapProperty(map, content, result));
+                    lazyProperties[map.Info.Property.Name] = new Lazy<object>(() => MapProperty(map, content, result));
                 }
 
                 // Then lazy predicate mappings
                 foreach (PropertyMap<T> map in this.lazyPredicateMaps)
                 {
-                    this.lazyProperties[map.Info.Property.Name] = new Lazy<object>(() => MapProperty(map, content, result));
+                    lazyProperties[map.Info.Property.Name] = new Lazy<object>(() => MapProperty(map, content, result));
                 }
 
                 // Set the interceptor and replace our result with the proxy
-                var interceptor = new LazyInterceptor(this.lazyProperties);
+                var interceptor = new LazyInterceptor(lazyProperties);
                 ((IProxy)result).Interceptor = interceptor;
             }
             else
@@ -253,8 +253,7 @@ namespace UmbMapper
                     this.lazyNames = new List<string>();
                     this.lazyNames.AddRange(this.lazyMaps.Select(m => m.Info.Property.Name));
                     this.lazyNames.AddRange(this.lazyPredicateMaps.Select(m => m.Info.Property.Name));
-                    this.proxyFactorytory = new ProxyFactory();
-                    this.lazyProperties = new Dictionary<string, Lazy<object>>();
+                    this.proxyFactory = new ProxyFactory();
                 }
                 else
                 {
