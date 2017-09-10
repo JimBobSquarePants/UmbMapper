@@ -18,6 +18,8 @@ namespace UmbMapper.PropertyMappers
     /// </summary>
     public class UmbracoPickerPropertyMapper : PropertyMapperBase
     {
+        private static readonly int[] Empty = new int[0];
+
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbracoPickerPropertyMapper"/> class.
         /// </summary>
@@ -50,7 +52,7 @@ namespace UmbMapper.PropertyMappers
                 return (IEnumerable<IPublishedContent>)value;
             }
 
-            int[] nodeIds = Array.Empty<int>();
+            int[] nodeIds = Empty;
 
             // First try enumerable strings, ints.
             if (type.IsGenericType || type.IsArray)

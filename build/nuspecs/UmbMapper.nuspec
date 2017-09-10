@@ -1,23 +1,24 @@
 <?xml version="1.0"?>
 <package >
-  <metadata>
-    <id>UmbMapper</id>
-    <version>$version$</version>
-    <title>UmbMapper</title>
-    <authors>James Jackson-South and Contributors</authors>
-    <owners>James Jackson-South</owners>
-    <iconUrl>https://raw.githubusercontent.com/JimBobSquarePants/UmbMapper/develop/build/assets/logo/umbmapper-64.png</iconUrl>
-    <projectUrl>https://github.com/JimBobSquarePants/UmbMapper</projectUrl>
-    <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>A convention based published content mapper for Umbraco.</description>
-    <releaseNotes>See the Github release for notes.</releaseNotes>
-    <copyright>Copyright © 2017</copyright>
-    <tags>Umbraco</tags>
-    <dependencies>
-      <dependency id="UmbracoCms.Core" version="7.3.2" />
-    </dependencies>
-  </metadata>
-  <files>
-    <file src="..\..\src\UmbMapper\bin\Release\UmbMapper.dll" target="lib\net452" />
-  </files>
+    <metadata>
+        <id>UmbMapper</id>
+        <version>$version$</version>
+        <title>UmbMapper</title>
+        <authors>James Jackson-South and Contributors</authors>
+        <owners>James Jackson-South</owners>
+        <iconUrl>https://raw.githubusercontent.com/JimBobSquarePants/UmbMapper/develop/build/assets/logo/umbmapper-64.png</iconUrl>
+        <projectUrl>https://github.com/JimBobSquarePants/UmbMapper</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>A convention based published content mapper for Umbraco.</description>
+        <releaseNotes>See the Github release for notes.</releaseNotes>
+        <copyright>Copyright © 2017</copyright>
+        <tags>Umbraco</tags>
+        <dependencies>
+            <dependency id="UmbracoCms.Core" version="7.3.2" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="..\..\src\UmbMapper\bin\Release\UmbMapper.dll" target="lib\net452" />
+        <file src="..\..\src\UmbMapper\bin\Release\UmbMapper.xml" target="lib\net452" />
+    </files>
 </package>
