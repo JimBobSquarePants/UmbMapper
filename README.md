@@ -113,7 +113,9 @@ public class LazyPublishedItemMap : UmbMapperConfig<LazyPublishedItem>
 }
 ```
 
-**For many simple classes where no additional mapping logic is required you don't even need an UmbMapperConfig. See *Registering a mapper* below.**
+**For many classes where no additional mapping logic is required you don't even need an UmbMapperConfig. See *Registering a mapper* below.**
+
+**This is the recommended way to map classes**
 
 What's going on here? 
 
@@ -139,7 +141,7 @@ Available `IPropertyMapper`implementations all inherit from the `PropertyMapperB
 - `UmbracoPickerPropertyMapper` The default mapper, maps directly from Umbraco's Published Content Cache via `GetPropertyValue`. Runs automatically.
 - `EnumPropertyMapper` Maps to enum values. Can handle both integer and string values.
 - `UmbracoPickerPropertyMapper` Maps from all the Umbraco built-in legacy pickers. Not required for any of the pickers from v7.6+
-- `DocTypeFactoryPropertyMapper` Allows mapping from mixed `IPublishedContent` sources like Nested Content. Inherits `FactoryPropertyMapperBase`.
+- `DocTypeFactoryPropertyMapper` Allows mapping from mixed `IPublishedContent` sources sharing common properties. Inherits `FactoryPropertyMapperBase`.
 
 These mappers handle most use cases since they rely initially on Umbraco's `PropertyValueConverter` API. Additional mappers can be easily created though. Check the source for examples.
 
