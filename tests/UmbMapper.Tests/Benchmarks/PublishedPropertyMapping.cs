@@ -24,12 +24,14 @@ namespace UmbMapper.Tests.Benchmarks
 
             this.umbracoMapper = new UmbracoMapper();
             UmbMapperRegistry.AddMapperFor<TestClass>();
+            UmbMapperRegistry.AddMapperFor<LazyTestClass>();
         }
 
         [GlobalCleanup]
         public void Cleanup()
         {
             this.support?.Dispose();
+            UmbMapperRegistry.ClearMappers();
         }
 
         [Benchmark(Baseline = true)]
@@ -51,6 +53,12 @@ namespace UmbMapper.Tests.Benchmarks
         public int MapUsingUmbMapper()
         {
             return this.content.MapTo<TestClass>().Id;
+        }
+
+        [Benchmark]
+        public int LazyMapUsingUmbMapper()
+        {
+            return this.content.MapTo<LazyTestClass>().Id;
         }
 
         [Benchmark]
@@ -78,6 +86,19 @@ namespace UmbMapper.Tests.Benchmarks
             public DateTime CreateDate { get; set; }
 
             public DateTime UpdateDate { get; set; }
+        }
+
+        public class LazyTestClass
+        {
+            public virtual int Id { get; set; }
+
+            public virtual string Name { get; set; }
+
+            public virtual ImageCropDataSet Image { get; set; }
+
+            public virtual DateTime CreateDate { get; set; }
+
+            public virtual DateTime UpdateDate { get; set; }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using UmbMapper.Extensions;
 using UmbMapper.Proxy;
 using Xunit;
 
@@ -11,8 +12,9 @@ namespace UmbMapper.Tests
         [Fact]
         public void ProxyCanGetSetProperties()
         {
-            var factory = new ProxyFactory();
-            IProxy proxy = factory.CreateProxy(typeof(TestClass), new List<string> { "id", "name" });
+            Type proxyType = ProxyTypeFactory.CreateProxyType(typeof(TestClass), new List<string> { "id", "name" });
+            var proxy = (IProxy)proxyType.GetInstance();
+
             proxy.Interceptor = new LazyInterceptor(new Dictionary<string, Lazy<object>>());
 
             // This is the method we are replicating within the property emitter.

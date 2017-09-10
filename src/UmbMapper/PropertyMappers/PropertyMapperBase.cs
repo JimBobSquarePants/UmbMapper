@@ -38,11 +38,11 @@ namespace UmbMapper.PropertyMappers
 
             if (info.Aliases == null || !info.Aliases.Any())
             {
-                this.Aliases = new[] { this.Property.Name };
+                this.Aliases = new[] { this.Property.Name.ToUpperInvariant() };
             }
             else
             {
-                this.Aliases = info.Aliases;
+                this.Aliases = info.Aliases.Select(x => x.ToUpperInvariant()).ToArray();
             }
 
             this.Recursive = info.Recursive;

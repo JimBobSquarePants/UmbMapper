@@ -11,15 +11,13 @@ using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Threading;
-using UmbMapper.Extensions;
-using Umbraco.Core.Models;
 
 namespace UmbMapper.Proxy
 {
     /// <summary>
-    /// The proxy factory for creating instances of proxy classes.
+    /// The proxy factory for creating proxy types.
     /// </summary>
-    public class ProxyFactory
+    public class ProxyTypeFactory
     {
         /// <summary>
         /// Ensures that proxy creation is atomic.
@@ -32,24 +30,6 @@ namespace UmbMapper.Proxy
         private static readonly ConcurrentDictionary<Type, Type> ProxyCache = new ConcurrentDictionary<Type, Type>();
 
         /// <summary>
-        /// Creates an instance of the proxy class for the given <see cref="Type"/>.
-        /// </summary>
-        /// <param name="baseType">The base <see cref="Type"/> to proxy.</param>
-        /// <param name="properties">The collection of property names to map.</param>
-        /// <param name="content">The <see cref="IPublishedContent"/> to pass as a parameter.</param>
-        /// <returns>
-        /// The proxy <see cref="Type"/> instance.
-        /// </returns>
-        public IProxy CreateProxy(Type baseType, IEnumerable<string> properties, IPublishedContent content = null)
-        {
-            Type proxyType = this.CreateProxyType(baseType, properties);
-
-            object result = content == null ? proxyType.GetInstance() : proxyType.GetInstance(content);
-
-            return (IProxy)result;
-        }
-
-        /// <summary>
         /// Creates the proxy class or returns already created class from the cache.
         /// </summary>
         /// <param name="baseType">The base <see cref="Type"/> to proxy.</param>
@@ -57,14 +37,14 @@ namespace UmbMapper.Proxy
         /// <returns>
         /// The proxy <see cref="Type"/>.
         /// </returns>
-        private Type CreateProxyType(Type baseType, IEnumerable<string> properties)
+        public static Type CreateProxyType(Type baseType, IEnumerable<string> properties)
         {
             try
             {
                 // ConcurrentDictionary.GetOrAdd() is not atomic so we'll be doubly sure.
                 Locker.EnterWriteLock();
 
-                return ProxyCache.GetOrAdd(baseType, c => this.CreateUncachedProxyType(baseType, properties));
+                return ProxyCache.GetOrAdd(baseType, c => CreateUncachedProxyType(baseType, properties));
             }
             finally
             {
@@ -80,7 +60,7 @@ namespace UmbMapper.Proxy
         /// <returns>
         /// The proxy <see cref="Type"/>.
         /// </returns>
-        private Type CreateUncachedProxyType(Type baseType, IEnumerable<string> properties)
+        private static Type CreateUncachedProxyType(Type baseType, IEnumerable<string> properties)
         {
             // Create a dynamic assembly and module to store the proxy.
             AppDomain currentDomain = AppDomain.CurrentDomain;
@@ -131,7 +111,7 @@ namespace UmbMapper.Proxy
             // Collect and filter our list of properties to intercept.
             MethodInfo[] methods = baseType.GetMethods(UmbMapperConstants.MappableFlags);
 
-            IEnumerable<MethodInfo> proxyList = this.BuildPropertyList(methods)
+            IEnumerable<MethodInfo> proxyList = BuildPropertyList(methods)
                 .Where(m => properties.Contains(m.Name.Substring(4), StringComparer.OrdinalIgnoreCase));
 
             // Emit each property that is to be intercepted.
@@ -158,7 +138,7 @@ namespace UmbMapper.Proxy
         /// <returns>
         /// The filtered <see cref="IEnumerable{MethodInfo}"/>.
         /// </returns>
-        private IEnumerable<MethodInfo> BuildPropertyList(MethodInfo[] methodInfos)
+        private static IEnumerable<MethodInfo> BuildPropertyList(MethodInfo[] methodInfos)
         {
             var proxyList = new List<MethodInfo>();
 
@@ -184,7 +164,7 @@ namespace UmbMapper.Proxy
                 }
 
                 // We only want properties not methods that are not part of the excluded list.
-                PropertyInfo property = this.GetParentProperty(method);
+                PropertyInfo property = GetParentProperty(method);
                 if (property != null)
                 {
                     proxyList.Add(method);
@@ -204,7 +184,7 @@ namespace UmbMapper.Proxy
         /// <exception cref="ArgumentNullException">
         /// Thrown if the <see cref="MethodInfo"/> is <c>null</c>.
         /// </exception>
-        private PropertyInfo GetParentProperty(MethodInfo method)
+        private static PropertyInfo GetParentProperty(MethodInfo method)
         {
             if (method == null)
             {
@@ -226,14 +206,14 @@ namespace UmbMapper.Proxy
                 if (method.DeclaringType != null)
                 {
                     return method.DeclaringType.GetProperties(propertyFlags)
-                                 .FirstOrDefault(p => this.AreMethodsEqualForDeclaringType(p.GetSetMethod(), method));
+                                 .FirstOrDefault(p => AreMethodsEqualForDeclaringType(p.GetSetMethod(), method));
                 }
             }
 
             if (method.DeclaringType != null)
             {
                 return method.DeclaringType.GetProperties(propertyFlags)
-                             .FirstOrDefault(p => this.AreMethodsEqualForDeclaringType(p.GetGetMethod(), method));
+                             .FirstOrDefault(p => AreMethodsEqualForDeclaringType(p.GetGetMethod(), method));
             }
 
             return null;
@@ -248,7 +228,7 @@ namespace UmbMapper.Proxy
         /// <returns>
         /// True if the two instances of <see cref="MethodInfo"/> are equal; otherwise, false.
         /// </returns>
-        private bool AreMethodsEqualForDeclaringType(MethodInfo first, MethodInfo second)
+        private static bool AreMethodsEqualForDeclaringType(MethodInfo first, MethodInfo second)
         {
             byte[] firstBytes = { };
             byte[] secondBytes = { };

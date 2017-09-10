@@ -40,7 +40,7 @@ namespace UmbMapper
         private IEnumerable<PropertyMap<T>> lazyPredicateMaps;
         private List<string> lazyNames;
         private FastPropertyAccessor propertyAccessor;
-        private ProxyFactory proxyFactory;
+        private Type proxyType;
         private bool hasChecked;
         private bool hasLazy;
         private bool hasPredicate;
@@ -166,23 +166,14 @@ namespace UmbMapper
         /// <inheritdoc/>
         object IUmbMapperConfig.Map(IPublishedContent content)
         {
-            // Handles both empty and IPublishedContent contructor
             object result;
             if (this.createProxy)
             {
                 // Create a proxy instance to replace our object.
-                result = this.hasIPublishedContructor
-                    ? this.proxyFactory.CreateProxy(this.MappedType, this.lazyNames, content)
-                    : this.proxyFactory.CreateProxy(this.MappedType, this.lazyNames);
+                result = this.hasIPublishedContructor ? this.proxyType.GetInstance(content) : this.proxyType.GetInstance();
 
-                // We now know the type so create a property accessor
-                if (this.propertyAccessor == null)
-                {
-                    this.propertyAccessor = new FastPropertyAccessor(result.GetType());
-                }
-
-                // First add any lazy mappings
-                var lazyProperties = new Dictionary<string, Lazy<object>>();
+                // First add any lazy mappings, use count to prevent allocations
+                var lazyProperties = new Dictionary<string, Lazy<object>>(this.lazyNames.Count);
                 foreach (PropertyMap<T> map in this.lazyMaps)
                 {
                     lazyProperties[map.Info.Property.Name] = new Lazy<object>(() => MapProperty(map, content, result));
@@ -237,6 +228,15 @@ namespace UmbMapper
                     return;
                 }
 
+                // We don't have to explictly set a mapper.
+                foreach (PropertyMap<T> map in this.maps)
+                {
+                    if (map.PropertyMapper == null)
+                    {
+                        map.PropertyMapper = new UmbracoPropertyMapper(map.Info);
+                    }
+                }
+
                 // We need to organize mapping now into separate groups as ordering of mappings is important when using predicates.
                 this.nonLazyMaps = this.maps.Where(m => !m.Info.HasPredicate && !m.Info.Lazy).ToArray();
                 this.lazyMaps = this.maps.Where(m => !m.Info.HasPredicate && m.Info.Lazy).ToArray();
@@ -253,21 +253,12 @@ namespace UmbMapper
                     this.lazyNames = new List<string>();
                     this.lazyNames.AddRange(this.lazyMaps.Select(m => m.Info.Property.Name));
                     this.lazyNames.AddRange(this.lazyPredicateMaps.Select(m => m.Info.Property.Name));
-                    this.proxyFactory = new ProxyFactory();
+                    this.proxyType = ProxyTypeFactory.CreateProxyType(this.MappedType, this.lazyNames);
+                    this.propertyAccessor = new FastPropertyAccessor(this.proxyType);
                 }
                 else
                 {
-                    // We know the type so create a property accessor
                     this.propertyAccessor = new FastPropertyAccessor(this.MappedType);
-                }
-
-                // We don't have to explictly set a mapper.
-                foreach (PropertyMap<T> map in this.maps)
-                {
-                    if (map.PropertyMapper == null)
-                    {
-                        map.PropertyMapper = new UmbracoPropertyMapper(map.Info);
-                    }
                 }
 
                 this.hasChecked = true;

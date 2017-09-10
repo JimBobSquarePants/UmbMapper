@@ -32,6 +32,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
@@ -349,6 +350,7 @@
   <ItemGroup>
     <Compile Include="App_Code\TestAssemblyClass.cs" />
     <Compile Include="AssemblyExtensionTests.cs" />
+    <Compile Include="Benchmarks\FastPropertyAccessorExpressions.cs" />
     <Compile Include="Benchmarks\PublishedPropertyMapping.cs" />
     <Compile Include="Benchmarks\PluginManagerInvocation.cs" />
     <Compile Include="Benchmarks\PropertyAccessors.cs" />

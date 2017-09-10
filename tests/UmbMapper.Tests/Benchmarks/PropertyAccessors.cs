@@ -10,7 +10,8 @@ namespace UmbMapper.Tests.Benchmarks
         private dynamic dlr;
         private PropertyInfo prop;
         private PropertyDescriptor descriptor;
-        private FastPropertyAccessor accessor;
+        private static readonly FastPropertyAccessor Accessor = new FastPropertyAccessor(typeof(PropertyAccessors));
+        private static readonly FastPropertyAccessorExpressions AccessorExpressions = new FastPropertyAccessorExpressions(typeof(PropertyAccessors));
 
         public string Value { get; set; }
 
@@ -21,17 +22,16 @@ namespace UmbMapper.Tests.Benchmarks
             this.dlr = this.obj;
             this.prop = typeof(PropertyAccessors).GetProperty("Value");
             this.descriptor = TypeDescriptor.GetProperties(this.obj)["Value"];
-            this.accessor = new FastPropertyAccessor(typeof(PropertyAccessors));
         }
 
-        [Benchmark(Description = "Static C#", Baseline = true)]
+        [Benchmark(Description = "Compile-time Standard C#", Baseline = true)]
         public string StaticCSharp()
         {
             this.obj.Value = "abc";
             return this.obj.Value;
         }
 
-        [Benchmark(Description = "Dynamic C#")]
+        [Benchmark(Description = "Compile-time Dynamic C#")]
         public string DynamicCSharp()
         {
             this.dlr.Value = "abc";
@@ -52,11 +52,18 @@ namespace UmbMapper.Tests.Benchmarks
             return (string)this.descriptor.GetValue(this.obj);
         }
 
-        [Benchmark(Description = "FastPropertyAccessor")]
+        [Benchmark(Description = "FastPropertyAccessor IL")]
         public string FastProperties()
         {
-            this.accessor.SetValue(this.prop.Name, this.obj, "abc");
-            return (string)this.accessor.GetValue(this.prop.Name, this.obj);
+            Accessor.SetValue("Value", this.obj, "abc");
+            return (string)Accessor.GetValue("VALUE", this.obj);
+        }
+
+        [Benchmark(Description = "FastPropertyAccessor Expression Trees")]
+        public string TypeWrapperProperties()
+        {
+            AccessorExpressions.SetValue("Value", this.obj, "abc");
+            return (string)AccessorExpressions.GetValue("VALUE", this.obj);
         }
     }
 }

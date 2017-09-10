@@ -17,19 +17,20 @@ namespace UmbMapper
     /// Once a method is invoked for a given type then it is cached so that subsequent calls do not require
     /// any overhead compilation costs.
     /// </summary>
+    /// <remarks>The getter expects invariant uppercase for fast comparison.</remarks>
     internal class FastPropertyAccessor
     {
         /// <summary>
         /// The method cache for storing function implementations.
         /// </summary>
         private readonly Dictionary<string, Func<object, object>> getterCache
-            = new Dictionary<string, Func<object, object>>(StringComparer.InvariantCultureIgnoreCase);
+            = new Dictionary<string, Func<object, object>>();
 
         /// <summary>
         /// The method cache for storing action implementations.
         /// </summary>
         private readonly Dictionary<string, Action<object, object>> setterCache
-            = new Dictionary<string, Action<object, object>>(StringComparer.InvariantCultureIgnoreCase);
+            = new Dictionary<string, Action<object, object>>();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FastPropertyAccessor"/> class.
@@ -44,11 +45,11 @@ namespace UmbMapper
                 string name = property.Name;
                 Type propertyType = property.PropertyType;
 
-                this.getterCache[name] = MakeGetMethod(property.GetGetMethod(), propertyType);
+                this.getterCache[name.ToUpperInvariant()] = MakeGetMethod(type, property.GetGetMethod(), propertyType);
 
                 if (property.CanWrite && property.GetSetMethod() != null)
                 {
-                    this.setterCache[name] = MakeSetMethod(property.GetSetMethod(), propertyType);
+                    this.setterCache[name] = MakeSetMethod(type, property.GetSetMethod(), propertyType);
                 }
             }
         }
@@ -56,13 +57,15 @@ namespace UmbMapper
         /// <summary>
         /// Gets the value of the property on the given instance or <code>null</code>.
         /// </summary>
-        /// <param name="propertyName">The name of the property to set.</param>
+        /// <param name="propertyName">The name of the property to get. Uppercase</param>
         /// <param name="instance">The current instance to return the property from.</param>
         /// <returns>The <see cref="object"/> value.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object GetValue(string propertyName, object instance)
         {
-            return this.getterCache.ContainsKey(propertyName) ? this.getterCache[propertyName](instance) : null;
+            return this.getterCache.TryGetValue(propertyName, out var getter)
+                ? getter(instance)
+                : null;
         }
 
         /// <summary>
@@ -74,26 +77,23 @@ namespace UmbMapper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void SetValue(string propertyName, object instance, object value)
         {
-            if (this.setterCache.ContainsKey(propertyName))
-            {
-                this.setterCache[propertyName](instance, value);
-            }
+            this.setterCache[propertyName](instance, value);
         }
 
         /// <summary>
         /// Builds the get accessor for the given type.
         /// </summary>
+        /// <param name="ownerType">The owner type.</param>
         /// <param name="method">The method to compile.</param>
         /// <param name="propertyType">The property type.</param>
         /// <returns>The <see cref="Action{Object, Object}"/></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Func<object, object> MakeGetMethod(MethodInfo method, Type propertyType)
+        private static Func<object, object> MakeGetMethod(Type ownerType, MethodInfo method, Type propertyType)
         {
-            Type type = method.DeclaringType;
-            var dmethod = new DynamicMethod("Getter", typeof(object), new[] { typeof(object) }, type, true);
+            var dmethod = new DynamicMethod("Getter", typeof(object), new[] { typeof(object) }, ownerType, true);
             ILGenerator il = dmethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0); // Load our value to the stack.
-            il.Emit(OpCodes.Castclass, type); // Cast to the value type.
+            il.Emit(OpCodes.Castclass, ownerType); // Cast to the value type.
 
             // Call the set method.
             il.Emit(OpCodes.Callvirt, method);
@@ -113,17 +113,17 @@ namespace UmbMapper
         /// <summary>
         /// Builds the set accessor for the given type.
         /// </summary>
+        /// <param name="ownerType">The owner type.</param>
         /// <param name="method">The method to compile.</param>
         /// <param name="propertyType">The property type.</param>
         /// <returns>The <see cref="Action{Object, Object}"/></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Action<object, object> MakeSetMethod(MethodInfo method, Type propertyType)
+        private static Action<object, object> MakeSetMethod(Type ownerType, MethodInfo method, Type propertyType)
         {
-            Type type = method.DeclaringType;
-            var dmethod = new DynamicMethod("Setter", typeof(void), new[] { typeof(object), typeof(object) }, type, true);
+            var dmethod = new DynamicMethod("Setter", typeof(void), new[] { typeof(object), typeof(object) }, ownerType, true);
             ILGenerator il = dmethod.GetILGenerator();
             il.Emit(OpCodes.Ldarg_0); // Load our instance to the stack.
-            il.Emit(OpCodes.Castclass, type); // Cast to the instance type.
+            il.Emit(OpCodes.Castclass, ownerType); // Cast to the instance type.
             il.Emit(OpCodes.Ldarg_1); // Load our value to the stack.
 
             if (propertyType.IsValueType)
