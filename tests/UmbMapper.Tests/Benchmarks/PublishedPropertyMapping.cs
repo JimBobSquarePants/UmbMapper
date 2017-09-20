@@ -10,6 +10,7 @@ using Zone.UmbracoMapper;
 
 namespace UmbMapper.Tests.Benchmarks
 {
+    [MemoryDiagnoser]
     public class PublishedPropertyMapping
     {
         private UmbracoSupport support;
