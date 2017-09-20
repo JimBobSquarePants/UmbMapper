@@ -34,10 +34,10 @@ namespace UmbMapper
     {
         private readonly List<PropertyMap<T>> maps;
         private readonly bool hasIPublishedContructor;
-        private IEnumerable<PropertyMap<T>> nonLazyMaps;
-        private IEnumerable<PropertyMap<T>> lazyMaps;
-        private IEnumerable<PropertyMap<T>> nonLazyPredicateMaps;
-        private IEnumerable<PropertyMap<T>> lazyPredicateMaps;
+        private PropertyMap<T>[] nonLazyMaps;
+        private PropertyMap<T>[] lazyMaps;
+        private PropertyMap<T>[] nonLazyPredicateMaps;
+        private PropertyMap<T>[] lazyPredicateMaps;
         private List<string> lazyNames;
         private FastPropertyAccessor propertyAccessor;
         private Type proxyType;

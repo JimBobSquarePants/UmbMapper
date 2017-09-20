@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Runtime.CompilerServices;
 using UmbMapper.Extensions;
 using Umbraco.Core;
 using Umbraco.Core.Models;
@@ -81,32 +82,33 @@ namespace UmbMapper.PropertyMappers
         /// </summary>
         /// <param name="value">The value</param>
         /// <returns>The <see cref="object"/></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private object CheckConvertType(object value)
         {
-            if (value != null)
+            if (value == null)
             {
-                if (this.PropertyType.IsInstanceOfType(value))
-                {
-                    return value;
-                }
+                return null;
+            }
 
-                try
-                {
-                    Attempt<object> attempt = value.TryConvertTo(this.PropertyType);
-                    if (attempt.Success)
-                    {
-                        return attempt.Result;
-                    }
-                }
-                catch
-                {
-                    return value;
-                }
-
+            if (this.PropertyType.IsInstanceOfType(value))
+            {
                 return value;
             }
 
-            return null;
+            try
+            {
+                Attempt<object> attempt = value.TryConvertTo(this.PropertyType);
+                if (attempt.Success)
+                {
+                    return attempt.Result;
+                }
+            }
+            catch
+            {
+                return value;
+            }
+
+            return value;
         }
     }
 }
