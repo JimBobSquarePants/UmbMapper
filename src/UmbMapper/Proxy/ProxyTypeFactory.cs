@@ -6,7 +6,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+#if DEBUG
 using System.Diagnostics;
+#endif
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
@@ -70,9 +72,8 @@ namespace UmbMapper.Proxy
 
             // Define different behaviors for debug and release so that we can make debugging easier.
             var name = new AssemblyName(assemblyName);
-            AssemblyBuilder assemblyBuilder;
 #if DEBUG
-            assemblyBuilder = currentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.RunAndSave);
+            AssemblyBuilder assemblyBuilder = currentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.RunAndSave);
             ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName, $"{moduleName}.mod", true);
 
             // Add a debuggable attribute to the assembly saying to disable optimizations
@@ -84,7 +85,7 @@ namespace UmbMapper.Proxy
             assemblyBuilder.SetCustomAttribute(daBuilder);
 
 #else
-            assemblyBuilder = currentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
+            AssemblyBuilder assemblyBuilder = currentDomain.DefineDynamicAssembly(name, AssemblyBuilderAccess.Run);
             ModuleBuilder moduleBuilder = assemblyBuilder.DefineDynamicModule(moduleName);
 #endif
 

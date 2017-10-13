@@ -6,7 +6,9 @@ namespace UmbMapper.Tests.Mapping.Models
     {
         public CsvPublishedItemMap()
         {
+            // Test both lazy and no-lazy mapping.
             this.MapAll().ForEach(m => m.SetMapper<CsvPropertyMapper>());
+            this.AddMap(x => x.StringItems).AsLazy();
         }
     }
 }
