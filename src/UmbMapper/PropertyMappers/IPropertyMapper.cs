@@ -4,6 +4,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
 using Umbraco.Core.Models;
@@ -26,6 +27,29 @@ namespace UmbMapper.PropertyMappers
         /// Gets the property type
         /// </summary>
         Type PropertyType { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the specified type is an enumerable type.
+        /// </summary>
+        bool IsEnumerableType { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the specified type is an enumerable type that is safe to convert
+        /// from <see cref="IEnumerable{T}"/> to a single item following processing via a mapper.
+        /// </summary>
+        bool IsConvertableEnumerableType { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the specified type is an enumerable type that is safe to cast
+        /// following processing via a type converter
+        /// </summary>
+        bool IsCastableEnumerableType { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the specified type is an enumerable type containing a
+        /// key value pair as the generic type parameter.
+        /// </summary>
+        bool IsEnumerableOfKeyValueType { get; }
 
         /// <summary>
         /// Gets the property aliases

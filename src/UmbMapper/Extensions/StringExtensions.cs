@@ -45,8 +45,7 @@ namespace UmbMapper.Extensions
                                 {
                                     if (xmlReader.NodeType == XmlNodeType.Element && xmlReader.Name == "nodeId")
                                     {
-                                        int id;
-                                        if (int.TryParse(xmlReader.ReadElementContentAsString(), out id))
+                                        if (int.TryParse(xmlReader.ReadElementContentAsString(), out var id))
                                         {
                                             ids.Add(id);
                                         }

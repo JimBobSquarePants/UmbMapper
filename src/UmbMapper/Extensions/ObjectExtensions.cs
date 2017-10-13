@@ -19,5 +19,15 @@ namespace UmbMapper.Extensions
         {
             return value == null || value as string == string.Empty;
         }
+
+        /// <summary>
+        /// Gets a value indicating whether the <see cref="object"/> is null or an empty <see cref="string"/>.
+        /// </summary>
+        /// <param name="value">The object to test against.</param>
+        /// <returns>True; if the value is null or an empty string; otherwise; false.</returns>
+        public static bool IsNullOrWhiteSpaceString(this object value)
+        {
+            return string.IsNullOrWhiteSpace(value as string);
+        }
     }
 }
