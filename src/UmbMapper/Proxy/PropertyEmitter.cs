@@ -104,8 +104,11 @@ namespace UmbMapper.Proxy
                 il.Emit(OpCodes.Ldnull);
                 il.Emit(OpCodes.Callvirt, InterceptorMethod);
 
-                // Unbox the object back to the correct type.
-                il.Emit(OpCodes.Unbox_Any, method.ReturnType);
+                if (method.ReturnType.IsValueType)
+                {
+                    // Unbox the object back to the correct type.
+                    il.Emit(OpCodes.Unbox_Any, method.ReturnType);
+                }
             }
             else
             {

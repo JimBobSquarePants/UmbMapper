@@ -4,7 +4,7 @@ namespace UmbMapper.Tests.Mapping.Models
 {
     public class CsvPublishedItem
     {
-        public IEnumerable<string> StringItems { get; set; }
+        public virtual IEnumerable<string> StringItems { get; set; }
         public IEnumerable<sbyte> SByteItems { get; set; }
         public IEnumerable<byte> ByteItems { get; set; }
         public IEnumerable<short> ShortItems { get; set; }
