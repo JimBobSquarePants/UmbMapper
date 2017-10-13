@@ -34,8 +34,7 @@ namespace UmbMapper.Extensions
         {
             // Get the default constructor, parameters and create an instance of the type.
             // Try and return from the cache first. TryGetValue is faster than GetOrAdd.
-            ParameterInfo[] constructorParams;
-            ConstructorCache.TryGetValue(type, out constructorParams);
+            ConstructorCache.TryGetValue(type, out ParameterInfo[] constructorParams);
             if (constructorParams == null)
             {
                 ConstructorInfo constructor = type.GetConstructors().OrderBy(x => x.GetParameters().Length).FirstOrDefault();

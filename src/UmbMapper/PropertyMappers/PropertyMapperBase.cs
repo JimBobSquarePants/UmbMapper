@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
@@ -33,8 +34,12 @@ namespace UmbMapper.PropertyMappers
         /// <param name="info">The property map information</param>
         protected PropertyMapperBase(PropertyMapInfo info)
         {
-            this.PropertyType = info.PropertyType;
             this.Property = info.Property;
+            this.PropertyType = info.PropertyType;
+            this.IsEnumerableType = info.IsEnumerableType;
+            this.IsCastableEnumerableType = info.IsCastableEnumerableType;
+            this.IsConvertableEnumerableType = info.IsConvertableEnumerableType;
+            this.IsEnumerableOfKeyValueType = info.IsEnumerableOfKeyValueType;
 
             if (info.Aliases == null || !info.Aliases.Any())
             {
@@ -55,6 +60,18 @@ namespace UmbMapper.PropertyMappers
 
         /// <inheritdoc/>
         public Type PropertyType { get; }
+
+        /// <inheritdoc />
+        public bool IsEnumerableType { get; }
+
+        /// <inheritdoc />
+        public bool IsConvertableEnumerableType { get; }
+
+        /// <inheritdoc />
+        public bool IsCastableEnumerableType { get; }
+
+        /// <inheritdoc />
+        public bool IsEnumerableOfKeyValueType { get; }
 
         /// <inheritdoc/>
         public string[] Aliases { get; }

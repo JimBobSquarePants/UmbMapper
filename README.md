@@ -142,6 +142,7 @@ Available `IPropertyMapper`implementations all inherit from the `PropertyMapperB
 - `EnumPropertyMapper` Maps to enum values. Can handle both integer and string values.
 - `UmbracoPickerPropertyMapper` Maps from all the Umbraco built-in legacy pickers. Not required for any of the pickers from v7.6+
 - `DocTypeFactoryPropertyMapper` Allows mapping from mixed `IPublishedContent` sources sharing common properties. Inherits `FactoryPropertyMapperBase`.
+- `CsvPropertyMapper` Allows mapping of comma separated string values to arrays of strings, integrals, and real types. Values are automatically clamped and rounded.
 
 These mappers handle most use cases since they rely initially on Umbraco's `PropertyValueConverter` API. Additional mappers can be easily created though. Check the source for examples.
 
@@ -204,7 +205,7 @@ that have `UmbracoContext` based requirements may fail otherwise.
 
 ## Performance
 
-**UmbMapper is blazingly quick**. I've taken all the super fast bits I'd written in the Ditto library and was able to turbo charge them a little more. The underpinning logic is simple also and requires very little run-time work as the rules are already determined at compile-time.
+**UmbMapper is blazingly quick**. I've taken all the super fast bits I'd written in the Ditto library and was able to turbo charge them a lot more. The underpinning logic is simple also and requires very little run-time work as the rules are already determined at compile-time.
 
 Additional performance boosting can be delivered using lazy mapping.
 

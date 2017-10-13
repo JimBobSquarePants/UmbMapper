@@ -223,6 +223,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Extensions\AssemblyExtensions.cs" />
+    <Compile Include="Extensions\ComparableExtensions.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\PropertyInfoExtensions.cs" />
@@ -236,6 +237,10 @@
     <Compile Include="FastPropertyAccessor.cs" />
     <Compile Include="IUmbMapperConfig.cs" />
     <Compile Include="Invocations\PluginManagerInvocations.cs" />
+    <Compile Include="Converters\SimpleConverter{T}.cs" />
+    <Compile Include="PropertyMappers\CsvPropertyMapper.cs" />
+    <Compile Include="Converters\IntegralNumberConverter{T}.cs" />
+    <Compile Include="TypeConstants.cs" />
     <Compile Include="UmbMapperConfigLocker.cs" />
     <Compile Include="UmbMapperRegistry.cs" />
     <Compile Include="PropertyMapExtensions.cs" />
@@ -256,7 +261,7 @@
     <Compile Include="Proxy\IProxy.cs" />
     <Compile Include="Proxy\LazyInterceptor.cs" />
     <Compile Include="Proxy\PropertyEmitter.cs" />
-    <Compile Include="Proxy\ProxyFactory.cs" />
+    <Compile Include="Proxy\ProxyTypeFactory.cs" />
     <Compile Include="UmbMapperConstants.cs" />
   </ItemGroup>
   <ItemGroup>
