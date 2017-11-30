@@ -1,6 +1,12 @@
-# <img src="https://raw.githubusercontent.com/JimBobSquarePants/UmbMapper/develop/build/assets/logo/umbmapper-256.png" width="52" height="52" alt="UmbMapper Logo"/> UmbMapper
+<h1 align="center">
+    <img src="https://raw.githubusercontent.com/JimBobSquarePants/UmbMapper/develop/build/assets/logo/umbmapper-256.png" alt="UmbMapper" width="175"/>
+    <br>
+    UmbMapper
+    <br><br>
+</h1>
 
-This repository contains a fast, simple to use, convention based published content mapper for Umbraco.
+
+**This repository contains a fast, simple to use, convention based published content mapper for Umbraco.**
 
 ## What does it do?
 
