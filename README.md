@@ -28,6 +28,8 @@ Samples project login (Check it out!)
 
 Models are clean without any inheritance requirements. They require no additional attribution to determine mapping logic.
 
+#### Mapping a Simple Class
+
 Here's an example class, nothing fancy...
 
 ``` csharp
@@ -54,6 +56,8 @@ public class SimplePublishedItem
 
 You'll have noticed the `virtual` keyword there. It's only required when we want to lazy map a property so it's not essential. (more on that later)
 
+#### Registering a Simple Class Mapping
+
 Since this class requires no specialization, and, you've used appropriate convention to ensure property names match the property aliases in the document type, mapping is super simple.
 
 ``` csharp
@@ -62,6 +66,8 @@ Since this class requires no specialization, and, you've used appropriate conven
 // Mappers added this way automatically use lazy mapping for `virtual` properties.
 UmbMapperRegistry.AddMapperFor<SimplePublishedItem>;
 ```
+
+#### Mapping a Complex Class
 
 Convention based mapping like that will work most of the time but sometimes you need more granular control.
 
@@ -81,6 +87,8 @@ public class ComplexPublishedItem : SimplePublishedItem
     public virtual PlaceOrder PlaceOrder { get; set; }
 }
 ```
+
+#### Registering a Complex Class Mapping
 
 For this class, due to specialization, you need to create a mapping class to tell UmbMapper what to do. This class inherits from `UmbMapperConfig<T>` where `T` is the class you want to map to.
 
