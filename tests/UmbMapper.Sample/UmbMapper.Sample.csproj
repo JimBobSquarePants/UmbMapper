@@ -395,7 +395,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentModel\Mappers\HomeMap.cs" />
-    <Compile Include="ComponentModel\Mappers\PageMap.cs" />
+    <Compile Include="ComponentModel\Mappers\PublishedPageMap.cs" />
     <Compile Include="ComponentModel\Mappers\PublishedImageMap.cs" />
     <Compile Include="ComponentModel\PropertyMappers\VortoPropertyMapper.cs" />
     <Compile Include="Controllers\HomeController.cs" />
