@@ -5,11 +5,13 @@
 
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Web;
+using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.Security;
@@ -117,6 +119,43 @@ namespace UmbMapper.PropertyMappers
             return e.Compile()();
         }
 
+        /// <summary>
+        /// Checks the value to see if it is an instance of the given type and attempts to
+        /// convert the value to the correct type if it is not.
+        /// </summary>
+        /// <param name="value">The value</param>
+        /// <returns>The <see cref="object"/></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected object CheckConvertType(object value)
+        {
+            if (value == null || this.PropertyType.IsInstanceOfType(value))
+            {
+                return value;
+            }
+
+            try
+            {
+                Attempt<object> attempt = value.TryConvertTo(this.PropertyType);
+                if (attempt.Success)
+                {
+                    return attempt.Result;
+                }
+            }
+            catch
+            {
+                return value;
+            }
+
+            // Special case for IHtmlString top remove Html.Raw requirement
+            if (value is string && this.PropertyType == typeof(IHtmlString))
+            {
+                value = new HtmlString(value.ToString());
+            }
+
+            return value;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private CultureInfo GetCulture()
         {
             if (this.culture != null)
@@ -132,6 +171,7 @@ namespace UmbMapper.PropertyMappers
             return CultureInfo.CurrentCulture;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private UmbracoContext GetUmbracoContext()
         {
             return UmbracoContext.Current ?? throw new InvalidOperationException("UmbracoContext.Current is null.");

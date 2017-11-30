@@ -14,7 +14,8 @@ using Umbraco.Core.Models;
 namespace UmbMapper.PropertyMappers
 {
     /// <summary>
-    /// Maps any properties that use pickers in the backoffice
+    /// Maps any properties that use pickers in the backoffice.
+    /// This mapper is only required when using Umbraco prior to version 7.6
     /// </summary>
     public class UmbracoPickerPropertyMapper : PropertyMapperBase
     {

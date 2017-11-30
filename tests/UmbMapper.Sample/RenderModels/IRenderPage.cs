@@ -11,9 +11,7 @@ namespace UmbMapper.Sample.RenderModels
     /// <summary>
     /// Encapsulates properties required rendering pages with metadata.
     /// </summary>
-    /// <typeparam name="T">
-    /// The type of object to create the render model for.
-    /// </typeparam>
+    /// <typeparam name="T">The type of object to create the render model for.</typeparam>
     public interface IRenderPage<out T>
         where T : PublishedPage
     {

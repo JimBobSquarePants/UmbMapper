@@ -3,21 +3,37 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
+using System;
 using UmbMapper.Sample.Models.Media;
 using Umbraco.Core.Models;
-using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper.Sample.Models.Pages
 {
     /// <summary>
     /// The base class for all published pages
     /// </summary>
-    public class PublishedPage : PublishedContentModel, IMeta, IRoutable
+    public class PublishedPage : IPublishedEntity, IMeta, IRoutable
     {
-        public PublishedPage(IPublishedContent content)
-            : base(content)
-        {
-        }
+        /// <inheritdoc/>
+        public virtual int Id { get; set; }
+
+        /// <inheritdoc/>
+        public virtual string Name { get; set; }
+
+        /// <inheritdoc/>
+        public virtual string DocumentTypeAlias { get; set; }
+
+        /// <inheritdoc/>
+        public virtual int Level { get; set; }
+
+        /// <inheritdoc/>
+        public virtual int SortOrder { get; set; }
+
+        /// <inheritdoc/>
+        public virtual DateTime CreateDate { get; set; }
+
+        /// <inheritdoc/>
+        public virtual DateTime UpdateDate { get; set; }
 
         /// <inheritdoc/>
         public virtual string BrowserWebsiteTitle { get; set; }

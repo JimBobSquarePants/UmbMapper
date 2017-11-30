@@ -3,9 +3,8 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
-using UmbMapper.PropertyMappers;
 using UmbMapper.PropertyMappers.Archetype;
-using UmbMapper.PropertyMappers.NuPickers;
+using UmbMapper.Sample.ComponentModel.PropertyMappers;
 using UmbMapper.Sample.Models.Pages;
 
 namespace UmbMapper.Sample.ComponentModel.Mappers
@@ -13,27 +12,20 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
     /// <summary>
     /// Configures mapping for the home page
     /// </summary>
-    public class HomeMap : UmbMapperConfig<Home>
+    public class HomeMap : PageMap<Home>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="HomeMap"/> class.
         /// </summary>
         public HomeMap()
         {
-            this.AddMappings(
-                x => x.BrowserWebsiteTitle).ForEach(x => x.AsLazy());
+            // Map all items as lazy
+            this.MapAll().ForEach(x => x.AsLazy());
 
-            this.AddMap(x => x.BrowserPageTitle).SetAlias(x => x.BrowserPageTitle, x => x.Name).AsLazy();
-            this.AddMap(x => x.SwitchTitleOrder).AsLazy();
-            this.AddMap(x => x.BrowserDescription).AsLazy();
-            this.AddMap(x => x.OpenGraphTitle).AsLazy();
-            this.AddMap(x => x.OpenGraphType).SetMapper<NuPickerEnumPropertyMapper>().AsLazy();
-            this.AddMap(x => x.OpenGraphImage).SetMapper<UmbracoPickerPropertyMapper>().AsRecursive().AsLazy();
+            this.AddMap(x => x.VortoBodyText).SetMapper<VortoPropertyMapper>();
 
-            // Home properties
-            this.AddMap(x => x.BodyText).AsLazy();
-            this.AddMap(x => x.Gallery).AsLazy();
-            this.AddMap(x => x.ArchetypeGallery).SetMapper<ArchetypeFactoryPropertyMapper>().AsLazy();
+            // Only Archetype requires additional configuration, Nested Content just works!!
+            this.AddMap(x => x.ArchetypeGallery).SetMapper<ArchetypeFactoryPropertyMapper>();
         }
     }
 }

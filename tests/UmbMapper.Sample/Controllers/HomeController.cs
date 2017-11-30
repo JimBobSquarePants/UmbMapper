@@ -17,10 +17,10 @@ namespace UmbMapper.Sample.Controllers
     /// </summary>
     public class HomeController : RenderMvcController
     {
-        // GET: Home
+        /// <inheritdoc/>
         public override ActionResult Index(RenderModel model)
         {
-            var home = (Home)model.Content;
+            Home home = model.Content.MapTo<Home>();
             var viewModel = new RenderPage<Home>(home);
 
             return this.CurrentTemplate(viewModel);

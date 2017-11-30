@@ -3,10 +3,9 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
-using UmbMapper.PublishedContentModelFactory;
 using UmbMapper.Sample.ComponentModel.Mappers;
+using UmbMapper.Sample.Models.Components;
 using Umbraco.Core;
-using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper.Sample.Events
 {
@@ -26,12 +25,13 @@ namespace UmbMapper.Sample.Events
         /// </param>
         protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
+            // Register our custom maps
             UmbMapperRegistry.AddMapper(new PublishedImageMap());
-            UmbMapperRegistry.AddMapper(new SlideMap());
             UmbMapperRegistry.AddMapper(new HomeMap());
 
-            var factory = new UmbMapperPublishedContentModelFactory();
-            PublishedContentModelFactoryResolver.Current.SetFactory(factory);
+            // The Slide document type is simple with no additional customization required.
+            // This can be mapped by convention. The mapper will implicitly lazy map any virtual properties.
+            UmbMapperRegistry.AddMapperFor<Slide>();
         }
     }
 }

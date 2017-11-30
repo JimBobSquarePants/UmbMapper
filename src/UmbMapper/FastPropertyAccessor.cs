@@ -36,6 +36,7 @@ namespace UmbMapper
         /// Initializes a new instance of the <see cref="FastPropertyAccessor"/> class.
         /// </summary>
         /// <param name="type">The type to generate the accessors for</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public FastPropertyAccessor(Type type)
         {
             IEnumerable<PropertyInfo> properties = type.GetProperties(UmbMapperConstants.MappableFlags);

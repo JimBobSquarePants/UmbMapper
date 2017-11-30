@@ -18,13 +18,10 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
         /// </summary>
         public PublishedImageMap()
         {
-            this.AddMap(x => x.Id).AsLazy();
-            this.AddMap(x => x.Name).AsLazy();
-            this.AddMap(x => x.DocumentTypeAlias).AsLazy();
-            this.AddMap(x => x.Level).AsLazy();
-            this.AddMap(x => x.SortOrder).AsLazy();
-            this.AddMap(x => x.CreateDate).AsLazy();
-            this.AddMap(x => x.UpdateDate).AsLazy();
+            this.MapAll().ForEach(x => x.AsLazy());
+
+            // Additional configuration to set the alias of certain properties.
+            // Umbraco prefixes those special properties with "umbraco"
             this.AddMap(x => x.FileName).SetAlias(Constants.Conventions.Media.File).AsLazy();
             this.AddMap(x => x.Bytes).SetAlias(Constants.Conventions.Media.Bytes).AsLazy();
             this.AddMap(x => x.Extension).SetAlias(Constants.Conventions.Media.Extension).AsLazy();

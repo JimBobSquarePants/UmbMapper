@@ -6,7 +6,6 @@
 using System;
 using System.Collections.Concurrent;
 using UmbMapper.Extensions;
-using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
@@ -36,12 +35,9 @@ namespace UmbMapper.PropertyMappers
             foreach (string name in this.Aliases)
             {
                 value = this.CheckConvertType(content.GetPropertyValue(name, this.Recursive));
-                if (!value.IsNullOrEmptyString())
+                if (this.PropertyType.IsInstanceOfType(value))
                 {
-                    if (this.PropertyType.IsInstanceOfType(value))
-                    {
-                        break;
-                    }
+                    break;
                 }
             }
 
@@ -54,7 +50,6 @@ namespace UmbMapper.PropertyMappers
                 if (key != null)
                 {
                     ContentAccessorCache.TryGetValue(key, out var accessor);
-
                     if (accessor == null)
                     {
                         accessor = new FastPropertyAccessor(contentType);
@@ -73,40 +68,6 @@ namespace UmbMapper.PropertyMappers
             }
 
             return value ?? this.DefaultValue;
-        }
-
-        /// <summary>
-        /// Checks the value to see if it is an instance of the given type and attempts to
-        /// convert the value to the correct type if it is not.
-        /// </summary>
-        /// <param name="value">The value</param>
-        /// <returns>The <see cref="object"/></returns>
-        private object CheckConvertType(object value)
-        {
-            if (value != null)
-            {
-                if (this.PropertyType.IsInstanceOfType(value))
-                {
-                    return value;
-                }
-
-                try
-                {
-                    Attempt<object> attempt = value.TryConvertTo(this.PropertyType);
-                    if (attempt.Success)
-                    {
-                        return attempt.Result;
-                    }
-                }
-                catch
-                {
-                    return value;
-                }
-
-                return value;
-            }
-
-            return null;
         }
     }
 }

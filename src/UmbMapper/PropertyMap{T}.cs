@@ -100,12 +100,12 @@ namespace UmbMapper
         /// Sets the property mapper for the property
         /// </summary>
         /// <typeparam name="TMapper">The type of property mapper</typeparam>
-        /// <returns>The <see cref="PropertyMap{T}"/></returns>
-        public PropertyMap<T> SetMapper<TMapper>()
+        /// <returns>The <see cref="IPropertyMapper"/></returns>
+        public IPropertyMapper SetMapper<TMapper>()
             where TMapper : IPropertyMapper
         {
             this.PropertyMapper = (TMapper)typeof(TMapper).GetInstance(this.Info);
-            return this;
+            return this.PropertyMapper;
         }
 
         /// <summary>

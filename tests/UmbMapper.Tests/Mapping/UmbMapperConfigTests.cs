@@ -48,17 +48,17 @@ namespace UmbMapper.Tests.Mapping
         {
             var config = new UmbMapperConfig<PublishedItem>();
 
-            PropertyMap<PublishedItem> idMapper = config.AddMap(p => p.Id).SetMapper<UmbracoPropertyMapper>();
-            PropertyMap<PublishedItem> nameMapper = config.AddMap(p => p.Name).SetMapper<UmbracoPropertyMapper>();
-            PropertyMap<PublishedItem> createdMapper = config.AddMap(p => p.CreateDate).SetMapper<UmbracoPropertyMapper>();
+            IPropertyMapper idMapper = config.AddMap(p => p.Id).SetMapper<UmbracoPropertyMapper>();
+            IPropertyMapper nameMapper = config.AddMap(p => p.Name).SetMapper<UmbracoPropertyMapper>();
+            IPropertyMapper createdMapper = config.AddMap(p => p.CreateDate).SetMapper<UmbracoPropertyMapper>();
 
-            Assert.NotNull(idMapper.PropertyMapper);
-            Assert.NotNull(nameMapper.PropertyMapper);
-            Assert.NotNull(createdMapper.PropertyMapper);
+            Assert.NotNull(idMapper);
+            Assert.NotNull(nameMapper);
+            Assert.NotNull(createdMapper);
 
-            Assert.True(typeof(int) == idMapper.PropertyMapper.PropertyType);
-            Assert.True(typeof(string) == nameMapper.PropertyMapper.PropertyType);
-            Assert.True(typeof(DateTime) == createdMapper.PropertyMapper.PropertyType);
+            Assert.True(typeof(int) == idMapper.PropertyType);
+            Assert.True(typeof(string) == nameMapper.PropertyType);
+            Assert.True(typeof(DateTime) == createdMapper.PropertyType);
         }
     }
 }

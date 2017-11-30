@@ -1,4 +1,4 @@
-# <img src="https://raw.githubusercontent.com/JimBobSquarePants/UmbMapper/develop/build/assets/logo/umbmapper-64.png" width="52" height="52" alt="UmbMapper Logo"/> UmbMapper
+# <img src="https://raw.githubusercontent.com/JimBobSquarePants/UmbMapper/develop/build/assets/logo/umbmapper-256.png" width="52" height="52" alt="UmbMapper Logo"/> UmbMapper
 
 This repository contains a fast, simple to use, convention based published content mapper for Umbraco.
 
@@ -12,114 +12,106 @@ So far it's made up of the following libraries
 - [**UmbMapper.ArcheType**](https://www.nuget.org/packages/UmbMapper.ArcheType) - Allows the mapping of ArcheType models to POCO equivalents.
 - [**UmbMapper.NuPickers**](https://www.nuget.org/packages/UmbMapper.NuPickers) - Allows the mapping of NuPicker models to POCO equivalents.
 - [**UmbMapper.PublishedContentModelFactory**](https://www.nuget.org/packages/UmbMapper.PublishedContentModelFactory) - Allows the mapping of models using the Umbraco PublishedContentFactory.
-
+ 
 ## Consuming The Libraries
 
 Nightlies are available on [Myget](https://www.myget.org/gallery/umbmapper) with battle tested releases available on [Nuget](https://www.nuget.org/packages/UmbMapper).
 
-Samples project login
+Samples project login (Check it out!)
 
 - Username : admin
 - Password : umbmapper!
 
-## The API
+## How it works - The API
 
 > *A POCO should be exactly that.* - Rudyard Kipling
 
-Models are clean without any knowledge of the Umbraco backoffice. They require no additional attribution to determine mapping logic.
+Models are clean without any inheritance requirements. They require no additional attribution to determine mapping logic.
 
-Here's an example class, nothing fancy!
+Here's an example class, nothing fancy...
 
 ``` csharp
-public class LazyPublishedItem
+public class SimplePublishedItem
 {
     public virtual int Id { get; set; }
 
     public virtual string Name { get; set; }
 
-    public virtual string Slug { get; set; }
-
     public virtual DateTime CreateDate { get; set; }
 
-    public virtual DateTime UpdateDate { get; set; }
+    public virtual string Url { get; set; }
 
-    public virtual PlaceOrder PlaceOrder { get; set; }
+    // RTE
+    public virtual IHtmlString BodyText { get; set; }
 
-    public virtual IPublishedContent PublishedInterfaceContent { get; set; }
-
-    public virtual MockPublishedContent PublishedContent { get; set; }
-
+    // Media Picker
     public virtual ImageCropDataSet Image { get; set; }
 
-    public virtual PublishedItem Child { get; set; }
+   // Content Picker
+    public virtual ComplexPublishedItem Target { get; set; }
 }
 ```
 
 You'll have noticed the `virtual` keyword there. It's only required when we want to lazy map a property so it's not essential. (more on that later)
 
-The mapping behaviour is controlled by creating a mapping class that inherits from `MapperConfig<T>` where `T` is the class you want to map to.
+Since this class requires no specialization, and, you've used appropriate convention to ensure property names match the property aliases in the document type, mapping is super simple.
 
 ``` csharp
-public class LazyPublishedItemMap : MapperConfig<LazyPublishedItem>
+// For simple classes you don't need to create a mapper. 
+// The registry will automatically create one based on the default conventional logic.
+// Mappers added this way automatically use lazy mapping for `virtual` properties.
+UmbMapperRegistry.AddMapperFor<SimplePublishedItem>;
+```
+
+Convention based mapping like that will work most of the time but sometimes you need more granular control.
+
+This more complex class demonstrates that. In this example i've added an enum, an additional property requireing an alias, and also a property that does not exist on the document type.
+
+
+``` csharp
+public class ComplexPublishedItem : SimplePublishedItem
 {
-    public LazyPublishedItemMap()
-    {
-        this.AddMap(p => p.Id).AsLazy();
-        this.AddMap(p => p.Name).AsLazy();
-        this.AddMap(p => p.Slug).MapFromInstance((instance, content) => instance.Name.ToLowerInvariant());
-        this.AddMap(p => p.CreateDate).AsLazy();
-        this.AddMap(p => p.UpdateDate).SetAlias(p => p.UpdateDate, p => p.CreateDate).AsLazy();
-        this.AddMap(p => p.PlaceOrder).SetMapper<EnumPropertyMapper>().AsLazy();
-        this.AddMap(p => p.PublishedInterfaceContent).SetMapper<UmbracoPickerPropertyMapper>().AsLazy();
-        this.AddMap(p => p.PublishedContent).SetMapper<UmbracoPickerPropertyMapper>().AsLazy();
-        this.AddMap(p => p.Image).AsLazy();
-        this.AddMap(p => p.Child).SetMapper<UmbracoPickerPropertyMapper>().AsLazy();
-    }
+    // Not an editable property in the backoffice, mapped from the "name" property
+    public virtual string Slug { get; set; }
+
+   // This wil fallback to "createDate" is there have been no updates
+    public virtual DateTime UpdateDate { get; set; }
+
+    // An enum, your type would be a dropdown
+    public virtual PlaceOrder PlaceOrder { get; set; }
 }
 ```
 
-For simpler classes there are more terse mapping methods available
+For this class, due to specialization, you need to create a mapping class to tell UmbMapper what to do. This class inherits from `UmbMapperConfig<T>` where `T` is the class you want to map to.
 
 ``` csharp
-public class LazyPublishedItemMap : UmbMapperConfig<LazyPublishedItem>
+public class ComplexPublishedItemMap : UmbMapperConfig<ComplexPublishedItem>
 {
-    public LazyPublishedItemMap()
+    public ComplexPublishedItemMap()
     {
-        this.AddMappings(
-            x => x.Id,
-            x => x.Name,
-            x => x.DocumentTypeAlias,
-            x => x.Level).ForEachIndexed((x, i) => x.AsLazy());
-
-        this.AddMappings(
-            x => x.SortOrder,
-            x => x.CreateDate,
-            x => x.UpdateDate).ForEach(x => x.AsLazy());
-    }
-}
-```
-
-Or
-
-``` csharp
-public class LazyPublishedItemMap : UmbMapperConfig<LazyPublishedItem>
-{
-    public LazyPublishedItemMap()
-    {
-        this.MapAll().ForEachIndexed((x, i) => x.AsLazy());
-
+        // Map all the properties as lazy properties
         this.MapAll().ForEach(x => x.AsLazy());
+
+        // Map from the resolved "name" property in the class
+        this.AddMap(p => p.Slug).MapFromInstance((instance, content) => instance.Name.ToLowerInvariant());
+
+        // Try "updateDate" and fallback to "createDate"
+        this.AddMap(p => p.UpdateDate).SetAlias(p => p.UpdateDate, p => p.CreateDate);
+
+        // Set our enum mapper (built in)
+        this.AddMap(p => p.PlaceOrder).SetMapper<EnumPropertyMapper>();
     }
 }
 ```
 
-**For many classes where no additional mapping logic is required you don't even need an UmbMapperConfig. See *Registering a mapper* below.**
+Registering a custom mapper is as simple as follows.
 
-**This is the recommended way to map classes**
+``` csharp
+// Add the mapper we created to the registry
+UmbMapperRegistry.AddMapper(new ComplexPublishedItemMap());
+```
 
-What's going on here? 
-
-### Configuration 
+### Configuration Options
 
 The `AddMap()` method and subsequent methods called in the mapper constructor each return a `PropertyMap<T>` where `T` is the class you want to map to. This allows us to use a simple fluent API to configure each property map.
 
@@ -131,20 +123,26 @@ The various mapping configuration options are as follows:
 - `MapFromInstance()` Instructs the mapper to map from the given `Func<T, IPublishedContent, object>` where `T` is the current object instance.
 - `Ignore()` Removes a property from the collection of property maps.
 - `SetAlias()` Instructs the mapper what aliases to look for in the document type. The order given is the checking order. Case-insensitive.
-- `SetMapper()` Instructs the mapper what specific `IPropertyMapper` implementation to use for mapping the property. All properties are initially automatically mapped using the `UmbracoPickerPropertyMapper`.
+- `SetMapper()` Instructs the mapper what specific `IPropertyMapper` implementation to use for mapping the property. All properties are initially automatically mapped using the `UmbracoPropertyMapper`.
 - `SetCulture()` Instructs the mapper what culture to use when mapping values. Defaults to the current culture contained withing the `UmbracoContext`.
 - `AsRecursive()` Instructs the mapper to recursively traverse up the document tree looking for a value to map.
 - `AsLazy()` Instructs the mapper to map the property lazily using dynamic proxy generation.
 
 Available `IPropertyMapper`implementations all inherit from the `PropertyMapperBase` class and are as follows:
 
-- `UmbracoPickerPropertyMapper` The default mapper, maps directly from Umbraco's Published Content Cache via `GetPropertyValue`. Runs automatically.
+- `UmbracoPropertyMapper` The default mapper, maps directly from Umbraco's Published Content Cache via `GetPropertyValue`. Runs automatically.
 - `EnumPropertyMapper` Maps to enum values. Can handle both integer and string values.
-- `UmbracoPickerPropertyMapper` Maps from all the Umbraco built-in legacy pickers. Not required for any of the pickers from v7.6+
 - `DocTypeFactoryPropertyMapper` Allows mapping from mixed `IPublishedContent` sources sharing common properties. Inherits `FactoryPropertyMapperBase`.
 - `CsvPropertyMapper` Allows mapping of comma separated string values to arrays of strings, integrals, and real types. Values are automatically clamped and rounded.
+- `UmbracoPickerPropertyMapper` Maps from all the Umbraco built-in legacy pickers. Not required for any of the pickers from v7.6+
 
 These mappers handle most use cases since they rely initially on Umbraco's `PropertyValueConverter` API. Additional mappers can be easily created though. Check the source for examples.
+
+Specialist mappers for Archetype and NuPickers are available also via installing the additional packages.
+
+- `ArchetypeFactoryPropertyMapper` Maps all Archetype properties
+- `NuPickerPropertyMapper` Maps NuPicker properties
+- `NuPickerEnumPropertyMapper` Maps from a NuPicker value to an enum
 
 ### Calling a Mapper
 
@@ -164,19 +162,6 @@ public static T MapTo<T>(this IPublishedContent content)
 
 // Map a single run-time known type instance.
 public static object MapTo(this IPublishedContent content, Type type)
-```
-
-Registering a mapper is as easy as follows
-
-
-``` csharp
-// Add the mapper we created to the registry
-UmbMapperRegistry.AddMapper(new LazyPublishedItemMap());
-
-// For simple classes you don't need to create a mapper. 
-// The registry will automatically create one based on the default conventional logic.
-// Mappers added this way automatically use lazy mapping for `virtual` properties.
-UmbMapperRegistry.AddMapperFor<SimpleItem>;
 ```
 
 ## IPublishedContentModelFactory

@@ -92,7 +92,7 @@ namespace UmbMapper.PropertyMappers
         /// <summary>
         /// Gets the culture
         /// </summary>
-        public CultureInfo Culture { get; internal set; } = CultureInfo.InvariantCulture;
+        public CultureInfo Culture { get; internal set; }
 
         /// <inheritdoc/>
         public bool Equals(PropertyMapInfo other)

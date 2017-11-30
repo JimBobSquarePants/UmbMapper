@@ -6,8 +6,6 @@
 using System.Collections.Generic;
 using System.Web;
 using UmbMapper.Sample.Models.Components;
-using Umbraco.Core.Models;
-using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper.Sample.Models.Pages
 {
@@ -16,15 +14,15 @@ namespace UmbMapper.Sample.Models.Pages
     /// </summary>
     public class Home : PublishedPage
     {
-        public Home(IPublishedContent content)
-            : base(content)
-        {
-        }
-
         /// <summary>
         /// Gets or sets the main body copy
         /// </summary>
         public virtual IHtmlString BodyText { get; set; }
+
+        /// <summary>
+        /// Gets or sets the main body copy
+        /// </summary>
+        public virtual IHtmlString VortoBodyText { get; set; }
 
         /// <summary>
         /// Gets or sets the image gallery
