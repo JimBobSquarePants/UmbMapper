@@ -65,7 +65,7 @@ UmbMapperRegistry.AddMapperFor<SimplePublishedItem>;
 
 Convention based mapping like that will work most of the time but sometimes you need more granular control.
 
-This more complex class demonstrates that. In this example i've added an enum, an additional property requireing an alias, and also a property that does not exist on the document type.
+This more complex class demonstrates that. In this example i've added an enum, an additional property requiring an alias, and also a property that does not exist on the document type.
 
 
 ``` csharp
@@ -127,6 +127,8 @@ The various mapping configuration options are as follows:
 - `SetCulture()` Instructs the mapper what culture to use when mapping values. Defaults to the current culture contained withing the `UmbracoContext`.
 - `AsRecursive()` Instructs the mapper to recursively traverse up the document tree looking for a value to map.
 - `AsLazy()` Instructs the mapper to map the property lazily using dynamic proxy generation.
+
+### Mappers
 
 Available `IPropertyMapper`implementations all inherit from the `PropertyMapperBase` class and are as follows:
 
