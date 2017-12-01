@@ -33,7 +33,7 @@ namespace UmbMapper
         where T : class
     {
         private readonly List<PropertyMap<T>> maps;
-        private readonly bool hasIPublishedContructor;
+        private readonly bool hasIPublishedConstructor;
         private IEnumerable<PropertyMap<T>> nonLazyMaps;
         private IEnumerable<PropertyMap<T>> lazyMaps;
         private IEnumerable<PropertyMap<T>> nonLazyPredicateMaps;
@@ -62,10 +62,10 @@ namespace UmbMapper
                 // Is it PublishedContentmModel or similar?
                 if (constructorParams.Length == 1 && constructorParams[0].ParameterType == typeof(IPublishedContent))
                 {
-                    this.hasIPublishedContructor = true;
+                    this.hasIPublishedConstructor = true;
                 }
 
-                if (constructorParams.Length == 0 || this.hasIPublishedContructor)
+                if (constructorParams.Length == 0 || this.hasIPublishedConstructor)
                 {
                     validConstructor = true;
                 }
@@ -170,7 +170,7 @@ namespace UmbMapper
             if (this.createProxy)
             {
                 // Create a proxy instance to replace our object.
-                result = this.hasIPublishedContructor ? this.proxyType.GetInstance(content) : this.proxyType.GetInstance();
+                result = this.hasIPublishedConstructor ? this.proxyType.GetInstance(content) : this.proxyType.GetInstance();
 
                 // First add any lazy mappings, use count to prevent allocations
                 var lazyProperties = new Dictionary<string, Lazy<object>>(this.lazyNames.Count);
@@ -191,7 +191,7 @@ namespace UmbMapper
             }
             else
             {
-                result = this.hasIPublishedContructor ? this.MappedType.GetInstance(content) : this.MappedType.GetInstance();
+                result = this.hasIPublishedConstructor ? this.MappedType.GetInstance(content) : this.MappedType.GetInstance();
             }
 
             // Now map the non-lazy properties
