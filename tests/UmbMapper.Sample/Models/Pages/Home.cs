@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using System.Web;
+using UmbMapper.Sample.ComponentModel.Mappers;
 using UmbMapper.Sample.Models.Components;
 
 namespace UmbMapper.Sample.Models.Pages
@@ -33,5 +34,17 @@ namespace UmbMapper.Sample.Models.Pages
         /// Gets or sets the image gallery
         /// </summary>
         public virtual IEnumerable<Slide> Gallery { get; set; }
+
+        /// <summary>
+        /// Gets or sets the post names.
+        /// In <see cref="HomeMap"/> you'll see that we map this using the <see cref="Posts"/> property.
+        /// I'm doing this so I can demonstrate mapping both individual properties and complete classes.
+        /// </summary>
+        public virtual IEnumerable<string> PostNames { get; set; }
+
+        /// <summary>
+        /// Gets or sets the posts
+        /// </summary>
+        public virtual IEnumerable<Post> Posts { get; set; }
     }
 }

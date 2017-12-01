@@ -22,6 +22,13 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
             // Map all items as lazy
             this.MapAll().ForEach(x => x.AsLazy());
 
+            // Use a custom mapper to grab just the names.
+            // If you use the Posts property itself and grab the name you don't need this but this would
+            // be faster if you don't need the other properties of the targeted document types.
+            // I'm only using the alias so I can demonstrate both approaches with a single property
+            this.AddMap(x => x.PostNames).SetAlias(x => x.Posts).SetMapper<NamePickerPropertyMapper>();
+
+            // Vorto requires a custom mapper to call its API.
             this.AddMap(x => x.VortoBodyText).SetMapper<VortoPropertyMapper>();
 
             // Only Archetype requires additional configuration, Nested Content just works!!

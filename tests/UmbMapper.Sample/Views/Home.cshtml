@@ -1,15 +1,36 @@
 ﻿@using UmbMapper.Sample.Models.Components
+@using UmbMapper.Sample.Models.Pages
 @inherits UmbracoViewPage<UmbMapper.Sample.RenderModels.RenderPage<UmbMapper.Sample.Models.Pages.Home>>
 
 <h1>@Model.Content.Name</h1>
 
+<h3>Vorto Content mapped using the custom <code>VortoPropertyMapper</code></h3>
 @Model.Content.VortoBodyText
 <hr />
+
+<h3>Standard RTE mapping</h3>
 @Model.Content.BodyText
+<hr />
+
+<h3>Post names rendered using an MNTP and a custom <code>NamePickerPropertyMapper</code></h3>
+<ul>
+    @foreach (string name in Model.Content.PostNames)
+    {
+        <li>@name</li>
+    }
+</ul>
+
+<h3>And the post names rendered using an MNTP without customization. Pulling the name from the mapped type.</h3>
+<ul>
+    @foreach (Post post in Model.Content.Posts)
+    {
+        <li>@post.Name</li>
+    }
+</ul>
 <hr />
 <h2>Gallery</h2>
 <div class="slides">
-    <p>These gallery items are mapped from Nested Content</p>
+    <h3>These gallery items are mapped from Nested Content; no customization required</h3>
     @if (Model.Content.Gallery.Any())
     {
         foreach (Slide slide in Model.Content.Gallery)
@@ -25,7 +46,7 @@
 </div>
 
 <div class="slides">
-    <p>These gallery items are mapped from Archetype</p>
+    <h3>These gallery items are mapped from Archetype using the custom <code>ArchetypePropertyMapper</code></h3>
     @if (Model.Content.ArchetypeGallery.Any())
     {
         foreach (Slide slide in Model.Content.ArchetypeGallery)

@@ -28,6 +28,7 @@ namespace UmbMapper.Sample.Events
             // Register our custom maps
             UmbMapperRegistry.AddMapper(new PublishedImageMap());
             UmbMapperRegistry.AddMapper(new HomeMap());
+            UmbMapperRegistry.AddMapper(new PostMap());
 
             // The Slide document type is simple with no additional customization required.
             // This can be mapped by convention. The mapper will implicitly lazy map any virtual properties.
