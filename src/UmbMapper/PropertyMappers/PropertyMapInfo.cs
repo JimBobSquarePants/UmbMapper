@@ -4,9 +4,10 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.Globalization;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using UmbMapper.Extensions;
 
@@ -17,6 +18,11 @@ namespace UmbMapper.PropertyMappers
     /// </summary>
     public class PropertyMapInfo : IEquatable<PropertyMapInfo>, IPropertyMapInfo
     {
+        /// <summary>
+        /// The cache for storing created default types.
+        /// </summary>
+        private static readonly ConcurrentDictionary<Type, object> TypeDefaultsCache = new ConcurrentDictionary<Type, object>();
+
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyMapInfo"/> class.
         /// </summary>
@@ -31,6 +37,8 @@ namespace UmbMapper.PropertyMappers
             this.IsConvertableEnumerableType = this.PropertyType.IsConvertableEnumerableType();
             this.IsCastableEnumerableType = this.PropertyType.IsCastableEnumerableType();
             this.IsEnumerableOfKeyValueType = this.PropertyType.IsEnumerableOfKeyValueType();
+            this.Aliases = new[] { this.Property.Name.ToUpperInvariant() };
+            this.DefaultValue = GetDefaultValue(this.PropertyType);
         }
 
         /// <inheritdoc/>
@@ -58,7 +66,7 @@ namespace UmbMapper.PropertyMappers
         public bool IsEnumerableOfKeyValueType { get; }
 
         /// <inheritdoc/>>
-        public string[] Aliases { get; internal set; } = new string[0];
+        public string[] Aliases { get; internal set; }
 
         /// <inheritdoc/>
         public bool Recursive { get; internal set; }
@@ -78,7 +86,7 @@ namespace UmbMapper.PropertyMappers
         /// <inheritdoc/>
         public bool Equals(PropertyMapInfo other)
         {
-            if (ReferenceEquals(null, other))
+            if (other is null)
             {
                 return false;
             }
@@ -105,7 +113,7 @@ namespace UmbMapper.PropertyMappers
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
             {
                 return false;
             }
@@ -148,6 +156,29 @@ namespace UmbMapper.PropertyMappers
                 hashCode = (hashCode * 397) ^ (info.Culture != null ? info.Culture.GetHashCode() : 0);
                 return hashCode;
             }
+        }
+
+        /// <summary>
+        /// Returns the default value for the given type.
+        /// </summary>
+        /// <param name="type">The <see cref="Type"/> to return.</param>
+        /// <returns>The <see cref="object"/> representing the default value.</returns>
+        private static object GetDefaultValue(Type type)
+        {
+            if (type == null)
+            {
+                throw new ArgumentNullException(nameof(type));
+            }
+
+            return TypeDefaultsCache.GetOrAdd(type, t =>
+            {
+                // We want a Func<object> which returns the default value.
+                // Create that expression, convert to object.
+                // The default value, will always be what the runtime tells us.
+                var e = Expression.Lambda<Func<object>>(Expression.Convert(Expression.Default(t), typeof(object)));
+
+                return e.Compile()();
+            });
         }
     }
 }

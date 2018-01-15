@@ -28,20 +28,22 @@ namespace UmbMapper.Sample.ComponentModel.PropertyMappers
         /// <inheritdoc/>
         public override object Map(IPublishedContent content, object value)
         {
-            foreach (string name in this.Aliases)
+            PropertyMapInfo info = this.Info;
+            string culture = this.GetRequestCulture().Name;
+            foreach (string name in info.Aliases)
             {
-                if (content.HasVortoValue(name, this.Culture.Name, this.Recursive, CultureInfo.CurrentCulture.Name))
+                if (content.HasVortoValue(name, info.Culture.Name, info.Recursive, CultureInfo.CurrentCulture.Name))
                 {
-                    value = this.CheckConvertType(content.GetVortoValue(name, this.Culture.Name, this.Recursive));
+                    value = this.CheckConvertType(content.GetVortoValue(name, culture, info.Recursive));
 
-                    if (this.PropertyType.IsInstanceOfType(value))
+                    if (info.PropertyType.IsInstanceOfType(value))
                     {
                         break;
                     }
                 }
             }
 
-            return value ?? this.DefaultValue;
+            return value ?? info.DefaultValue;
         }
     }
 }

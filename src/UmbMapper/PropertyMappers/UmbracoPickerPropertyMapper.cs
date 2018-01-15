@@ -53,6 +53,8 @@ namespace UmbMapper.PropertyMappers
                 return (IEnumerable<IPublishedContent>)value;
             }
 
+            PropertyMapInfo info = this.Info;
+            CultureInfo culture = this.GetRequestCulture();
             int[] nodeIds = Empty;
 
             // First try enumerable strings, ints.
@@ -60,9 +62,9 @@ namespace UmbMapper.PropertyMappers
             {
                 if (type.IsEnumerableOfType(typeof(string)))
                 {
-                    int n;
+                    // TODO: Optimize this
                     nodeIds = ((IEnumerable<string>)value)
-                        .Select(x => int.TryParse(x, NumberStyles.Any, this.Culture, out n) ? n : -1)
+                        .Select(x => int.TryParse(x, NumberStyles.Any, culture, out int n) ? n : -1)
                         .ToArray();
                 }
 
@@ -78,11 +80,11 @@ namespace UmbMapper.PropertyMappers
                 string s = value as string ?? value.ToString();
                 if (!string.IsNullOrWhiteSpace(s))
                 {
-                    int n;
+                    // TODO: Optimize this
                     nodeIds = XmlHelper.CouldItBeXml(s)
                         ? s.GetXmlIds()
                         : s.ToDelimitedList()
-                            .Select(x => int.TryParse(x, NumberStyles.Any, this.Culture, out n) ? n : -1)
+                            .Select(x => int.TryParse(x, NumberStyles.Any, culture, out int n) ? n : -1)
                             .Where(x => x > 0)
                             .ToArray();
                 }
@@ -110,7 +112,7 @@ namespace UmbMapper.PropertyMappers
                 return multiPicker;
             }
 
-            return this.DefaultValue;
+            return info.DefaultValue;
         }
 
         /// <summary>

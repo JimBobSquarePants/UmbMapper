@@ -18,7 +18,7 @@ namespace UmbMapper
     /// Provides the mechanism for mapping a property from the Umbraco published content
     /// </summary>
     /// <typeparam name="T">The type of object to map</typeparam>
-    public class PropertyMap<T> : IEquatable<PropertyMap<T>>
+    public class PropertyMap<T> : IPropertyMap, IEquatable<PropertyMap<T>>
         where T : class
     {
         /// <summary>
@@ -34,17 +34,14 @@ namespace UmbMapper
             }
 
             this.Info = new PropertyMapInfo(property);
+            this.PropertyMapper = new UmbracoPropertyMapper(this.Info);
         }
 
-        /// <summary>
-        /// Gets the mapping property information
-        /// </summary>
+        /// <inheritdoc/>
         public PropertyMapInfo Info { get; }
 
-        /// <summary>
-        /// Gets the property mapper
-        /// </summary>
-        public IPropertyMapper PropertyMapper { get; internal set; }
+        /// <inheritdoc/>
+        public IPropertyMapper PropertyMapper { get; set; }
 
         /// <summary>
         /// Gets the mapping predicate. Used for mapping from known values in the current instance.
@@ -74,7 +71,7 @@ namespace UmbMapper
                 MemberExpression member = expression.Body as MemberExpression
                                           ?? (expression.Body as UnaryExpression)?.Operand as MemberExpression;
 
-                altNames[i] = member?.Member.Name ?? throw new ArgumentException("Action must be a member expression.");
+                altNames[i] = member?.Member.Name.ToUpperInvariant() ?? throw new ArgumentException("Action must be a member expression.");
             }
 
             this.Info.Aliases = altNames;
@@ -93,7 +90,7 @@ namespace UmbMapper
                 return this;
             }
 
-            this.Info.Aliases = aliases;
+            this.Info.Aliases = aliases.Select(x => x.ToUpperInvariant()).ToArray();
             return this;
         }
 
@@ -102,11 +99,11 @@ namespace UmbMapper
         /// </summary>
         /// <typeparam name="TMapper">The type of property mapper</typeparam>
         /// <returns>The <see cref="IPropertyMapper"/></returns>
-        public IPropertyMapper SetMapper<TMapper>()
+        public TMapper SetMapper<TMapper>()
             where TMapper : IPropertyMapper
         {
             this.PropertyMapper = (TMapper)typeof(TMapper).GetInstance(this.Info);
-            return this.PropertyMapper;
+            return (TMapper)this.PropertyMapper;
         }
 
         /// <summary>
@@ -170,25 +167,12 @@ namespace UmbMapper
         }
 
         /// <inheritdoc/>
-        public bool Equals(PropertyMap<T> other)
-        {
-            if (ReferenceEquals(null, other))
-            {
-                return false;
-            }
-
-            if (ReferenceEquals(this, other))
-            {
-                return true;
-            }
-
-            return this.Info.Equals(other.Info) && Equals(this.PropertyMapper, other.PropertyMapper);
-        }
+        public bool Equals(PropertyMap<T> other) => this.Info.Equals(other.Info);
 
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
+            if (obj is null)
             {
                 return false;
             }

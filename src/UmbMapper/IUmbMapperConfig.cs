@@ -4,6 +4,7 @@
 // </copyright>
 
 using System;
+using System.Collections.Generic;
 using Umbraco.Core.Models;
 
 namespace UmbMapper
@@ -17,6 +18,11 @@ namespace UmbMapper
         /// Gets the mapped type
         /// </summary>
         Type MappedType { get; }
+
+        /// <summary>
+        /// Gets the collection of mappings registered with the mapper
+        /// </summary>
+        IEnumerable<IPropertyMap> Mappings { get; }
 
         /// <summary>
         /// Performs the mapping operation

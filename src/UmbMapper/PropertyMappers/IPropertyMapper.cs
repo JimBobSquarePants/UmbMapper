@@ -3,10 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Reflection;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.Security;
@@ -16,8 +13,13 @@ namespace UmbMapper.PropertyMappers
     /// <summary>
     /// Defines properties for mapping a property
     /// </summary>
-    public interface IPropertyMapper : IPropertyMapInfo
+    public interface IPropertyMapper
     {
+        /// <summary>
+        /// Gets the property map info
+        /// </summary>
+        PropertyMapInfo Info { get; }
+
         /// <summary>
         /// Gets the Umbraco context
         /// </summary>
@@ -40,5 +42,11 @@ namespace UmbMapper.PropertyMappers
         /// <param name="value">The current value</param>
         /// <returns>The <see cref="object"/></returns>
         object Map(IPublishedContent content, object value);
+
+        /// <summary>
+        /// Gets the culture for the current request. This can be either the set culture or the request culture.
+        /// </summary>
+        /// <returns>The <see cref="CultureInfo"/></returns>
+        CultureInfo GetRequestCulture();
     }
 }

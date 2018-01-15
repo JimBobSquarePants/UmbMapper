@@ -5,6 +5,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UmbMapper.Extensions;
 using Umbraco.Core;
@@ -29,12 +30,15 @@ namespace UmbMapper.PropertyMappers
         /// <inheritdoc />
         public override object Map(IPublishedContent content, object value)
         {
+            PropertyMapInfo info = this.Info;
+
             if (value == null)
             {
-                return this.DefaultValue;
+                return info.DefaultValue;
             }
 
-            Type propertyType = this.PropertyType;
+            Type propertyType = info.PropertyType;
+            CultureInfo culture = this.GetRequestCulture();
 
             if (value is string strValue)
             {
@@ -47,7 +51,7 @@ namespace UmbMapper.PropertyMappers
                     foreach (string v in values)
                     {
                         // OR assignment. Stolen from ComponentModel EnumConverter.
-                        convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), this.Culture);
+                        convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), culture);
                     }
 
                     return Enum.ToObject(propertyType, convertedValue);
@@ -69,7 +73,7 @@ namespace UmbMapper.PropertyMappers
             if (valueType.IsEnum)
             {
                 // This should work for most cases where enums base type is int.
-                return Enum.ToObject(propertyType, Convert.ToInt64(value, this.Culture));
+                return Enum.ToObject(propertyType, Convert.ToInt64(value, culture));
             }
 
             if (valueType.IsEnumerableOfType(typeof(string)))
@@ -82,7 +86,7 @@ namespace UmbMapper.PropertyMappers
                     // ReSharper disable once LoopCanBeConvertedToQuery
                     foreach (string v in enumerable)
                     {
-                        convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), this.Culture);
+                        convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), culture);
                     }
 
                     return Enum.ToObject(propertyType, convertedValue);
@@ -91,7 +95,7 @@ namespace UmbMapper.PropertyMappers
                 return propertyType.GetInstance();
             }
 
-            return this.DefaultValue;
+            return info.DefaultValue;
         }
     }
 }

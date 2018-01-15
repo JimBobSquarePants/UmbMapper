@@ -26,10 +26,9 @@ namespace UmbMapper.Tests.Mapping
         public void UmbMapperCanMapMany()
         {
             var mapper = new PublishedItemMapMany();
-            IReadOnlyCollection<PropertyMap<PublishedItem>> currentMaps = mapper.Mappings;
-            int currentCount = currentMaps.Count;
+            IEnumerable<IPropertyMap> currentMaps = mapper.Mappings;
+            int currentCount = currentMaps.Count();
 
-            Assert.DoesNotContain(mapper.Mappings, m => m.PropertyMapper is UmbracoPickerPropertyMapper);
             Assert.DoesNotContain(mapper.Mappings, m => m.PropertyMapper is UmbracoPickerPropertyMapper);
 
             IEnumerable<PropertyMap<PublishedItem>> maps = mapper.AddMappings(
@@ -41,7 +40,7 @@ namespace UmbMapper.Tests.Mapping
             Assert.True(maps.Count() == 4);
 
             // Original map list count is unchanged
-            Assert.True(mapper.Mappings.Count == currentCount);
+            Assert.True(mapper.Mappings.Count() == currentCount);
 
             maps.ForEach(x => x.SetMapper<UmbracoPickerPropertyMapper>());
 

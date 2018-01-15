@@ -6,6 +6,7 @@
         public BasePublishedItemMap()
         {
             this.MapAll();
+            this.AddMap(m => m.Name).AsRecursive();
         }
     }
 }

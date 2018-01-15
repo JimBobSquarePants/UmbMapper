@@ -31,35 +31,37 @@ namespace UmbMapper.PropertyMappers
         /// <inheritdoc/>
         public override object Map(IPublishedContent content, object value)
         {
+            PropertyMapInfo info = this.Info;
+
             // First try custom properties
-            foreach (string name in this.Aliases)
+            foreach (string name in info.Aliases)
             {
-                value = this.CheckConvertType(content.GetPropertyValue(name, this.Recursive));
-                if (this.PropertyType.IsInstanceOfType(value))
+                value = this.CheckConvertType(content.GetPropertyValue(name, info.Recursive));
+                if (info.PropertyType.IsInstanceOfType(value))
                 {
                     break;
                 }
             }
 
             // Then try class properties
-            if (value.IsNullOrEmptyString() || value == this.DefaultValue)
+            if (value.IsNullOrEmptyString() || value == info.DefaultValue)
             {
                 Type contentType = content.GetType();
                 string key = contentType.AssemblyQualifiedName;
 
                 if (key != null)
                 {
-                    ContentAccessorCache.TryGetValue(key, out var accessor);
+                    ContentAccessorCache.TryGetValue(key, out FastPropertyAccessor accessor);
                     if (accessor == null)
                     {
                         accessor = new FastPropertyAccessor(contentType);
                         ContentAccessorCache.TryAdd(key, accessor);
                     }
 
-                    foreach (string name in this.Aliases)
+                    foreach (string name in info.Aliases)
                     {
                         value = this.CheckConvertType(accessor.GetValue(name, content));
-                        if (!value.IsNullOrEmptyString() && !value.Equals(this.DefaultValue))
+                        if (!value.IsNullOrEmptyString() && !value.Equals(info.DefaultValue))
                         {
                             break;
                         }
@@ -67,7 +69,7 @@ namespace UmbMapper.PropertyMappers
                 }
             }
 
-            return value ?? this.DefaultValue;
+            return value ?? info.DefaultValue;
         }
     }
 }

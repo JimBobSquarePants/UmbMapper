@@ -235,6 +235,7 @@
     <Compile Include="Extensions\PublishedContentExtensions.cs" />
     <Compile Include="Extensions\TypeInitializationExtensions.cs" />
     <Compile Include="FastPropertyAccessor.cs" />
+    <Compile Include="IPropertyMap.cs" />
     <Compile Include="IUmbMapperConfig.cs" />
     <Compile Include="Converters\SimpleConverter{T}.cs" />
     <Compile Include="PropertyMappers\CsvPropertyMapper.cs" />

@@ -48,17 +48,17 @@ namespace UmbMapper.Tests.Mapping
         {
             var config = new UmbMapperConfig<PublishedItem>();
 
-            IPropertyMapper idMapper = config.AddMap(p => p.Id).SetMapper<UmbracoPropertyMapper>();
-            IPropertyMapper nameMapper = config.AddMap(p => p.Name).SetMapper<UmbracoPropertyMapper>();
-            IPropertyMapper createdMapper = config.AddMap(p => p.CreateDate).SetMapper<UmbracoPropertyMapper>();
+            UmbracoPropertyMapper idMapper = config.AddMap(p => p.Id).SetMapper<UmbracoPropertyMapper>();
+            UmbracoPropertyMapper nameMapper = config.AddMap(p => p.Name).SetMapper<UmbracoPropertyMapper>();
+            UmbracoPropertyMapper createdMapper = config.AddMap(p => p.CreateDate).SetMapper<UmbracoPropertyMapper>();
 
             Assert.NotNull(idMapper);
             Assert.NotNull(nameMapper);
             Assert.NotNull(createdMapper);
 
-            Assert.True(typeof(int) == idMapper.PropertyType);
-            Assert.True(typeof(string) == nameMapper.PropertyType);
-            Assert.True(typeof(DateTime) == createdMapper.PropertyType);
+            Assert.True(typeof(int) == idMapper.Info.PropertyType);
+            Assert.True(typeof(string) == nameMapper.Info.PropertyType);
+            Assert.True(typeof(DateTime) == createdMapper.Info.PropertyType);
         }
     }
 }

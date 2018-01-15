@@ -84,10 +84,8 @@ namespace UmbMapper
         /// <inheritdoc/>
         public Type MappedType { get; }
 
-        /// <summary>
-        /// Gets the collection of mappings registered with the mapper
-        /// </summary>
-        public IReadOnlyCollection<PropertyMap<T>> Mappings => this.maps;
+        /// <inheritdoc/>
+        public IEnumerable<IPropertyMap> Mappings => this.maps;
 
         /// <summary>
         /// Adds the map from the property to an equivalent Umbraco property
@@ -226,15 +224,6 @@ namespace UmbMapper
                 if (this.hasChecked)
                 {
                     return;
-                }
-
-                // We don't have to explictly set a mapper.
-                foreach (PropertyMap<T> map in this.maps)
-                {
-                    if (map.PropertyMapper == null)
-                    {
-                        map.PropertyMapper = new UmbracoPropertyMapper(map.Info);
-                    }
                 }
 
                 // We need to organize mapping now into separate groups as ordering of mappings is important when using predicates.

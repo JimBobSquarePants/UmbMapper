@@ -37,9 +37,10 @@ namespace UmbMapper.PropertyMappers
         /// <inheritdoc/>
         public override object Map(IPublishedContent content, object value)
         {
-            Type propType = this.PropertyType;
-            bool propTypeIsEnumerable = this.IsEnumerableType;
-            Type baseType = this.IsEnumerableType ? this.EnumerableParamType : propType;
+            PropertyMapInfo info = this.Info;
+            Type propType = info.PropertyType;
+            bool propTypeIsEnumerable = info.IsEnumerableType;
+            Type baseType = info.IsEnumerableType ? info.EnumerableParamType : propType;
             IEnumerable<Type> types = UmbMapperRegistry.CurrentMappedTypes();
 
             // Check for IEnumerable<IPublishedContent> value
@@ -58,7 +59,7 @@ namespace UmbMapper.PropertyMappers
             }
 
             // No other possible options
-            return this.DefaultValue;
+            return info.DefaultValue;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

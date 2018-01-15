@@ -153,15 +153,25 @@ namespace UmbMapper.Tests.Mapping
         }
 
         [Fact]
+        public void RecursivePropertiesCanBeInherited()
+        {
+            IUmbMapperConfig mapper = UmbMapperRegistry.CurrentMappers().First(x => x.MappedType == typeof(InheritedPublishedItem));
+            IPropertyMap mapping = mapper.Mappings
+                .First(x => x.Info.Aliases.Contains(nameof(InheritedPublishedItem.Name), StringComparer.InvariantCultureIgnoreCase));
+
+            Assert.True(mapping.Info.Recursive);
+        }
+
+        [Fact]
         public void MapperCanRemoveMap()
         {
             var map = new LazyPublishedItemMap();
-            int mapCount = map.Mappings.Count;
+            int mapCount = map.Mappings.Count();
 
             bool result = map.Ignore(x => x.CreateDate);
 
             Assert.True(result);
-            Assert.Equal(mapCount - 1, map.Mappings.Count);
+            Assert.Equal(mapCount - 1, map.Mappings.Count());
         }
 
         [Fact]

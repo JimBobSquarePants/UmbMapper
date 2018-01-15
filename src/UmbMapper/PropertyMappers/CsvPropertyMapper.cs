@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UmbMapper.Converters;
 using UmbMapper.Extensions;
 using Umbraco.Core.Models;
@@ -35,9 +36,11 @@ namespace UmbMapper.PropertyMappers
                 return Enumerable.Empty<object>();
             }
 
-            Type typeArg = this.IsCastableEnumerableType
-                ? this.EnumerableParamType
-                : this.PropertyType;
+            PropertyMapInfo info = this.Info;
+            CultureInfo culture = this.GetRequestCulture();
+            Type typeArg = info.IsCastableEnumerableType
+                ? info.EnumerableParamType
+                : info.PropertyType;
 
             // Default to returning the string.
             Func<CultureInfo, string, Type, object> func = (i, s, t) => s;
@@ -89,11 +92,11 @@ namespace UmbMapper.PropertyMappers
 
             var result = new List<object>();
             string valueString = value.ToString();
-            string[] items = this.GetStringArray(valueString, this.Culture);
+            string[] items = GetStringArray(valueString, culture);
 
             foreach (string s in items)
             {
-                object item = func.Invoke(this.Culture, s, typeArg);
+                object item = func.Invoke(culture, s, typeArg);
                 if (item != null)
                 {
                     result.Add(item);
@@ -109,7 +112,8 @@ namespace UmbMapper.PropertyMappers
         /// <param name="input">The input string to split.</param>
         /// <param name="culture">A <see cref="CultureInfo"/>. The current culture to split string by.</param>
         /// <returns>The <see cref="T:String[]"/></returns>
-        protected string[] GetStringArray(string input, CultureInfo culture)
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static string[] GetStringArray(string input, CultureInfo culture)
         {
             char separator = culture.TextInfo.ListSeparator[0];
             string[] split = input.Split(separator);
