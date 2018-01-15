@@ -19,20 +19,20 @@ namespace UmbMapper.PublishedContentModelFactory
     /// </summary>
     public class UmbMapperPublishedContentModelFactory : IPublishedContentModelFactory
     {
-        private readonly IEnumerable<IUmbMapperConfig> registeredMappers;
+        private readonly IEnumerable<Type> registeredMappedTypes;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbMapperPublishedContentModelFactory"/> class.
         /// </summary>
         public UmbMapperPublishedContentModelFactory()
         {
-            IEnumerable<IUmbMapperConfig> mappers = UmbMapperRegistry.CurrentMappers();
+            IEnumerable<Type> mappers = UmbMapperRegistry.CurrentMappedTypes();
             if (mappers.Count() == 0)
             {
                 throw new InvalidOperationException("No mappers have been registered. Ensure that registration occures before initialization of this factory.");
             }
 
-            this.registeredMappers = mappers.Where(m => typeof(IPublishedContent).IsAssignableFrom(m.MappedType));
+            this.registeredMappedTypes = mappers.Where(m => typeof(IPublishedContent).IsAssignableFrom(m));
         }
 
         /// <summary>
@@ -49,11 +49,12 @@ namespace UmbMapper.PublishedContentModelFactory
             if (context != null && context.IsFrontEndUmbracoRequest)
             {
                 string typeName = this.ResolveTypeName(content);
-                IUmbMapperConfig mapper = this.registeredMappers.FirstOrDefault(m => m.MappedType.Name.InvariantEquals(typeName));
-
-                if (mapper != null)
+                foreach (Type type in this.registeredMappedTypes)
                 {
-                    return (IPublishedContent)content.MapTo(mapper.MappedType);
+                    if (type.Name.InvariantEquals(typeName))
+                    {
+                        return (IPublishedContent)content.MapTo(type);
+                    }
                 }
             }
 
