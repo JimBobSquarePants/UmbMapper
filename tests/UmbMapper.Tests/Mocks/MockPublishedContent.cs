@@ -35,6 +35,7 @@ namespace UmbMapper.Tests.Mocks
             this.Properties = properties;
             this.Id = id;
             this.Name = name;
+            this.DocumentTypeAlias = this.GetType().Name;
             this.Children = children;
         }
 

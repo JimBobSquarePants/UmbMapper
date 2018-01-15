@@ -5,7 +5,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using UmbMapper.Extensions;
 using UmbMapper.Invocations;
@@ -41,52 +40,39 @@ namespace UmbMapper.PropertyMappers
             Type propType = this.PropertyType;
             bool propTypeIsEnumerable = this.IsEnumerableType;
             Type baseType = this.IsEnumerableType ? this.EnumerableParamType : propType;
-
-            // TODO: Can this be moved to init to reduce running time?
-            var types = (IEnumerable<Type>)ApplicationContext.Current.ApplicationCache.StaticCache.GetCacheItem("UmbMapperFactoryAttribute_ResolveTypes_" + baseType.AssemblyQualifiedName, () =>
-            {
-                // Workaround for http://issues.umbraco.org/issue/U4-9011
-                if (baseType.Assembly.IsAppCodeAssembly())
-                {
-                    // This logic is taken from the core type finder so it should be performing the same checks
-                    return baseType.Assembly
-                        .GetTypes()
-                        .Where(t => baseType.IsAssignableFrom(t)
-                                    && t.IsClass
-                                    && !t.IsAbstract
-                                    && !t.IsSealed
-                                    && !t.IsNestedPrivate
-                                    && t.GetCustomAttribute<HideFromTypeFinderAttribute>(true) == null)
-                        .ToArray();
-                }
-
-                return PluginManagerInvocations.ResolveTypes(baseType);
-            });
+            IEnumerable<Type> types = UmbMapperRegistry.CurrentMappedTypes();
 
             // Check for IEnumerable<IPublishedContent> value
-            if (value is IEnumerable<IPublishedContent> enumerableValue)
+            if (value is IEnumerable<IPublishedContent> enumerableContentValue)
             {
-                // IEnumerable<object> items = enumerableValue.Select(x =>
-                // {
-                //    string typeName = this.ResolveTypeName(x);
-                //    Type type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
-                //
-                //    return type != null ? x.MapTo(type) : null;
-                // });
-                IEnumerable<object> items = this.Select(enumerableValue, types);
+                IEnumerable<object> items = this.Select(enumerableContentValue, types);
                 return EnumerableInvocations.Cast(baseType, items);
             }
 
             // Check for IPublishedContent value
-            if (value is IPublishedContent ipublishedContentValue)
+            if (value is IPublishedContent contentValue)
             {
-                string typeName = this.ResolveTypeName(ipublishedContentValue);
-                Type type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
-                return type != null ? ipublishedContentValue.MapTo(type) : null;
+                string typeName = this.ResolveTypeName(contentValue);
+                Type type = FirstOrDefault(types, typeName);
+                return type != null ? contentValue.MapTo(type) : null;
             }
 
             // No other possible options
             return this.DefaultValue;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static Type FirstOrDefault(IEnumerable<Type> types, string typeName)
+        {
+            foreach (Type type in types)
+            {
+                if (type.Name.InvariantEquals(typeName))
+                {
+                    return type;
+                }
+            }
+
+            return null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

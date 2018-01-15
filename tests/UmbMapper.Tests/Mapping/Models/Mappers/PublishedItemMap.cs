@@ -18,6 +18,7 @@ namespace UmbMapper.Tests.Mapping.Models
             this.AddMap(p => p.RelatedLinks);
             this.AddMap(p => p.RelatedLink);
             this.AddMap(p => p.NullRelatedLinks);
+            this.AddMap(p => p.Polymorphic).SetMapper<DocTypeFactoryPropertyMapper>();
         }
     }
 }

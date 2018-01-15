@@ -26,8 +26,8 @@ namespace UmbMapper.PublishedContentModelFactory
         /// </summary>
         public UmbMapperPublishedContentModelFactory()
         {
-            IReadOnlyCollection<IUmbMapperConfig> mappers = UmbMapperRegistry.CurrentMappers();
-            if (mappers.Count == 0)
+            IEnumerable<IUmbMapperConfig> mappers = UmbMapperRegistry.CurrentMappers();
+            if (mappers.Count() == 0)
             {
                 throw new InvalidOperationException("No mappers have been registered. Ensure that registration occures before initialization of this factory.");
             }

@@ -24,7 +24,13 @@ namespace UmbMapper
         /// Gets a readonly collection of the registered mappers
         /// </summary>
         /// <returns>The <see cref="IReadOnlyCollection{T}"/></returns>
-        public static IReadOnlyCollection<IUmbMapperConfig> CurrentMappers() => Mappers.Values.ToArray();
+        public static IEnumerable<IUmbMapperConfig> CurrentMappers() => Mappers.Values;
+
+        /// <summary>
+        /// Gets a readonly collection of the registered mapped types
+        /// </summary>
+        /// <returns>The <see cref="IReadOnlyCollection{T}"/></returns>
+        public static IEnumerable<Type> CurrentMappedTypes() => Mappers.Keys;
 
         /// <summary>
         /// Adds the mapper configuration to the mapping registry

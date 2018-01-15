@@ -225,5 +225,17 @@ namespace UmbMapper.Tests.Mapping
             Assert.Equal(singleExpected, result.SingleItem);
             Assert.Equal(enumerableExpected, result.EnumerableItems);
         }
+
+        [Fact]
+        public void MapperCanMapPolymorphicTypes()
+        {
+            MockPublishedContent content = this.support.Content;
+
+            PublishedItem result = content.MapTo<PublishedItem>();
+
+            Assert.True(result.Polymorphic.Any());
+            Assert.Contains(result.Polymorphic, x => x.PolyMorphicText == "Foo");
+            Assert.Contains(result.Polymorphic, x => x.PolyMorphicText == "Bar");
+        }
     }
 }

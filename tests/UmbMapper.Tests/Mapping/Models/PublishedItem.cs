@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UmbMapper.Tests.Mocks;
 using Umbraco.Core.Models;
 using Umbraco.Web.Models;
@@ -30,5 +31,7 @@ namespace UmbMapper.Tests.Mapping.Models
         public RelatedLinks RelatedLinks { get; set; }
 
         public RelatedLinks NullRelatedLinks { get; set; }
+
+        public IEnumerable<IPolyMorphic> Polymorphic { get; set; }
     }
 }

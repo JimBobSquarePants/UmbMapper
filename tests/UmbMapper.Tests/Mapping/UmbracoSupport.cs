@@ -90,6 +90,7 @@ namespace UmbMapper.Tests.Mapping
 
                                 case "id(3333)":
                                     return new MockPublishedContent { Id = 3333 }.AsEnumerableOfOne();
+
                                 default:
                                     return Enumerable.Empty<IPublishedContent>();
                             }
@@ -132,9 +133,25 @@ namespace UmbMapper.Tests.Mapping
                     new MockPublishedContentProperty(nameof(PublishedItem.Child), 3333),
 
                     // We're deliberately switching these values to test enumerable conversion
-                    new MockPublishedContentProperty(nameof(PublishedItem.RelatedLink), new RelatedLinks(new List<RelatedLink>{link},nameof(PublishedItem.RelatedLink))),
+                    new MockPublishedContentProperty(nameof(PublishedItem.RelatedLink), new RelatedLinks(new List<RelatedLink>{ this.link },nameof(PublishedItem.RelatedLink))),
                     new MockPublishedContentProperty(nameof(PublishedItem.RelatedLinks), this.link),
                     new MockPublishedContentProperty(nameof(PublishedItem.NullRelatedLinks), null),
+
+                    // Polymorphic collections
+                    new MockPublishedContentProperty(nameof(PublishedItem.Polymorphic),
+                    new MockPublishedContent[]{
+
+                        new MockPublishedContent()
+                        {
+                            DocumentTypeAlias = nameof(PolymorphicItemOne),
+                            Properties = new[]{ new MockPublishedContentProperty(nameof(IPolyMorphic.PolyMorphicText),"Foo")}
+                        },
+                        new MockPublishedContent()
+                        {
+                            DocumentTypeAlias = nameof(PolymorphicItemTwo),
+                            Properties = new[]{ new MockPublishedContentProperty(nameof(IPolyMorphic.PolyMorphicText),"Bar")}
+                        }
+                    })
                 }
             };
         }
@@ -147,6 +164,8 @@ namespace UmbMapper.Tests.Mapping
             UmbMapperRegistry.AddMapper(new BackedPublishedItemMap());
             UmbMapperRegistry.AddMapper(new InheritedPublishedItemMap());
             UmbMapperRegistry.AddMapper(new CsvPublishedItemMap());
+            UmbMapperRegistry.AddMapperFor<PolymorphicItemOne>();
+            UmbMapperRegistry.AddMapperFor<PolymorphicItemTwo>();
         }
 
         public void Dispose()

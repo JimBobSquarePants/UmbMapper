@@ -236,7 +236,6 @@
     <Compile Include="Extensions\TypeInitializationExtensions.cs" />
     <Compile Include="FastPropertyAccessor.cs" />
     <Compile Include="IUmbMapperConfig.cs" />
-    <Compile Include="Invocations\PluginManagerInvocations.cs" />
     <Compile Include="Converters\SimpleConverter{T}.cs" />
     <Compile Include="PropertyMappers\CsvPropertyMapper.cs" />
     <Compile Include="Converters\IntegralNumberConverter{T}.cs" />
