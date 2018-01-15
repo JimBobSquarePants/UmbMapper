@@ -54,9 +54,10 @@ namespace UmbMapper
         /// <summary>
         /// Sets the aliases to check against when mapping the property
         /// </summary>
+        /// <typeparam name="TProperty">The type of the property to map.</typeparam>
         /// <param name="aliases">The collection of alias identifiers to map from; case insensitive</param>
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
-        public PropertyMap<T> SetAlias(params Expression<Func<T, object>>[] aliases)
+        public PropertyMap<T> SetAlias<TProperty>(params Expression<Func<T, TProperty>>[] aliases)
         {
             if (aliases == null)
             {
@@ -66,7 +67,7 @@ namespace UmbMapper
             string[] altNames = new string[aliases.Length];
             for (int i = 0; i < aliases.Length; i++)
             {
-                Expression<Func<T, object>> expression = aliases[i];
+                Expression<Func<T, TProperty>> expression = aliases[i];
 
                 // The property access might be getting converted to object to match the func
                 // If so, get the operand and see if that's a member expression

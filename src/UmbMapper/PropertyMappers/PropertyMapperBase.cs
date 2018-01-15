@@ -39,6 +39,7 @@ namespace UmbMapper.PropertyMappers
             this.Property = info.Property;
             this.PropertyType = info.PropertyType;
             this.IsEnumerableType = info.IsEnumerableType;
+            this.EnumerableParamType = info.EnumerableParamType;
             this.IsCastableEnumerableType = info.IsCastableEnumerableType;
             this.IsConvertableEnumerableType = info.IsConvertableEnumerableType;
             this.IsEnumerableOfKeyValueType = info.IsEnumerableOfKeyValueType;
@@ -53,6 +54,8 @@ namespace UmbMapper.PropertyMappers
             }
 
             this.Recursive = info.Recursive;
+            this.Lazy = info.Lazy;
+            this.HasPredicate = info.HasPredicate;
             this.DefaultValue = info.DefaultValue ?? this.GetDefaultValue(this.PropertyType);
             this.culture = info.Culture;
         }
@@ -63,8 +66,14 @@ namespace UmbMapper.PropertyMappers
         /// <inheritdoc/>
         public Type PropertyType { get; }
 
+        /// <inheritdoc/>
+        public ParameterInfo[] ConstructorParams { get; }
+
         /// <inheritdoc />
         public bool IsEnumerableType { get; }
+
+        /// <inheritdoc />
+        public Type EnumerableParamType { get; }
 
         /// <inheritdoc />
         public bool IsConvertableEnumerableType { get; }
@@ -80,6 +89,12 @@ namespace UmbMapper.PropertyMappers
 
         /// <inheritdoc/>
         public bool Recursive { get; }
+
+        /// <inheritdoc/>
+        public bool Lazy { get; }
+
+        /// <inheritdoc/>
+        public bool HasPredicate { get; }
 
         /// <inheritdoc/>
         public object DefaultValue { get; }

@@ -15,7 +15,7 @@ namespace UmbMapper.PropertyMappers
     /// <summary>
     /// Contains the propererties required for mapping an Umbraco property
     /// </summary>
-    public class PropertyMapInfo : IEquatable<PropertyMapInfo>
+    public class PropertyMapInfo : IEquatable<PropertyMapInfo>, IPropertyMapInfo
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyMapInfo"/> class.
@@ -25,73 +25,54 @@ namespace UmbMapper.PropertyMappers
         {
             this.Property = property;
             this.PropertyType = property.PropertyType;
+            this.ConstructorParams = this.PropertyType.GetConstructorParameters();
             this.IsEnumerableType = this.PropertyType.IsEnumerableType();
+            this.EnumerableParamType = this.PropertyType.GetEnumerableType();
             this.IsConvertableEnumerableType = this.PropertyType.IsConvertableEnumerableType();
             this.IsCastableEnumerableType = this.PropertyType.IsCastableEnumerableType();
             this.IsEnumerableOfKeyValueType = this.PropertyType.IsEnumerableOfKeyValueType();
         }
 
-        /// <summary>
-        /// Gets the property
-        /// </summary>
+        /// <inheritdoc/>
         public PropertyInfo Property { get; }
 
-        /// <summary>
-        /// Gets the property type
-        /// </summary>
+        /// <inheritdoc/>
         public Type PropertyType { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the specified type is an enumerable type.
-        /// </summary>
+        /// <inheritdoc/>
+        public ParameterInfo[] ConstructorParams { get; private set; }
+
+        /// <inheritdoc/>
+        public Type EnumerableParamType { get; }
+
+        /// <inheritdoc/>
         public bool IsEnumerableType { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the specified type is an enumerable type that is safe to convert
-        /// from <see cref="IEnumerable{T}"/> to a single item following processing via a mapper.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsConvertableEnumerableType { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the specified type is an enumerable type that is safe to cast
-        /// following processing via a type converter
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsCastableEnumerableType { get; }
 
-        /// <summary>
-        /// Gets a value indicating whether the specified type is an enumerable type containing a
-        /// key value pair as the generic type parameter.
-        /// </summary>
+        /// <inheritdoc/>
         public bool IsEnumerableOfKeyValueType { get; }
 
-        /// <summary>
-        /// Gets the property aliases
-        /// </summary>
+        /// <inheritdoc/>>
         public string[] Aliases { get; internal set; } = new string[0];
 
-        /// <summary>
-        /// Gets a value indicating whether to map the property recursively up the tree
-        /// </summary>
+        /// <inheritdoc/>
         public bool Recursive { get; internal set; }
 
-        /// <summary>
-        /// Gets a value indicating whether to lazily map the property
-        /// </summary>
+        /// <inheritdoc/>
         public bool Lazy { get; internal set; }
 
-        /// <summary>
-        /// Gets a value indicating whether the property is evaluated via a predicate
-        /// </summary>
+        /// <inheritdoc/>
         public bool HasPredicate { get; internal set; }
 
-        /// <summary>
-        /// Gets the default value
-        /// </summary>
+        /// <inheritdoc/>>
         public object DefaultValue { get; internal set; }
 
-        /// <summary>
-        /// Gets the culture
-        /// </summary>
+        /// <inheritdoc/>
         public CultureInfo Culture { get; internal set; }
 
         /// <inheritdoc/>
@@ -109,6 +90,7 @@ namespace UmbMapper.PropertyMappers
 
             return this.Property.Name == other.Property.Name
                 && this.PropertyType == other.PropertyType
+                && this.ConstructorParams.SequenceEqual(other.ConstructorParams)
                 && this.IsEnumerableType == other.IsEnumerableType
                 && this.IsCastableEnumerableType == other.IsCastableEnumerableType
                 && this.IsEnumerableOfKeyValueType == other.IsEnumerableOfKeyValueType
@@ -153,6 +135,8 @@ namespace UmbMapper.PropertyMappers
             {
                 int hashCode = info.Property != null ? info.Property.GetHashCode() : 0;
                 hashCode = (hashCode * 397) ^ (info.PropertyType != null ? info.PropertyType.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ info.ConstructorParams.GetHashCode();
+                hashCode = (hashCode * 397) ^ (info.EnumerableParamType != null ? info.EnumerableParamType.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ info.IsEnumerableType.GetHashCode();
                 hashCode = (hashCode * 397) ^ info.IsCastableEnumerableType.GetHashCode();
                 hashCode = (hashCode * 397) ^ info.IsEnumerableOfKeyValueType.GetHashCode();

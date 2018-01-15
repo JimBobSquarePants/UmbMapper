@@ -38,11 +38,8 @@ namespace UmbMapper.Extensions
             if (constructorParams == null)
             {
                 ConstructorInfo constructor = type.GetConstructors().OrderBy(x => x.GetParameters().Length).FirstOrDefault();
-                if (constructor != null)
-                {
-                    constructorParams = constructor.GetParameters();
-                    ConstructorCache.TryAdd(type, constructorParams);
-                }
+                constructorParams = constructor != null ? constructor.GetParameters() : new ParameterInfo[0];
+                ConstructorCache.TryAdd(type, constructorParams);
             }
 
             return constructorParams;
@@ -227,7 +224,6 @@ namespace UmbMapper.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Type GetEnumerableType(this Type type)
         {
-            // if it's not an enumerable why do you call this method all ?
             if (!type.IsEnumerableType())
             {
                 return null;

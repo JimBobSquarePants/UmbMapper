@@ -30,7 +30,7 @@ namespace UmbMapper.Tests.Mapping
         {
             var config = new UmbMapperConfig<PublishedItem>();
 
-            Assert.Throws(typeof(InvalidOperationException), () =>
+            Assert.Throws<InvalidOperationException>(() =>
             {
                 config.AddMap(p => p.Id).AsLazy();
             });

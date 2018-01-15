@@ -97,7 +97,7 @@ namespace UmbMapper
         /// <exception cref="ArgumentException">Thrown if the expression is not a property member expression.</exception>
         public PropertyMap<T> AddMap(Expression<Func<T, object>> propertyExpression)
         {
-            if (!this.GetOrCreateMap(propertyExpression.ToPropertyInfo(), out var map))
+            if (!this.GetOrCreateMap(propertyExpression.ToPropertyInfo(), out PropertyMap<T> map))
             {
                 this.maps.Add(map);
             }
@@ -121,7 +121,7 @@ namespace UmbMapper
             var mapsTemp = new List<PropertyMap<T>>();
             foreach (Expression<Func<T, object>> property in propertyExpressions)
             {
-                if (!this.GetOrCreateMap(property.ToPropertyInfo(), out var map))
+                if (!this.GetOrCreateMap(property.ToPropertyInfo(), out PropertyMap<T> map))
                 {
                     this.maps.Add(map);
                 }
@@ -141,7 +141,7 @@ namespace UmbMapper
         {
             foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags))
             {
-                if (!this.GetOrCreateMap(property, out var map))
+                if (!this.GetOrCreateMap(property, out PropertyMap<T> map))
                 {
                     this.maps.Add(map);
                 }
@@ -273,7 +273,7 @@ namespace UmbMapper
         {
             foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags).Where(p => p.CanWrite))
             {
-                if (!this.GetOrCreateMap(property, out var map))
+                if (!this.GetOrCreateMap(property, out PropertyMap<T> map))
                 {
                     this.maps.Add(map);
                 }
@@ -331,7 +331,7 @@ namespace UmbMapper
                 // If the property value is an IEnumerable<IPublishedContent>, then we can map it to the target type.
                 if (value.GetType().IsEnumerableOfType(typeof(IPublishedContent)) && info.IsEnumerableType)
                 {
-                    Type genericType = info.PropertyType.GetEnumerableType();
+                    Type genericType = info.EnumerableParamType;
                     if (genericType != null && genericType.IsClass)
                     {
                         return ((IEnumerable<IPublishedContent>)value).MapTo(genericType);
@@ -362,7 +362,7 @@ namespace UmbMapper
                 // I cant think of any that don't have an empty constructor
                 if (value.Equals(Enumerable.Empty<object>()) && propertyIsCastableEnumerable)
                 {
-                    Type typeArg = info.PropertyType.GetTypeInfo().GenericTypeArguments.First();
+                    Type typeArg = info.EnumerableParamType;
                     return info.PropertyType.IsInterface ? EnumerableInvocations.Cast(typeArg, (IEnumerable)value) : info.PropertyType.GetInstance();
                 }
 
@@ -389,13 +389,13 @@ namespace UmbMapper
                     if (info.PropertyType.IsInterface && !info.IsEnumerableOfKeyValueType)
                     {
                         // Value is null, but property is enumerable interface, so return empty enumerable
-                        return EnumerableInvocations.Empty(info.PropertyType.GenericTypeArguments.First());
+                        return EnumerableInvocations.Empty(info.EnumerableParamType);
                     }
 
                     // Concrete enumerables cannot be cast from Array so we create an instance and return it
                     // if we know it has an empty constructor.
-                    ParameterInfo[] constructorParams = info.PropertyType.GetConstructorParameters();
-                    if (constructorParams != null && constructorParams.Length == 0)
+                    ParameterInfo[] constructorParams = info.ConstructorParams;
+                    if (constructorParams.Length == 0)
                     {
                         // Internally this uses Activator.CreateInstance which is heavily optimized.
                         return info.PropertyType.GetInstance();

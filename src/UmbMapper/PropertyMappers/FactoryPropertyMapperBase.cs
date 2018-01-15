@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UmbMapper.Extensions;
 using UmbMapper.Invocations;
 using Umbraco.Core;
@@ -38,9 +39,10 @@ namespace UmbMapper.PropertyMappers
         public override object Map(IPublishedContent content, object value)
         {
             Type propType = this.PropertyType;
-            bool propTypeIsEnumerable = propType.IsEnumerableType();
-            Type baseType = propTypeIsEnumerable ? propType.GetEnumerableType() : propType;
+            bool propTypeIsEnumerable = this.IsEnumerableType;
+            Type baseType = this.IsEnumerableType ? this.EnumerableParamType : propType;
 
+            // TODO: Can this be moved to init to reduce running time?
             var types = (IEnumerable<Type>)ApplicationContext.Current.ApplicationCache.StaticCache.GetCacheItem("UmbMapperFactoryAttribute_ResolveTypes_" + baseType.AssemblyQualifiedName, () =>
             {
                 // Workaround for http://issues.umbraco.org/issue/U4-9011
@@ -64,14 +66,14 @@ namespace UmbMapper.PropertyMappers
             // Check for IEnumerable<IPublishedContent> value
             if (value is IEnumerable<IPublishedContent> enumerableValue)
             {
-                IEnumerable<object> items = enumerableValue.Select(x =>
-                {
-                    string typeName = this.ResolveTypeName(x);
-                    Type type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
-
-                    return type != null ? x.MapTo(type) : null;
-                });
-
+                // IEnumerable<object> items = enumerableValue.Select(x =>
+                // {
+                //    string typeName = this.ResolveTypeName(x);
+                //    Type type = types.FirstOrDefault(y => y.Name.InvariantEquals(typeName));
+                //
+                //    return type != null ? x.MapTo(type) : null;
+                // });
+                IEnumerable<object> items = this.Select(enumerableValue, types);
                 return EnumerableInvocations.Cast(baseType, items);
             }
 
@@ -85,6 +87,27 @@ namespace UmbMapper.PropertyMappers
 
             // No other possible options
             return this.DefaultValue;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private IEnumerable<object> Select(IEnumerable<IPublishedContent> content, IEnumerable<Type> types)
+        {
+            foreach (IPublishedContent item in content)
+            {
+                string typeName = this.ResolveTypeName(item);
+                Type match = null;
+
+                foreach (Type type in types)
+                {
+                    if (type.Name.InvariantEquals(typeName))
+                    {
+                        match = type;
+                        break;
+                    }
+                }
+
+                yield return match != null ? item.MapTo(match) : null;
+            }
         }
     }
 }

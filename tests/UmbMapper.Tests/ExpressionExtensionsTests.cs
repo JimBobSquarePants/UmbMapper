@@ -17,7 +17,7 @@ namespace UmbMapper.Tests
         [Fact]
         public void ThrowsWhenPassedNonProperty()
         {
-            Assert.Throws(typeof(ArgumentException), () =>
+            Assert.Throws<ArgumentException>(() =>
             {
                 ExpressionExtensions.ToPropertyInfo<Func<string, object>>(s => s.Clone());
             });

@@ -240,6 +240,7 @@
     <Compile Include="Converters\SimpleConverter{T}.cs" />
     <Compile Include="PropertyMappers\CsvPropertyMapper.cs" />
     <Compile Include="Converters\IntegralNumberConverter{T}.cs" />
+    <Compile Include="PropertyMappers\IPropertyMapInfo.cs" />
     <Compile Include="TypeConstants.cs" />
     <Compile Include="UmbMapperConfigLocker.cs" />
     <Compile Include="UmbMapperRegistry.cs" />
@@ -265,7 +266,9 @@
     <Compile Include="UmbMapperConstants.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
+    <None Include="app.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <AdditionalFiles Include="..\..\stylecop.json" />
   </ItemGroup>

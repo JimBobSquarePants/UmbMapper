@@ -36,7 +36,7 @@ namespace UmbMapper.PropertyMappers
             }
 
             Type typeArg = this.IsCastableEnumerableType
-                ? this.PropertyType.GenericTypeArguments.First()
+                ? this.EnumerableParamType
                 : this.PropertyType;
 
             // Default to returning the string.
@@ -112,7 +112,13 @@ namespace UmbMapper.PropertyMappers
         protected string[] GetStringArray(string input, CultureInfo culture)
         {
             char separator = culture.TextInfo.ListSeparator[0];
-            string[] result = input.Split(separator).Select(s => s.Trim()).ToArray();
+            string[] split = input.Split(separator);
+            string[] result = new string[split.Length];
+
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = split[i].Trim();
+            }
 
             return result;
         }
