@@ -32,11 +32,12 @@ namespace UmbMapper.PropertyMappers
         public override object Map(IPublishedContent content, object value)
         {
             PropertyMapInfo info = this.Info;
+            string[] aliases = info.Aliases;
 
             // First try custom properties
-            foreach (string name in info.Aliases)
+            for (int i = 0; i < aliases.Length; i++)
             {
-                value = this.CheckConvertType(content.GetPropertyValue(name, info.Recursive));
+                value = this.CheckConvertType(content.GetPropertyValue(aliases[i], info.Recursive));
                 if (info.PropertyType.IsInstanceOfType(value))
                 {
                     break;
@@ -58,9 +59,9 @@ namespace UmbMapper.PropertyMappers
                         ContentAccessorCache.TryAdd(key, accessor);
                     }
 
-                    foreach (string name in info.Aliases)
+                    for (int i = 0; i < aliases.Length; i++)
                     {
-                        value = this.CheckConvertType(accessor.GetValue(name, content));
+                        value = this.CheckConvertType(accessor.GetValue(aliases[i], content));
                         if (!value.IsNullOrEmptyString() && !value.Equals(info.DefaultValue))
                         {
                             break;
