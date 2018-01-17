@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using UmbMapper.Extensions;
 using Umbraco.Core;
 using Umbraco.Core.Models;
@@ -62,15 +63,12 @@ namespace UmbMapper.PropertyMappers
             {
                 if (type.IsEnumerableOfType(typeof(string)))
                 {
-                    // TODO: Optimize this
-                    nodeIds = ((IEnumerable<string>)value)
-                        .Select(x => int.TryParse(x, NumberStyles.Any, culture, out int n) ? n : -1)
-                        .ToArray();
+                    nodeIds = SelectNodeIds((IEnumerable<string>)value, culture);
                 }
 
                 if (type.IsEnumerableOfType(typeof(int)))
                 {
-                    nodeIds = ((IEnumerable<int>)value).ToArray();
+                    nodeIds = type.IsArray ? (int[])value : ((IEnumerable<int>)value).ToArray();
                 }
             }
 
@@ -80,13 +78,9 @@ namespace UmbMapper.PropertyMappers
                 string s = value as string ?? value.ToString();
                 if (!string.IsNullOrWhiteSpace(s))
                 {
-                    // TODO: Optimize this
                     nodeIds = XmlHelper.CouldItBeXml(s)
                         ? s.GetXmlIds()
-                        : s.ToDelimitedList()
-                            .Select(x => int.TryParse(x, NumberStyles.Any, culture, out int n) ? n : -1)
-                            .Where(x => x > 0)
-                            .ToArray();
+                        : SelectNodeIds(s.ToDelimitedList(), culture);
                 }
             }
 
@@ -95,17 +89,19 @@ namespace UmbMapper.PropertyMappers
                 UmbracoObjectTypes objectType = UmbracoObjectTypes.Unknown;
                 var multiPicker = new List<IPublishedContent>();
 
-                // Oh so ugly if you let Resharper do this.
-                // ReSharper disable once LoopCanBeConvertedToQuery
-                foreach (int nodeId in nodeIds)
+                for (int i = 0; i < nodeIds.Length; i++)
                 {
-                    IPublishedContent item = this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Document, this.UmbracoContext.ContentCache.GetById)
-                               ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Media, this.UmbracoContext.MediaCache.GetById)
-                               ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Member, this.Members.GetById);
-
-                    if (item != null)
+                    int nodeId = nodeIds[i];
+                    if (nodeId > -1)
                     {
-                        multiPicker.Add(item);
+                        IPublishedContent item = this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Document, this.UmbracoContext.ContentCache.GetById)
+                        ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Media, this.UmbracoContext.MediaCache.GetById)
+                        ?? this.GetPublishedContent(nodeId, ref objectType, UmbracoObjectTypes.Member, this.Members.GetById);
+
+                        if (item != null)
+                        {
+                            multiPicker.Add(item);
+                        }
                     }
                 }
 
@@ -113,6 +109,21 @@ namespace UmbMapper.PropertyMappers
             }
 
             return info.DefaultValue;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static int[] SelectNodeIds(IEnumerable<string> values, CultureInfo culture)
+        {
+            int length = values.Count();
+            int[] result = new int[length];
+            int i = 0;
+
+            foreach (string item in values)
+            {
+                result[i++] = int.TryParse(item, NumberStyles.Any, culture, out int n) ? n : -1;
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -125,6 +136,7 @@ namespace UmbMapper.PropertyMappers
         /// <returns>
         /// The requested content, or null if either it does not exist or <paramref name="actual"/> does not match <paramref name="expected"/>
         /// </returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private IPublishedContent GetPublishedContent(int nodeId, ref UmbracoObjectTypes actual, UmbracoObjectTypes expected, Func<int, IPublishedContent> typedMethod)
         {
             // Is the given type supported by the typed method.
