@@ -1,4 +1,4 @@
-<!-- Version 1.14.1 -->
+<!-- Version 1.18.0 -->
 <div class="umb-panel archetype-dialog archetypeConfig" ng-controller="ArchetypeConfigOptionsController">
     <div class="umb-panel-body no-header with-footer umb-scrollable archetypeAdvancedOptions">
         <h3><archetype-localize key="global_fieldset_options">Global Fieldset Options</archetype-localize></h3>
@@ -13,6 +13,10 @@
         </div>
         <div>
             <label for="archetypeAdvancedOptionsMultipleOpen"><input type="checkbox" id="archetypeAdvancedOptionsMultipleOpen" ng-model="dialogData.model.enableMultipleOpen" /><archetype-localize key="enableMultipleOpen">Enable Multiple Open Fieldsets?</archetype-localize><small><archetype-localize key="enableMultipleOpenDescription">When fieldset collapsing is enabled, this allows multiple fieldsets to be open at the same time.</archetype-localize></small></label>
+        </div>
+        <div>
+            <label for="archetypeAdvancedOptionsMinFieldsets"><archetype-localize key="minFieldsets">Min Fieldsets</archetype-localize><small><archetype-localize key="minFieldsetsDescription">How many Fieldsets are required? Default is none.</archetype-localize></small></label>
+            <input type="number" id="archetypeAdvancedOptionsMinFieldsets" class="archetypeMaxFieldsets" ng-model="dialogData.model.minFieldsets" />
         </div>
         <div>
             <label for="archetypeAdvancedOptionsMaxFieldsets"><archetype-localize key="maxFieldsets">Max Fieldsets</archetype-localize><small><archetype-localize key="maxFieldsetsDescription">How many Fieldsets are allowed? Entering '1' will disable the controls. Default is unlimited.</archetype-localize></small></label>
