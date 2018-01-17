@@ -374,13 +374,12 @@ namespace UmbMapper.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string ReplaceMany(string text, char[] chars, char replacement)
         {
-            string result = text;
             for (int i = 0; i < chars.Length; i++)
             {
-                result = result.Replace(chars[i], replacement);
+                text = text.Replace(chars[i], replacement);
             }
 
-            return result;
+            return text;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
