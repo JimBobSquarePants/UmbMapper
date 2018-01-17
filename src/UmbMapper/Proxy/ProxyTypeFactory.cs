@@ -125,7 +125,7 @@ namespace UmbMapper.Proxy
             Type result = typeBuilder.CreateType();
 
 #if DEBUG
-            assemblyBuilder.Save(typeName + ".dll");
+           // assemblyBuilder.Save(typeName + ".dll");
 #endif
             return result;
         }

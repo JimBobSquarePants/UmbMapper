@@ -7,6 +7,7 @@ using System;
 using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Web;
+using UmbMapper.Extensions;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
@@ -76,17 +77,10 @@ namespace UmbMapper.PropertyMappers
                 return value;
             }
 
-            try
+            Attempt<object> attempt = value.UmbMapperTryConvertTo(propType);
+            if (attempt.Success)
             {
-                Attempt<object> attempt = value.TryConvertTo(propType);
-                if (attempt.Success)
-                {
-                    return attempt.Result;
-                }
-            }
-            catch
-            {
-                return value;
+                return attempt.Result;
             }
 
             // Special case for IHtmlString to remove Html.Raw requirement

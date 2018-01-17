@@ -12,25 +12,25 @@ namespace UmbMapper.Tests
         static readonly double RoundedPi = Math.Round(Pi, MidpointRounding.AwayFromZero);
 
         public static TheoryData<object, string, Type> IntegralValues = new TheoryData<object, string, Type> {
-            { (sbyte)1, "1", TypeConstants.Sbyte },
-            { (byte)1, "1", TypeConstants.Byte },
-            { (short)1, "1",TypeConstants.Short },
-            { (ushort)1, "1",TypeConstants.UShort },
-            { (int)1, "1" ,TypeConstants.Int},
-            { (uint)1, "1",TypeConstants.UInt },
-            { (long)1, "1",TypeConstants.Long },
-            { (ulong)1, "1",TypeConstants.ULong }
+            { (sbyte)1, "1", typeof(sbyte) },
+            { (byte)1, "1", typeof(byte) },
+            { (short)1, "1",typeof(short) },
+            { (ushort)1, "1",typeof(ushort) },
+            { (int)1, "1" ,typeof(int)},
+            { (uint)1, "1",typeof(uint) },
+            { (long)1, "1",typeof(long) },
+            { (ulong)1, "1",typeof(ulong) }
         };
 
         public static TheoryData<object, string, Type> RealValues = new TheoryData<object, string, Type> {
-            { (sbyte)RoundedPi, PiString , TypeConstants.Sbyte},
-            { (byte)RoundedPi, PiString, TypeConstants.Byte},
-            { (short)RoundedPi, PiString , TypeConstants.Short},
-            { (ushort)RoundedPi, PiString , TypeConstants.UShort},
-            { (int)RoundedPi, PiString , TypeConstants.Int},
-            { (uint)RoundedPi, PiString , TypeConstants.UInt},
-            { (long)RoundedPi, PiString , TypeConstants.Long},
-            { (ulong)RoundedPi, PiString, TypeConstants.ULong }
+            { (sbyte)RoundedPi, PiString , typeof(sbyte)},
+            { (byte)RoundedPi, PiString, typeof(byte)},
+            { (short)RoundedPi, PiString , typeof(short)},
+            { (ushort)RoundedPi, PiString , typeof(ushort)},
+            { (int)RoundedPi, PiString , typeof(int)},
+            { (uint)RoundedPi, PiString , typeof(uint)},
+            { (long)RoundedPi, PiString , typeof(long)},
+            { (ulong)RoundedPi, PiString, typeof(ulong) }
         };
 
         [Theory]

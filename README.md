@@ -6,11 +6,11 @@
 </h1>
 
 
-**This repository contains a fast, simple to use, convention based published content mapper for Umbraco.**
+**This repository contains a super-fast, really simple to use, convention-based published content mapper for Umbraco.**
 
 ## What does it do?
 
-UmbMapper maps `IPublishedContent` instances from the Umbraco Published Content Cache to strongly typed classes. It does so in an efficient manner with very little overhead.
+UmbMapper maps `IPublishedContent` instances from the Umbraco Published Content Cache to strongly typed classes. It does so in a very efficient manner with very little overhead.
 
 So far it's made up of the following libraries
 
@@ -75,7 +75,7 @@ UmbMapperRegistry.AddMapperFor<SimplePublishedItem>;
 
 #### Mapping a Complex Class
 
-Convention based mapping like that will work most of the time but sometimes you need more granular control.
+Convention-based mapping like that will work most of the time but sometimes you need more granular control.
 
 This more complex class demonstrates that. In this example i've added an enum, an additional property requiring an alias, and also a property that does not exist on the document type.
 
@@ -206,7 +206,7 @@ that have `UmbracoContext` based requirements may fail otherwise.
 
 ## Performance
 
-**UmbMapper is blazingly quick**. I've taken all the super fast bits I'd written in the Ditto library and was able to turbo charge them a lot more. The underpinning logic is simple also and requires very little run-time work as the rules are already determined at compile-time.
+**UmbMapper is blazingly quick**. The underpinning logic is simple also and requires very little run-time work as the rules are already determined at compile-time.
 
 Additional performance boosting can be delivered using lazy mapping.
 

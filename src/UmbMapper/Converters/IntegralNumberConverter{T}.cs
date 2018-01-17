@@ -16,6 +16,21 @@ namespace UmbMapper.Converters
     internal static class IntegralNumberConverter<T>
     {
         /// <summary>
+        /// The collection of integral number types
+        /// </summary>
+        private static readonly Type[] IntegralTypes =
+        {
+            typeof(sbyte),
+            typeof(byte),
+            typeof(short),
+            typeof(ushort),
+            typeof(int),
+            typeof(uint),
+            typeof(long),
+            typeof(ulong)
+        };
+
+        /// <summary>
         /// Converts the given string to the type of this converter, using the specified culture information.
         /// </summary>
         /// <returns>
@@ -29,7 +44,7 @@ namespace UmbMapper.Converters
         /// <exception cref="NotSupportedException">The conversion cannot be performed.</exception>
         public static object ConvertFrom(CultureInfo culture, string value, Type propertyType)
         {
-            if (value == null || Array.IndexOf(TypeConstants.IntegralTypes, propertyType) < 0)
+            if (value == null || Array.IndexOf(IntegralTypes, propertyType) < 0)
             {
                 return default(T);
             }
@@ -39,35 +54,35 @@ namespace UmbMapper.Converters
             decimal rounded = Math.Round((decimal)Convert.ChangeType(value, typeof(decimal), culture), MidpointRounding.AwayFromZero);
 
             // Now clamp it to the type ranges
-            if (propertyType == TypeConstants.Sbyte)
+            if (propertyType == typeof(sbyte))
             {
                 rounded = rounded.Clamp(sbyte.MinValue, sbyte.MaxValue);
             }
-            else if (propertyType == TypeConstants.Byte)
+            else if (propertyType == typeof(byte))
             {
                 rounded = rounded.Clamp(byte.MinValue, byte.MaxValue);
             }
-            else if (propertyType == TypeConstants.Short)
+            else if (propertyType == typeof(short))
             {
                 rounded = rounded.Clamp(short.MinValue, short.MaxValue);
             }
-            else if (propertyType == TypeConstants.UShort)
+            else if (propertyType == typeof(ushort))
             {
                 rounded = rounded.Clamp(ushort.MinValue, ushort.MaxValue);
             }
-            else if (propertyType == TypeConstants.Int)
+            else if (propertyType == typeof(int))
             {
                 rounded = rounded.Clamp(int.MinValue, int.MaxValue);
             }
-            else if (propertyType == TypeConstants.UInt)
+            else if (propertyType == typeof(uint))
             {
                 rounded = rounded.Clamp(uint.MinValue, uint.MaxValue);
             }
-            else if (propertyType == TypeConstants.Long)
+            else if (propertyType == typeof(long))
             {
                 rounded = rounded.Clamp(long.MinValue, long.MaxValue);
             }
-            else if (propertyType == TypeConstants.ULong)
+            else if (propertyType == typeof(ulong))
             {
                 rounded = rounded.Clamp(ulong.MinValue, ulong.MaxValue);
             }

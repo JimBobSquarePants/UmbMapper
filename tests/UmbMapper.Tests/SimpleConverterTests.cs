@@ -11,15 +11,15 @@ namespace UmbMapper.Tests
         static readonly string PiString = Pi.ToString(CultureInfo.InvariantCulture);
 
         public static TheoryData<object, string, Type> IntegralValues = new TheoryData<object, string, Type> {
-            { (float)1, "1", TypeConstants.Float },
-            { (double)1, "1", TypeConstants.Double },
-            { (decimal)1, "1",TypeConstants.Decimal }
+            { (float)1, "1", typeof(float) },
+            { (double)1, "1", typeof(double) },
+            { (decimal)1, "1",typeof(decimal) }
         };
 
         public static TheoryData<object, string, Type> RealValues = new TheoryData<object, string, Type> {
-            { (float)Pi, PiString , TypeConstants.Float},
-            { (double)Pi, PiString , TypeConstants.Double},
-            { (decimal)Pi, PiString , TypeConstants.Decimal},
+            { (float)Pi, PiString , typeof(float)},
+            { (double)Pi, PiString , typeof(double)},
+            { (decimal)Pi, PiString , typeof(decimal)},
         };
 
         [Theory]

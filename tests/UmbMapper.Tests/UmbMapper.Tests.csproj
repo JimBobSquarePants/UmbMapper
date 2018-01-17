@@ -356,6 +356,9 @@
     <Compile Include="Benchmarks\FastPropertyAccessorExpressions.cs" />
     <Compile Include="Benchmarks\PublishedPropertyMapping.cs" />
     <Compile Include="Benchmarks\PropertyAccessors.cs" />
+    <Compile Include="Benchmarks\StringReplaceMany.cs" />
+    <Compile Include="Benchmarks\TryConvertTo.cs" />
+    <Compile Include="Benchmarks\TypeCodeSwitch.cs" />
     <Compile Include="EnumerableConverterTests.cs" />
     <Compile Include="ExpressionExtensionsTests.cs" />
     <Compile Include="Mapping\Models\CsvPublishedItem.cs" />
@@ -365,6 +368,7 @@
     <Compile Include="Mapping\Models\Mappers\PolymorphicItemOneMap.cs" />
     <Compile Include="Mapping\Models\PolymorphicItemTwo.cs" />
     <Compile Include="Mapping\Models\PolymorphicItemOne.cs" />
+    <Compile Include="ObjectExtensionsTests.cs" />
     <Compile Include="SimpleConverterTests.cs" />
     <Compile Include="IntegralNumberConverterTests.cs" />
     <Compile Include="Mapping\ImageCropDataSetMappingTests.cs" />

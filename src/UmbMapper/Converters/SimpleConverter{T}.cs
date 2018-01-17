@@ -5,6 +5,7 @@
 
 using System;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 
 namespace UmbMapper.Converters
 {
@@ -26,6 +27,7 @@ namespace UmbMapper.Converters
         /// <param name="value">The <see cref="string"/> to convert. </param>
         /// <param name="propertyType">The property type that the converter will convert to.</param>
         /// <exception cref="NotSupportedException">The conversion cannot be performed.</exception>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static object ConvertFrom(CultureInfo culture, string value, Type propertyType)
         {
             if (value == null)

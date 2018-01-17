@@ -4,7 +4,6 @@
 // </copyright>
 
 using System.Globalization;
-using System.Web;
 using Our.Umbraco.Vorto.Extensions;
 using UmbMapper.PropertyMappers;
 using Umbraco.Core.Models;
@@ -32,7 +31,7 @@ namespace UmbMapper.Sample.ComponentModel.PropertyMappers
             string culture = this.GetRequestCulture().Name;
             foreach (string name in info.Aliases)
             {
-                if (content.HasVortoValue(name, info.Culture.Name, info.Recursive, CultureInfo.CurrentCulture.Name))
+                if (content.HasVortoValue(name, culture, info.Recursive, CultureInfo.CurrentCulture.Name))
                 {
                     value = this.CheckConvertType(content.GetVortoValue(name, culture, info.Recursive));
 
