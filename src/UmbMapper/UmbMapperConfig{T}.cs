@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Web;
 using System.Web.Hosting;
 using UmbMapper.Extensions;
@@ -174,13 +175,22 @@ namespace UmbMapper
                 var lazyProperties = new Dictionary<string, Lazy<object>>(this.lazyNames.Count);
                 foreach (PropertyMap<T> map in this.lazyMaps)
                 {
-                    lazyProperties[map.Info.Property.Name] = new Lazy<object>(() => MapProperty(map, content, result));
+                    lazyProperties[map.Info.Property.Name] = new Lazy<object>(() =>
+                    {
+                        // We need to check each time we invoke a lazy property
+                        EnsureUmbracoContext();
+                        return MapProperty(map, content, result);
+                    });
                 }
 
                 // Then lazy predicate mappings
                 foreach (PropertyMap<T> map in this.lazyPredicateMaps)
                 {
-                    lazyProperties[map.Info.Property.Name] = new Lazy<object>(() => MapProperty(map, content, result));
+                    lazyProperties[map.Info.Property.Name] = new Lazy<object>(() =>
+                    {
+                        EnsureUmbracoContext();
+                        return MapProperty(map, content, result);
+                    });
                 }
 
                 // Set the interceptor and replace our result with the proxy
@@ -191,6 +201,10 @@ namespace UmbMapper
             {
                 result = this.hasIPublishedConstructor ? this.MappedType.GetInstance(content) : this.MappedType.GetInstance();
             }
+
+            // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
+            // Certain mappers like Archtype require the context so we want to ensure it exists.
+            EnsureUmbracoContext();
 
             // Now map the non-lazy properties
             foreach (PropertyMap<T> map in this.nonLazyMaps)
@@ -273,10 +287,6 @@ namespace UmbMapper
 
         private static object MapProperty(PropertyMap<T> map, IPublishedContent content, object result)
         {
-            // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
-            // Certain mappers like Archtype require the context so we want to ensure it exists.
-            EnsureUmbracoContext();
-
             object value = null;
 
             // If we have a mapping function, use that and skip Umbraco
@@ -395,6 +405,7 @@ namespace UmbMapper
             return value;
         }
 
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void EnsureUmbracoContext()
         {
             if (UmbracoContext.Current != null)

@@ -6,7 +6,7 @@
 </h1>
 
 
-**This repository contains a super-fast, really simple to use, convention-based published content mapper for Umbraco.**
+**This repository contains a blazingly-fast, really simple to use, convention-based published content mapper for Umbraco.**
 
 ## What does it do?
 
