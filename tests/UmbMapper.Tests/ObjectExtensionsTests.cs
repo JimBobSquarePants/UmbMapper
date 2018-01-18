@@ -5,7 +5,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Web.UI.WebControls;
 using UmbMapper.Extensions;
 using Umbraco.Core;
@@ -87,6 +89,7 @@ namespace UmbMapper.Tests
         [InlineData("2012-11-10T13:14:15Z", true)]
         public virtual void CanConvertStringToDateTime(string date, bool expected)
         {
+            CultureInfo.CurrentCulture = new CultureInfo("en-AU");
             var dateTime = new DateTime(2012, 11, 10, 13, 14, 15);
             Attempt<DateTime> result = date.UmbMapperTryConvertTo<DateTime>();
 
