@@ -14,8 +14,8 @@ namespace UmbMapper.Proxy
     /// </summary>
     internal class LazyInterceptor : IInterceptor
     {
-        private readonly Dictionary<string, Lazy<object>> lazyDictionary = new Dictionary<string, Lazy<object>>();
-        private readonly Dictionary<string, object> nonLazyDictionary = new Dictionary<string, object>();
+        private readonly Dictionary<string, Lazy<object>> lazyDictionary;
+        private readonly Dictionary<string, object> nonLazyDictionary;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LazyInterceptor"/> class.
@@ -25,6 +25,8 @@ namespace UmbMapper.Proxy
         /// </param>
         public LazyInterceptor(Dictionary<string, Lazy<object>> values)
         {
+            this.lazyDictionary = new Dictionary<string, Lazy<object>>();
+            this.nonLazyDictionary = new Dictionary<string, object>();
             foreach (KeyValuePair<string, Lazy<object>> pair in values)
             {
                 this.lazyDictionary.Add(pair.Key, pair.Value);

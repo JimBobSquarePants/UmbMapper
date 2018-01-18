@@ -355,7 +355,7 @@ namespace UmbMapper.Extensions
                 string input2 = NormalizeNumberDecimalSeparator(input);
                 return Attempt<object>.SucceedIf(decimal.TryParse(input2, out decimal value), value);
             }
-            else if (destinationType == typeof(Version))
+            else if (input != null && destinationType == typeof(Version))
             {
                 return Attempt<object>.SucceedIf(Version.TryParse(input, out Version value), value);
             }
@@ -374,6 +374,8 @@ namespace UmbMapper.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static string ReplaceMany(string text, char[] chars, char replacement)
         {
+            // for... is faster
+            // ReSharper disable once ForCanBeConvertedToForeach
             for (int i = 0; i < chars.Length; i++)
             {
                 text = text.Replace(chars[i], replacement);

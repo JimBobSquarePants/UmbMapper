@@ -81,9 +81,11 @@ namespace UmbMapper.Proxy
             MethodInfo originalSetter = typeof(IProxy).GetMethod("set_Interceptor");
             MethodInfo originalGetter = typeof(IProxy).GetMethod("get_Interceptor");
 
+            // ReSharper disable AssignNullToNotNullAttribute
             typeBuilder.DefineMethodOverride(setterMethod, originalSetter);
             typeBuilder.DefineMethodOverride(getterMethod, originalGetter);
 
+            // ReSharper restore AssignNullToNotNullAttribute
             return fieldBuilder;
         }
     }

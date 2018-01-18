@@ -242,7 +242,7 @@
     <Compile Include="Converters\SimpleConverter{T}.cs" />
     <Compile Include="PropertyMappers\CsvPropertyMapper.cs" />
     <Compile Include="Converters\IntegralNumberConverter{T}.cs" />
-    <Compile Include="UmbMapperConfigLocker.cs" />
+    <Compile Include="UmbMapperConfigStatics.cs" />
     <Compile Include="UmbMapperRegistry.cs" />
     <Compile Include="PropertyMapExtensions.cs" />
     <Compile Include="PropertyMappers\DocTypeFactoryPropertyMapper.cs" />

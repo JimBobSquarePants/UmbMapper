@@ -35,10 +35,10 @@ namespace UmbMapper
     {
         private readonly List<PropertyMap<T>> maps;
         private readonly bool hasIPublishedConstructor;
-        private IEnumerable<PropertyMap<T>> nonLazyMaps;
-        private IEnumerable<PropertyMap<T>> lazyMaps;
-        private IEnumerable<PropertyMap<T>> nonLazyPredicateMaps;
-        private IEnumerable<PropertyMap<T>> lazyPredicateMaps;
+        private PropertyMap<T>[] nonLazyMaps;
+        private PropertyMap<T>[] lazyMaps;
+        private PropertyMap<T>[] nonLazyPredicateMaps;
+        private PropertyMap<T>[] lazyPredicateMaps;
         private List<string> lazyNames;
         private FastPropertyAccessor propertyAccessor;
         private Type proxyType;
@@ -173,23 +173,27 @@ namespace UmbMapper
 
                 // First add any lazy mappings, use count to prevent allocations
                 var lazyProperties = new Dictionary<string, Lazy<object>>(this.lazyNames.Count);
-                foreach (PropertyMap<T> map in this.lazyMaps)
+                for (int i = 0; i < this.lazyMaps.Length; i++)
                 {
-                    lazyProperties[map.Info.Property.Name] = new Lazy<object>(() =>
+                    // It's better to allocate the `int` via closure than PropertyMap<T>
+                    int i1 = i;
+                    lazyProperties[this.lazyMaps[i].Info.Property.Name] = new Lazy<object>(() =>
                     {
                         // We need to check each time we invoke a lazy property
                         EnsureUmbracoContext();
-                        return MapProperty(map, content, result);
+                        return MapProperty(this.lazyMaps[i1], content, result);
                     });
                 }
 
                 // Then lazy predicate mappings
-                foreach (PropertyMap<T> map in this.lazyPredicateMaps)
+                for (int i = 0; i < this.lazyPredicateMaps.Length; i++)
                 {
-                    lazyProperties[map.Info.Property.Name] = new Lazy<object>(() =>
+                    // It's better to allocate the `int` via closure than PropertyMap<T>
+                    int i1 = i;
+                    lazyProperties[this.lazyPredicateMaps[i].Info.Property.Name] = new Lazy<object>(() =>
                     {
                         EnsureUmbracoContext();
-                        return MapProperty(map, content, result);
+                        return MapProperty(this.lazyPredicateMaps[i1], content, result);
                     });
                 }
 
@@ -207,8 +211,9 @@ namespace UmbMapper
             EnsureUmbracoContext();
 
             // Now map the non-lazy properties
-            foreach (PropertyMap<T> map in this.nonLazyMaps)
+            for (int i = 0; i < this.nonLazyMaps.Length; i++)
             {
+                PropertyMap<T> map = this.nonLazyMaps[i];
                 object value = MapProperty(map, content, result);
                 if (value != null)
                 {
@@ -217,8 +222,9 @@ namespace UmbMapper
             }
 
             // Then non-lazy predicate mappings
-            foreach (PropertyMap<T> map in this.nonLazyPredicateMaps)
+            for (int i = 0; i < this.nonLazyPredicateMaps.Length; i++)
             {
+                PropertyMap<T> map = this.nonLazyPredicateMaps[i];
                 object value = MapProperty(map, content, result);
                 if (value != null)
                 {
@@ -233,7 +239,7 @@ namespace UmbMapper
         void IUmbMapperConfig.Init()
         {
             // We run the initialization code here so we don't have to run it per mapping.
-            lock (UmbMapperConfigLocker.Locker)
+            lock (UmbMapperConfigStatics.Locker)
             {
                 if (this.hasChecked)
                 {
@@ -359,7 +365,7 @@ namespace UmbMapper
                 // You cannot set an enumerable of type from an empty object array.
                 // This should allow the casting back of IEnumerable<T> to an empty List<T> Collection<T> etc.
                 // I cant think of any that don't have an empty constructor
-                if (value.Equals(Enumerable.Empty<object>()) && propertyIsCastableEnumerable)
+                if (value.Equals(UmbMapperConfigStatics.Empty) && propertyIsCastableEnumerable)
                 {
                     Type typeArg = info.EnumerableParamType;
                     return info.PropertyType.IsInterface ? EnumerableInvocations.Cast(typeArg, (IEnumerable)value) : info.PropertyType.GetInstance();
