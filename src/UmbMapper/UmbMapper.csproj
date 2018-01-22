@@ -225,11 +225,11 @@
     <Compile Include="Converters\CustomBooleanTypeConverter.cs" />
     <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\ComparableExtensions.cs" />
+    <Compile Include="Extensions\CompositeTypeTypeKey.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\PropertyInfoExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
-    <Compile Include="Extensions\TypePair.cs" />
     <Compile Include="Invocations\CachedInvocations.cs" />
     <Compile Include="Invocations\MethodBaseCacheItem.cs" />
     <Compile Include="Invocations\EnumerableInvocations.cs" />

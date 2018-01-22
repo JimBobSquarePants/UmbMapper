@@ -1,4 +1,4 @@
-﻿// <copyright file="TypePair.cs" company="James Jackson-South">
+﻿// <copyright file="CompositeTypeTypeKey.cs" company="James Jackson-South">
 // Copyright (c) James Jackson-South and contributors.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
@@ -10,14 +10,14 @@ namespace UmbMapper.Extensions
     /// <summary>
     /// A lightweight struct for storing a pair of types for caching.
     /// </summary>
-    public struct TypePair : IEquatable<TypePair>
+    internal struct CompositeTypeTypeKey : IEquatable<CompositeTypeTypeKey>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TypePair"/> struct.
+        /// Initializes a new instance of the <see cref="CompositeTypeTypeKey"/> struct.
         /// </summary>
         /// <param name="type1">The first type</param>
         /// <param name="type2">The second type</param>
-        public TypePair(Type type1, Type type2)
+        public CompositeTypeTypeKey(Type type1, Type type2)
         {
             this.Type1 = type1;
             this.Type2 = type2;
@@ -34,7 +34,7 @@ namespace UmbMapper.Extensions
         public Type Type2 { get; }
 
         /// <inheritdoc/>
-        public bool Equals(TypePair other)
+        public bool Equals(CompositeTypeTypeKey other)
         {
             return this.Type1 == other.Type1 && this.Type2 == other.Type2;
         }
@@ -42,7 +42,7 @@ namespace UmbMapper.Extensions
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {
-            return (obj is TypePair) && this.Equals((TypePair)obj);
+            return (obj is CompositeTypeTypeKey) && this.Equals((CompositeTypeTypeKey)obj);
         }
 
         /// <inheritdoc/>

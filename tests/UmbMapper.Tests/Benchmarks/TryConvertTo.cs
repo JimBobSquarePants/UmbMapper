@@ -11,6 +11,7 @@ using Umbraco.Core;
 
 namespace UmbMapper.Tests.Benchmarks
 {
+    [MemoryDiagnoser]
     public class TryConvertTo
     {
         private static readonly List<string> List = new List<string>() { "hello", "world", "awesome" };

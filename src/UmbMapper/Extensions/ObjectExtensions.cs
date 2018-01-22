@@ -4,7 +4,7 @@
 // </copyright>
 
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -19,11 +19,11 @@ namespace UmbMapper.Extensions
     internal static class ObjectExtensions
     {
         // Used for caching the various type lookups
-        private static readonly Dictionary<Type, Type> NullableGenericCache = new Dictionary<Type, Type>();
-        private static readonly Dictionary<TypePair, TypeConverter> InputTypeConverterCache = new Dictionary<TypePair, TypeConverter>();
-        private static readonly Dictionary<TypePair, TypeConverter> DestinationTypeConverterCache = new Dictionary<TypePair, TypeConverter>();
-        private static readonly Dictionary<TypePair, IConvertible> AssignableTypeCache = new Dictionary<TypePair, IConvertible>();
-        private static readonly Dictionary<Type, bool> BoolConvertCache = new Dictionary<Type, bool>();
+        private static readonly ConcurrentDictionary<Type, Type> NullableGenericCache = new ConcurrentDictionary<Type, Type>();
+        private static readonly ConcurrentDictionary<CompositeTypeTypeKey, TypeConverter> InputTypeConverterCache = new ConcurrentDictionary<CompositeTypeTypeKey, TypeConverter>();
+        private static readonly ConcurrentDictionary<CompositeTypeTypeKey, TypeConverter> DestinationTypeConverterCache = new ConcurrentDictionary<CompositeTypeTypeKey, TypeConverter>();
+        private static readonly ConcurrentDictionary<CompositeTypeTypeKey, bool> AssignableTypeCache = new ConcurrentDictionary<CompositeTypeTypeKey, bool>();
+        private static readonly ConcurrentDictionary<Type, bool> BoolConvertCache = new ConcurrentDictionary<Type, bool>();
 
         private static readonly char[] NumberDecimalSeparatorsToNormalize = { '.', ',' };
         private static readonly CustomBooleanTypeConverter CustomBooleanTypeConverter = new CustomBooleanTypeConverter();
@@ -164,28 +164,27 @@ namespace UmbMapper.Extensions
 
                     // TODO: Do a check for destination type being IEnumerable<T> and source type implementing IEnumerable<T> with
                     // the same 'T', then we'd have to find the extension method for the type AsEnumerable() and execute it.
-                    IConvertible convertible = GetCachedAssignableConvertibleResult(input, inputType, destinationType);
-                    if (convertible != null)
+                    if (GetCachedCanAssign(input, inputType, destinationType))
                     {
-                        return Attempt.Succeed(Convert.ChangeType(convertible, destinationType));
+                        return Attempt.Succeed(Convert.ChangeType(input, destinationType));
                     }
                 }
 
                 if (destinationType == typeof(bool))
                 {
-                    if (GetCanConvertToBooleanResult(inputType))
+                    if (GetCachedCanConvertToBoolean(inputType))
                     {
                         return Attempt.Succeed(CustomBooleanTypeConverter.ConvertFrom(input));
                     }
                 }
 
-                TypeConverter inputConverter = GetCachedInputTypeConverter(inputType, destinationType);
+                TypeConverter inputConverter = GetCachedSourceTypeConverter(inputType, destinationType);
                 if (inputConverter != null)
                 {
                     return Attempt.Succeed(inputConverter.ConvertTo(input, destinationType));
                 }
 
-                TypeConverter outputConverter = GetCachedDestinationTypeConverter(inputType, destinationType);
+                TypeConverter outputConverter = GetCachedTargetTypeConverter(inputType, destinationType);
                 if (outputConverter != null)
                 {
                     return Attempt.Succeed(outputConverter.ConvertFrom(input));
@@ -385,105 +384,92 @@ namespace UmbMapper.Extensions
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static TypeConverter GetCachedInputTypeConverter(Type inputType, Type destinationType)
+        private static TypeConverter GetCachedSourceTypeConverter(Type source, Type target)
         {
-            var key = new TypePair(inputType, destinationType);
-            if (!InputTypeConverterCache.ContainsKey(key))
+            var key = new CompositeTypeTypeKey(source, target);
+
+            if (InputTypeConverterCache.TryGetValue(key, out TypeConverter typeConverter))
             {
-                TypeConverter converter = TypeDescriptor.GetConverter(inputType);
-                if (converter.CanConvertTo(destinationType))
-                {
-                    InputTypeConverterCache[key] = converter;
-                    return converter;
-                }
-                else
-                {
-                    InputTypeConverterCache[key] = null;
-                    return null;
-                }
+                return typeConverter;
             }
 
-            return InputTypeConverterCache[key];
+            TypeConverter converter = TypeDescriptor.GetConverter(source);
+            if (converter.CanConvertTo(target))
+            {
+                return InputTypeConverterCache[key] = converter;
+            }
+
+            return InputTypeConverterCache[key] = null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static TypeConverter GetCachedDestinationTypeConverter(Type inputType, Type destinationType)
+        private static TypeConverter GetCachedTargetTypeConverter(Type source, Type target)
         {
-            var key = new TypePair(inputType, destinationType);
-            if (!DestinationTypeConverterCache.ContainsKey(key))
+            var key = new CompositeTypeTypeKey(source, target);
+
+            if (DestinationTypeConverterCache.TryGetValue(key, out TypeConverter typeConverter))
             {
-                TypeConverter converter = TypeDescriptor.GetConverter(destinationType);
-                if (converter.CanConvertFrom(inputType))
-                {
-                    DestinationTypeConverterCache[key] = converter;
-                    return converter;
-                }
-                else
-                {
-                    DestinationTypeConverterCache[key] = null;
-                    return null;
-                }
+                return typeConverter;
             }
 
-            return DestinationTypeConverterCache[key];
+            TypeConverter converter = TypeDescriptor.GetConverter(target);
+            if (converter.CanConvertFrom(source))
+            {
+                return DestinationTypeConverterCache[key] = converter;
+            }
+
+            return DestinationTypeConverterCache[key] = null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static Type GetCachedGenericNullableType(Type destinationType)
+        private static Type GetCachedGenericNullableType(Type type)
         {
-            if (!NullableGenericCache.ContainsKey(destinationType))
+            if (NullableGenericCache.TryGetValue(type, out Type underlyingType))
             {
-                if (destinationType.GetGenericTypeDefinition() == typeof(Nullable<>))
-                {
-                    Type underlying = Nullable.GetUnderlyingType(destinationType);
-                    NullableGenericCache[destinationType] = underlying;
-                    return underlying;
-                }
-                else
-                {
-                    NullableGenericCache[destinationType] = null;
-                    return null;
-                }
+                return underlyingType;
             }
 
-            return NullableGenericCache[destinationType];
+            if (type.GetGenericTypeDefinition() == typeof(Nullable<>))
+            {
+                Type underlying = Nullable.GetUnderlyingType(type);
+                return NullableGenericCache[type] = underlying;
+            }
+
+            return NullableGenericCache[type] = null;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static IConvertible GetCachedAssignableConvertibleResult(object input, Type inputType, Type destinationType)
+        private static bool GetCachedCanAssign(object input, Type source, Type target)
         {
-            var key = new TypePair(inputType, destinationType);
-            if (!AssignableTypeCache.ContainsKey(key))
+            var key = new CompositeTypeTypeKey(source, target);
+            if (AssignableTypeCache.TryGetValue(key, out bool canConvert))
             {
-                if (destinationType.IsAssignableFrom(inputType))
-                {
-                    if (input is IConvertible convertable)
-                    {
-                        AssignableTypeCache[key] = convertable;
-                        return convertable;
-                    }
-                }
-                else
-                {
-                    AssignableTypeCache[key] = null;
-                    return null;
-                }
-            }
-
-            return AssignableTypeCache[key];
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static bool GetCanConvertToBooleanResult(Type inputType)
-        {
-            if (!BoolConvertCache.ContainsKey(inputType))
-            {
-                bool canConvert = CustomBooleanTypeConverter.CanConvertFrom(inputType);
-                BoolConvertCache[inputType] = canConvert;
                 return canConvert;
             }
 
-            return BoolConvertCache[inputType];
+            // "object is" is faster than "Type.IsAssignableFrom"
+            if (input is IConvertible && target.IsAssignableFrom(source))
+            {
+                return AssignableTypeCache[key] = true;
+            }
+
+            return AssignableTypeCache[key] = false;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static bool GetCachedCanConvertToBoolean(Type type)
+        {
+            if (BoolConvertCache.TryGetValue(type, out bool result))
+            {
+                return result;
+            }
+
+            if (CustomBooleanTypeConverter.CanConvertFrom(type))
+            {
+                return BoolConvertCache[type] = true;
+            }
+
+            return BoolConvertCache[type] = false;
         }
     }
 }
