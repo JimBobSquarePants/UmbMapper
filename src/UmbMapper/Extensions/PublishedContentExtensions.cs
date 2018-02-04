@@ -81,5 +81,41 @@ namespace UmbMapper.Extensions
 
             return mapper.Map(content);
         }
+
+        /// <summary>
+        /// Performs a mapping operation from the <see cref="IPublishedContent"/> to an existing <typeparamref name="T"/> instance
+        /// </summary>
+        /// <typeparam name="T">The type of object to map to</typeparam>
+        /// <param name="content">The content to map</param>
+        /// <param name="destination">The destination object</param>
+        public static void MapTo<T>(this IPublishedContent content, T destination)
+            where T : class
+        {
+            Type type = typeof(T);
+            MapTo(content, type, (T)destination);
+        }
+
+        /// <summary>
+        /// Performs a mapping operation from the <see cref="IPublishedContent"/> to an existing <see cref="object"/> instance
+        /// </summary>
+        /// <param name="content">The content to map</param>
+        /// <param name="type">The type of object to map to</param>
+        /// <param name="destination">The destination object</param>
+        public static void MapTo(this IPublishedContent content, Type type, object destination)
+        {
+            if (content == null)
+            {
+                throw new ArgumentNullException(nameof(content));
+            }
+
+            UmbMapperRegistry.Mappers.TryGetValue(type, out var mapper);
+
+            if (mapper == null)
+            {
+                throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
+            }
+
+            mapper.Map(content, destination);
+        }
     }
 }

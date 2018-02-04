@@ -171,31 +171,8 @@ namespace UmbMapper
                 // Create a proxy instance to replace our object.
                 result = this.hasIPublishedConstructor ? this.proxyType.GetInstance(content) : this.proxyType.GetInstance();
 
-                // First add any lazy mappings, use count to prevent allocations
-                var lazyProperties = new Dictionary<string, Lazy<object>>(this.lazyNames.Count);
-                for (int i = 0; i < this.lazyMaps.Length; i++)
-                {
-                    // It's better to allocate the `int` via closure than PropertyMap<T>
-                    int i1 = i;
-                    lazyProperties[this.lazyMaps[i].Info.Property.Name] = new Lazy<object>(() =>
-                    {
-                        // We need to check each time we invoke a lazy property
-                        EnsureUmbracoContext();
-                        return MapProperty(this.lazyMaps[i1], content, result);
-                    });
-                }
-
-                // Then lazy predicate mappings
-                for (int i = 0; i < this.lazyPredicateMaps.Length; i++)
-                {
-                    // It's better to allocate the `int` via closure than PropertyMap<T>
-                    int i1 = i;
-                    lazyProperties[this.lazyPredicateMaps[i].Info.Property.Name] = new Lazy<object>(() =>
-                    {
-                        EnsureUmbracoContext();
-                        return MapProperty(this.lazyPredicateMaps[i1], content, result);
-                    });
-                }
+                // Map the lazy properties and predicate mappings
+                Dictionary<string, Lazy<object>> lazyProperties = this.MapLazyProperties(content, result);
 
                 // Set the interceptor and replace our result with the proxy
                 var interceptor = new LazyInterceptor(lazyProperties);
@@ -210,14 +187,65 @@ namespace UmbMapper
             // Certain mappers like Archtype require the context so we want to ensure it exists.
             EnsureUmbracoContext();
 
-            // Now map the non-lazy properties
+            // Now map the non-lazy properties and non-lazy predicate mappings
+            this.MapNonLazyProperties(content, result);
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public void Map(IPublishedContent content, object destination)
+        {
+            // TODO: If we're mapping to an existing object, what do we do with lazy items?
+
+            // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
+            // Certain mappers like Archtype require the context so we want to ensure it exists.
+            EnsureUmbracoContext();
+
+            // Map the non-lazy properties and non-lazy predicate mappings
+            this.MapNonLazyProperties(content, destination);
+        }
+
+        private Dictionary<string, Lazy<object>> MapLazyProperties(IPublishedContent content, object result)
+        {
+            // First add any lazy mappings, use count to prevent allocations
+            var lazyProperties = new Dictionary<string, Lazy<object>>(this.lazyNames.Count);
+            for (int i = 0; i < this.lazyMaps.Length; i++)
+            {
+                // It's better to allocate the `int` via closure than PropertyMap<T>
+                int i1 = i;
+                lazyProperties[this.lazyMaps[i].Info.Property.Name] = new Lazy<object>(() =>
+                {
+                    EnsureUmbracoContext();
+                    return MapProperty(this.lazyMaps[i1], content, result);
+                });
+            }
+
+            // Then lazy predicate mappings
+            for (int i = 0; i < this.lazyPredicateMaps.Length; i++)
+            {
+                // It's better to allocate the `int` via closure than PropertyMap<T>
+                int i1 = i;
+                lazyProperties[this.lazyPredicateMaps[i].Info.Property.Name] = new Lazy<object>(() =>
+                {
+                    EnsureUmbracoContext();
+                    return MapProperty(this.lazyPredicateMaps[i1], content, result);
+                });
+            }
+
+            return lazyProperties;
+        }
+
+        private void MapNonLazyProperties(IPublishedContent content, object destination)
+        {
+            // First map the non-lazy properties
             for (int i = 0; i < this.nonLazyMaps.Length; i++)
             {
                 PropertyMap<T> map = this.nonLazyMaps[i];
-                object value = MapProperty(map, content, result);
+                object value = MapProperty(map, content, destination);
                 if (value != null)
                 {
-                    this.propertyAccessor.SetValue(map.Info.Property.Name, result, value);
+                    this.propertyAccessor.SetValue(map.Info.Property.Name, destination, value);
                 }
             }
 
@@ -225,14 +253,12 @@ namespace UmbMapper
             for (int i = 0; i < this.nonLazyPredicateMaps.Length; i++)
             {
                 PropertyMap<T> map = this.nonLazyPredicateMaps[i];
-                object value = MapProperty(map, content, result);
+                object value = MapProperty(map, content, destination);
                 if (value != null)
                 {
-                    this.propertyAccessor.SetValue(map.Info.Property.Name, result, value);
+                    this.propertyAccessor.SetValue(map.Info.Property.Name, destination, value);
                 }
             }
-
-            return result;
         }
 
         /// <inheritdoc/>
