@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Umbraco.Core.Models;
 
 namespace UmbMapper
 {
@@ -64,6 +65,45 @@ namespace UmbMapper
             ((IUmbMapperConfig)config).Init();
 
             Mappers.TryAdd(config.MappedType, config);
+        }
+
+        /// <summary>
+        /// Creates an empty instance of the given type.
+        /// If the configuration for the type contains lazy mappings a transparent proxy is returned.
+        /// </summary>
+        /// <typeparam name="T">The type of object to create</typeparam>
+        /// <returns>The <typeparamref name="T"/></returns>
+        public static T CreateEmpty<T>()
+            where T : class
+        {
+            Mappers.TryGetValue(typeof(T), out IUmbMapperConfig mapper);
+
+            if (mapper == null)
+            {
+                throw new InvalidOperationException($"No mapper for the given type {typeof(T)} has been registered.");
+            }
+
+            return (T)mapper.CreateEmpty();
+        }
+
+        /// <summary>
+        /// Creates an empty instance of the given type.
+        /// If the configuration for the type contains lazy mappings a transparent proxy is returned.
+        /// </summary>
+        /// <typeparam name="T">The type of object to create</typeparam>
+        /// <param name="content">The content that this instance will map from.</param>
+        /// <returns>The <typeparamref name="T"/></returns>
+        public static T CreateEmpty<T>(IPublishedContent content)
+            where T : class
+        {
+            Mappers.TryGetValue(typeof(T), out IUmbMapperConfig mapper);
+
+            if (mapper == null)
+            {
+                throw new InvalidOperationException($"No mapper for the given type {typeof(T)} has been registered.");
+            }
+
+            return (T)mapper.CreateEmpty(content);
         }
 
         /// <summary>

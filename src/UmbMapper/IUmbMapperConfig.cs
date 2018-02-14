@@ -39,6 +39,19 @@ namespace UmbMapper
         void Map(IPublishedContent content, object destination);
 
         /// <summary>
+        /// Creates an empty instance of the mapped type.
+        /// </summary>
+        /// <returns>The <see cref="object"/></returns>
+        object CreateEmpty();
+
+        /// <summary>
+        /// Creates an empty instance of the mapped type.
+        /// </summary>
+        /// <param name="content">The published content</param>
+        /// <returns>The <see cref="object"/></returns>
+        object CreateEmpty(IPublishedContent content);
+
+        /// <summary>
         /// Runs any additional code required to setup the configuration
         /// </summary>
         void Init();

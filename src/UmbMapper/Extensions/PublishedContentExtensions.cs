@@ -72,7 +72,7 @@ namespace UmbMapper.Extensions
                 throw new ArgumentNullException(nameof(content));
             }
 
-            UmbMapperRegistry.Mappers.TryGetValue(type, out var mapper);
+            UmbMapperRegistry.Mappers.TryGetValue(type, out IUmbMapperConfig mapper);
 
             if (mapper == null)
             {
@@ -108,7 +108,7 @@ namespace UmbMapper.Extensions
                 throw new ArgumentNullException(nameof(content));
             }
 
-            UmbMapperRegistry.Mappers.TryGetValue(type, out var mapper);
+            UmbMapperRegistry.Mappers.TryGetValue(type, out IUmbMapperConfig mapper);
 
             if (mapper == null)
             {
