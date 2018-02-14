@@ -64,7 +64,7 @@ namespace UmbMapper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public object GetValue(string propertyName, object instance)
         {
-            return this.getterCache.TryGetValue(propertyName, out var getter)
+            return this.getterCache.TryGetValue(propertyName, out Func<object, object> getter)
                 ? getter(instance)
                 : null;
         }

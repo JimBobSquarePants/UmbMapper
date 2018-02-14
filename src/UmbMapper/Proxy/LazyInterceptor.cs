@@ -25,12 +25,8 @@ namespace UmbMapper.Proxy
         /// </param>
         public LazyInterceptor(Dictionary<string, Lazy<object>> values)
         {
-            this.lazyDictionary = new Dictionary<string, Lazy<object>>();
+            this.lazyDictionary = values;
             this.nonLazyDictionary = new Dictionary<string, object>();
-            foreach (KeyValuePair<string, Lazy<object>> pair in values)
-            {
-                this.lazyDictionary.Add(pair.Key, pair.Value);
-            }
         }
 
         /// <inheritdoc />

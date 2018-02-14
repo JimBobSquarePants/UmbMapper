@@ -55,12 +55,12 @@ namespace UmbMapper
             Type type = typeof(T);
             this.MappedType = type;
 
-            // Check the validity of the mpped type constructor as early as possible.
+            // Check the validity of the mapped type constructor as early as possible.
             bool validConstructor = false;
             ParameterInfo[] constructorParams = this.MappedType.GetConstructorParameters();
             if (constructorParams != null)
             {
-                // Is it PublishedContentmModel or similar?
+                // Is it PublishedContentModel or similar?
                 if (constructorParams.Length == 1 && constructorParams[0].ParameterType == typeof(IPublishedContent))
                 {
                     this.hasIPublishedConstructor = true;
@@ -163,79 +163,6 @@ namespace UmbMapper
         }
 
         /// <inheritdoc/>
-        object IUmbMapperConfig.Map(IPublishedContent content)
-        {
-            object result;
-            if (this.createProxy)
-            {
-                // Create a proxy instance to replace our object.
-                result = this.hasIPublishedConstructor ? this.proxyType.GetInstance(content) : this.proxyType.GetInstance();
-
-                // First add any lazy mappings, use count to prevent allocations
-                var lazyProperties = new Dictionary<string, Lazy<object>>(this.lazyNames.Count);
-                for (int i = 0; i < this.lazyMaps.Length; i++)
-                {
-                    // It's better to allocate the `int` via closure than PropertyMap<T>
-                    int i1 = i;
-                    lazyProperties[this.lazyMaps[i].Info.Property.Name] = new Lazy<object>(() =>
-                    {
-                        // We need to check each time we invoke a lazy property
-                        EnsureUmbracoContext();
-                        return MapProperty(this.lazyMaps[i1], content, result);
-                    });
-                }
-
-                // Then lazy predicate mappings
-                for (int i = 0; i < this.lazyPredicateMaps.Length; i++)
-                {
-                    // It's better to allocate the `int` via closure than PropertyMap<T>
-                    int i1 = i;
-                    lazyProperties[this.lazyPredicateMaps[i].Info.Property.Name] = new Lazy<object>(() =>
-                    {
-                        EnsureUmbracoContext();
-                        return MapProperty(this.lazyPredicateMaps[i1], content, result);
-                    });
-                }
-
-                // Set the interceptor and replace our result with the proxy
-                var interceptor = new LazyInterceptor(lazyProperties);
-                ((IProxy)result).Interceptor = interceptor;
-            }
-            else
-            {
-                result = this.hasIPublishedConstructor ? this.MappedType.GetInstance(content) : this.MappedType.GetInstance();
-            }
-
-            // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
-            // Certain mappers like Archtype require the context so we want to ensure it exists.
-            EnsureUmbracoContext();
-
-            // Now map the non-lazy properties
-            for (int i = 0; i < this.nonLazyMaps.Length; i++)
-            {
-                PropertyMap<T> map = this.nonLazyMaps[i];
-                object value = MapProperty(map, content, result);
-                if (value != null)
-                {
-                    this.propertyAccessor.SetValue(map.Info.Property.Name, result, value);
-                }
-            }
-
-            // Then non-lazy predicate mappings
-            for (int i = 0; i < this.nonLazyPredicateMaps.Length; i++)
-            {
-                PropertyMap<T> map = this.nonLazyPredicateMaps[i];
-                object value = MapProperty(map, content, result);
-                if (value != null)
-                {
-                    this.propertyAccessor.SetValue(map.Info.Property.Name, result, value);
-                }
-            }
-
-            return result;
-        }
-
-        /// <inheritdoc/>
         void IUmbMapperConfig.Init()
         {
             // We run the initialization code here so we don't have to run it per mapping.
@@ -272,6 +199,91 @@ namespace UmbMapper
 
                 this.hasChecked = true;
             }
+        }
+
+        /// <inheritdoc/>
+        object IUmbMapperConfig.CreateEmpty()
+        {
+            if (this.createProxy)
+            {
+                var proxy = (IProxy)this.proxyType.GetInstance();
+                proxy.Interceptor = new LazyInterceptor(new Dictionary<string, Lazy<object>>());
+                return proxy;
+            }
+
+            return this.MappedType.GetInstance();
+        }
+
+        /// <inheritdoc/>
+        object IUmbMapperConfig.CreateEmpty(IPublishedContent content)
+        {
+            if (this.createProxy)
+            {
+                var proxy = (IProxy)this.proxyType.GetInstance(content);
+                proxy.Interceptor = new LazyInterceptor(new Dictionary<string, Lazy<object>>());
+                return proxy;
+            }
+
+            return this.MappedType.GetInstance(content);
+        }
+
+        /// <inheritdoc/>
+        object IUmbMapperConfig.Map(IPublishedContent content)
+        {
+            object result;
+            if (this.createProxy)
+            {
+                // Create a proxy instance to replace our object.
+                result = this.hasIPublishedConstructor ? this.proxyType.GetInstance(content) : this.proxyType.GetInstance();
+
+                // Map the lazy properties and predicate mappings
+                Dictionary<string, Lazy<object>> lazyProperties = this.MapLazyProperties(content, result);
+
+                // Set the interceptor and replace our result with the proxy
+                var interceptor = new LazyInterceptor(lazyProperties);
+                ((IProxy)result).Interceptor = interceptor;
+            }
+            else
+            {
+                result = this.hasIPublishedConstructor ? this.MappedType.GetInstance(content) : this.MappedType.GetInstance();
+            }
+
+            // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
+            // Certain mappers like Archetype require the context so we want to ensure it exists.
+            EnsureUmbracoContext();
+
+            // Now map the non-lazy properties and non-lazy predicate mappings
+            this.MapNonLazyProperties(content, result);
+
+            return result;
+        }
+
+        /// <inheritdoc/>
+        public void Map(IPublishedContent content, object destination)
+        {
+            // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
+            // Certain mappers like Archetype require the context so we want to ensure it exists.
+            EnsureUmbracoContext();
+
+            // We don't know whether the destination was created by UmbMapper or by something else so we have to check to see if it
+            // is a proxy instance.
+            if (destination is IProxy proxy)
+            {
+                // Map the lazy properties and predicate mappings
+                Dictionary<string, Lazy<object>> lazyProperties = this.MapLazyProperties(content, destination);
+
+                // Replace the interceptor with our new one.
+                var interceptor = new LazyInterceptor(lazyProperties);
+                proxy.Interceptor = interceptor;
+            }
+            else
+            {
+                // Map our collated lazy properties as non-lazy instead.
+                this.MapLazyPropertiesAsNonLazy(content, destination);
+            }
+
+            // Map the non-lazy properties and non-lazy predicate mappings
+            this.MapNonLazyProperties(content, destination);
         }
 
         /// <summary>
@@ -427,6 +439,86 @@ namespace UmbMapper
                 UmbracoConfig.For.UmbracoSettings(),
                 UrlProviderResolver.Current.Providers,
                 false);
+        }
+
+        private Dictionary<string, Lazy<object>> MapLazyProperties(IPublishedContent content, object result)
+        {
+            // First add any lazy mappings, use count to prevent allocations
+            var lazyProperties = new Dictionary<string, Lazy<object>>(this.lazyNames.Count);
+            for (int i = 0; i < this.lazyMaps.Length; i++)
+            {
+                // It's better to allocate the `int` via closure than PropertyMap<T>
+                int i1 = i;
+                lazyProperties[this.lazyMaps[i].Info.Property.Name] = new Lazy<object>(() =>
+                {
+                    EnsureUmbracoContext();
+                    return MapProperty(this.lazyMaps[i1], content, result);
+                });
+            }
+
+            // Then lazy predicate mappings
+            for (int i = 0; i < this.lazyPredicateMaps.Length; i++)
+            {
+                // It's better to allocate the `int` via closure than PropertyMap<T>
+                int i1 = i;
+                lazyProperties[this.lazyPredicateMaps[i].Info.Property.Name] = new Lazy<object>(() =>
+                {
+                    EnsureUmbracoContext();
+                    return MapProperty(this.lazyPredicateMaps[i1], content, result);
+                });
+            }
+
+            return lazyProperties;
+        }
+
+        private void MapNonLazyProperties(IPublishedContent content, object destination)
+        {
+            // First map the non-lazy properties
+            for (int i = 0; i < this.nonLazyMaps.Length; i++)
+            {
+                PropertyMap<T> map = this.nonLazyMaps[i];
+                object value = MapProperty(map, content, destination);
+                if (value != null)
+                {
+                    this.propertyAccessor.SetValue(map.Info.Property.Name, destination, value);
+                }
+            }
+
+            // Then non-lazy predicate mappings
+            for (int i = 0; i < this.nonLazyPredicateMaps.Length; i++)
+            {
+                PropertyMap<T> map = this.nonLazyPredicateMaps[i];
+                object value = MapProperty(map, content, destination);
+                if (value != null)
+                {
+                    this.propertyAccessor.SetValue(map.Info.Property.Name, destination, value);
+                }
+            }
+        }
+
+        private void MapLazyPropertiesAsNonLazy(IPublishedContent content, object destination)
+        {
+            // First map the lazy properties
+            for (int i = 0; i < this.lazyMaps.Length; i++)
+            {
+                PropertyMap<T> map = this.lazyMaps[i];
+                object value = MapProperty(map, content, destination);
+                if (value != null)
+                {
+                    this.propertyAccessor.SetValue(map.Info.Property.Name, destination, value);
+                }
+            }
+
+            // Then lazy predicate mappings
+            for (int i = 0; i < this.lazyPredicateMaps.Length; i++)
+            {
+                PropertyMap<T> map = this.lazyPredicateMaps[i];
+                object value = MapProperty(map, content, destination);
+                if (value != null)
+                {
+                    this.propertyAccessor.SetValue(map.Info.Property.Name, destination, value);
+                }
+            }
         }
 
         private bool GetOrCreateMap(PropertyInfo property, out PropertyMap<T> map)

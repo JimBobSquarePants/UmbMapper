@@ -25,11 +25,31 @@ namespace UmbMapper
         IEnumerable<IPropertyMap> Mappings { get; }
 
         /// <summary>
-        /// Performs the mapping operation
+        /// Performs the mapping operation creating a new destination object
         /// </summary>
         /// <param name="content">The published content</param>
         /// <returns>The <see cref="object"/></returns>
         object Map(IPublishedContent content);
+
+        /// <summary>
+        /// Performs the mapping operation onto an existing destination object
+        /// </summary>
+        /// <param name="content">The published content</param>
+        /// <param name="destination">The destination object</param>
+        void Map(IPublishedContent content, object destination);
+
+        /// <summary>
+        /// Creates an empty instance of the mapped type.
+        /// </summary>
+        /// <returns>The <see cref="object"/></returns>
+        object CreateEmpty();
+
+        /// <summary>
+        /// Creates an empty instance of the mapped type.
+        /// </summary>
+        /// <param name="content">The published content</param>
+        /// <returns>The <see cref="object"/></returns>
+        object CreateEmpty(IPublishedContent content);
 
         /// <summary>
         /// Runs any additional code required to setup the configuration

@@ -247,5 +247,37 @@ namespace UmbMapper.Tests.Mapping
             Assert.Contains(result.Polymorphic, x => x.PolyMorphicText == "Foo");
             Assert.Contains(result.Polymorphic, x => x.PolyMorphicText == "Bar");
         }
+
+        [Fact]
+        public void MapperCanMapToExistingInstance()
+        {
+            const int id = 999;
+            const string name = "Foo";
+            var created = new DateTime(2017, 1, 1);
+            PlaceOrder placeOrder = PlaceOrder.Second;
+
+            MockPublishedContent content = this.support.Content;
+            content.Id = id;
+            content.Name = name;
+            content.CreateDate = created;
+            content.Properties = new List<IPublishedProperty>
+            {
+                new MockPublishedContentProperty(nameof(PublishedItem.PlaceOrder), PlaceOrder.Fourth)
+            };
+
+            PublishedItem result = UmbMapperRegistry.CreateEmpty<PublishedItem>();
+
+            // Set a value before mapping.
+            result.PlaceOrder = placeOrder;
+
+            content.MapTo(result);
+
+            Assert.Equal(id, result.Id);
+            Assert.Equal(name, result.Name);
+            Assert.Equal(created, result.CreateDate);
+
+            // We expect it to be overwritten
+            Assert.NotEqual(placeOrder, result.PlaceOrder);
+        }
     }
 }
