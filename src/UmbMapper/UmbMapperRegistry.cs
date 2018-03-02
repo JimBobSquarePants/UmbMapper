@@ -87,7 +87,7 @@ namespace UmbMapper
         }
 
         /// <summary>
-        /// Creates an empty instance of the given type.
+        /// Creates an empty instance of the given type passing the published content to the constructor.
         /// If the configuration for the type contains lazy mappings a transparent proxy is returned.
         /// </summary>
         /// <typeparam name="T">The type of object to create</typeparam>

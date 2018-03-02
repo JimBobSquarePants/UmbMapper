@@ -162,7 +162,7 @@ Specialist mappers for Archetype and NuPickers are available also via installing
 
 ### Calling a Mapper
 
-There are four extension methods that have been added to the `IPublishedContent` interface providing compile-time and run-time mapping variants. Their signatures are as follows:
+There are four extension methods that have been added to the `IPublishedContent` interface providing compile-time and run-time creation and mapping variants. Their signatures are as follows:
 
 ``` csharp
 // Map a collection of a compile-time known type instances.
@@ -180,10 +180,34 @@ public static T MapTo<T>(this IPublishedContent content)
 public static object MapTo(this IPublishedContent content, Type type)
 ```
 
+It's also possible to map to existing classes.
+
+``` csharp
+// Map to a single compile-time known type instance.
+public static void MapTo<T>(this IPublishedContent content, T destination)
+    where T : class
+
+// Map to a single run-time known type instance.
+public static void MapTo(this IPublishedContent content, object destination)
+```
+
+> Note: It's recommended that you use the following method to create your target instances as this allows the creation of proxy classes which allow lazy loading.
+
+``` csharp
+// Creates an empty instance of the given type.
+public static T CreateEmpty<T>()
+    where T : class
+
+// Creates an empty instance of the given type passing the published 
+// content to the constructor.
+public static T CreateEmpty<T>(IPublishedContent content)
+    where T : class
+```
+
 ## IPublishedContentModelFactory
 
 As of v7.1.4, Umbraco ships with using a default model factory for `IPublishedContent`.
-For more information about the [IPublishedContentModelFactory](https://github.com/zpqrtbnk/Zbu.ModelsBuilder/wiki/IPublishedContentModelFactory) please the "Zbu.ModelsBuilder" wiki:
+For more information about the [IPublishedContentModelFactory](https://github.com/zpqrtbnk/Zbu.ModelsBuilder/wiki/IPublishedContentModelFactory) please see the "Zbu.ModelsBuilder" wiki:
 
 UmbMapper comes with an implementation that can be configured as following.
 
@@ -209,6 +233,8 @@ that have `UmbracoContext` based requirements may fail otherwise.
 **UmbMapper is blazingly quick**. The underpinning logic is simple also and requires very little run-time work as the rules are already determined at compile-time.
 
 Additional performance boosting can be delivered using lazy mapping.
+
+Check out the benchmarks in the solution.
 
 ## Dynamic Proxies and Lazy Mapping
 
