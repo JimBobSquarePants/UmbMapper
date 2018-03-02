@@ -223,7 +223,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Converters\CustomBooleanTypeConverter.cs" />
-    <Compile Include="Extensions\AssemblyExtensions.cs" />
     <Compile Include="Extensions\ComparableExtensions.cs" />
     <Compile Include="Extensions\CompositeTypeTypeKey.cs" />
     <Compile Include="Extensions\ExpressionExtensions.cs" />

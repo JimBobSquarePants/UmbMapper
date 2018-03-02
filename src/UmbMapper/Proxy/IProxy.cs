@@ -3,6 +3,8 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
+using System.Reflection;
+
 namespace UmbMapper.Proxy
 {
     /// <summary>
@@ -12,7 +14,7 @@ namespace UmbMapper.Proxy
     public interface IProxy
     {
         /// <summary>
-        /// Gets or sets the <see cref="IInterceptor"/> for intercepting <see cref="System.Reflection.MethodBase"/> calls.
+        /// Gets or sets the <see cref="IInterceptor"/> for intercepting <see cref="MethodBase"/> calls.
         /// </summary>
         IInterceptor Interceptor { get; set; }
     }

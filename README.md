@@ -152,7 +152,7 @@ Available `IPropertyMapper`implementations all inherit from the `PropertyMapperB
 - `CsvPropertyMapper` Allows mapping of comma separated string values to arrays of strings, integrals, and real types. Values are automatically clamped and rounded.
 - `UmbracoPickerPropertyMapper` Maps from all the Umbraco built-in legacy pickers. Not required for any of the pickers from v7.6+
 
-These mappers handle most use cases since they rely initially on Umbraco's `PropertyValueConverter` API. Additional mappers can be easily created though. Check the source for examples.
+These mappers handle most use cases since they utilize Umbraco's `PropertyValueConverter` API. Additional mappers can be easily created though. Check the source for examples.
 
 Specialist mappers for Archetype and NuPickers are available also via installing the additional packages.
 

@@ -93,7 +93,7 @@ namespace UmbMapper.Proxy
             il.MarkLabel(skipThrow);
 
             // This is equivalent to:
-            // return return (PropertyType) interceptor.Intercept(methodof(BaseType.get_Property), null);
+            // return (PropertyType)interceptor.Intercept(MethodBase.GetMethodFromHandle(typeof(BaseType).GetMethod("get_Property").MethodHandle), null);
             il.Emit(OpCodes.Ldtoken, method);
             il.Emit(OpCodes.Call, GetMethodFromHandle);
 
