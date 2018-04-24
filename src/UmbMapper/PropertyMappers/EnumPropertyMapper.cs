@@ -40,7 +40,7 @@ namespace UmbMapper.PropertyMappers
             Type propertyType = info.PropertyType;
             CultureInfo culture = this.GetRequestCulture();
 
-            if (value is string strValue)
+            if (value is string strValue && !string.IsNullOrWhiteSpace(strValue))
             {
                 if (strValue.IndexOf(',') != -1)
                 {
