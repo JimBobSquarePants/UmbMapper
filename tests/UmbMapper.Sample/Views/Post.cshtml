@@ -1,1 +1,5 @@
-﻿@inherits UmbracoViewPage<UmbMapper.Sample.RenderModels.RenderPage<UmbMapper.Sample.Models.Pages.Home>>
+﻿@using UmbMapper.Sample.RenderModels
+@using UmbMapper.Sample.Models.Pages
+@inherits UmbracoViewPage<RenderPage<Post>>
+
+<h1>@Model.Content.Name</h1>

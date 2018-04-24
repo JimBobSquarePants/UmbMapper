@@ -1,6 +1,7 @@
-﻿@inherits   UmbracoViewPage<UmbMapper.Sample.RenderModels.RenderPage<UmbMapper.Sample.Models.Pages.Home>>
-@{
-}
+﻿@using UmbMapper.Sample.RenderModels
+@using UmbMapper.Sample.Models.Pages
+
+@inherits  UmbracoViewPage<IRenderPage<PublishedPage>>
 
 <!DOCTYPE html>
 <html lang="@Model.CurrentCulture.TwoLetterISOLanguageName" prefix="og: http://ogp.me/ns#">

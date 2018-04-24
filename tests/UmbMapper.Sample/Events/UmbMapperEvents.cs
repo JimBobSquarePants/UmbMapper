@@ -28,6 +28,7 @@ namespace UmbMapper.Sample.Events
             // Register our custom maps
             UmbMapperRegistry.AddMapper(new PublishedImageMap());
             UmbMapperRegistry.AddMapper(new HomeMap());
+            UmbMapperRegistry.AddMapper(new BlogMap());
             UmbMapperRegistry.AddMapper(new PostMap());
 
             // The Slide document type is simple with no additional customization required.
