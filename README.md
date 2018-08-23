@@ -238,7 +238,7 @@ Additional performance boosting can be delivered using lazy mapping.
 
 Check out the benchmarks in the solution.
 
-<img src="https://raw.githubusercontent.com/JimBobSquarePants/UmbMapper/develop/build/assets/benchmark.jpg" alt="UmbMapper Benchmarks"/>
+<img src="https://raw.githubusercontent.com/JimBobSquarePants/UmbMapper/develop/build/assets/benchmark.JPG" alt="UmbMapper Benchmarks"/>
    
 
 ## Dynamic Proxies and Lazy Mapping
