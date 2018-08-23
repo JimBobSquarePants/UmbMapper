@@ -16,6 +16,12 @@ namespace UmbMapper
     public static class UmbMapperRegistry
     {
         /// <summary>
+        /// Gets the content accessor cache for the different types of published content.
+        /// </summary>
+        internal static ConcurrentDictionary<string, FastPropertyAccessor> ContentAccessorCache { get; }
+        = new ConcurrentDictionary<string, FastPropertyAccessor>();
+
+        /// <summary>
         /// Gets the collection of mappers
         /// </summary>
         internal static ConcurrentDictionary<Type, IUmbMapperConfig> Mappers { get; } = new ConcurrentDictionary<Type, IUmbMapperConfig>();
@@ -78,7 +84,7 @@ namespace UmbMapper
         {
             Mappers.TryGetValue(typeof(T), out IUmbMapperConfig mapper);
 
-            if (mapper == null)
+            if (mapper is null)
             {
                 throw new InvalidOperationException($"No mapper for the given type {typeof(T)} has been registered.");
             }
@@ -98,7 +104,7 @@ namespace UmbMapper
         {
             Mappers.TryGetValue(typeof(T), out IUmbMapperConfig mapper);
 
-            if (mapper == null)
+            if (mapper is null)
             {
                 throw new InvalidOperationException($"No mapper for the given type {typeof(T)} has been registered.");
             }

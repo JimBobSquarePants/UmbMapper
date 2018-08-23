@@ -5,6 +5,7 @@
 
 using System;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace UmbMapper.Extensions
 {
@@ -23,9 +24,10 @@ namespace UmbMapper.Extensions
         /// <exception cref="ArgumentNullException">
         /// Thrown if the given instance is null.
         /// </exception>
+        [MethodImpl(MethodImplOptions.NoInlining)]
         public static bool IsVirtualAndOverridable(this PropertyInfo source)
         {
-            if (source == null)
+            if (source is null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
@@ -44,6 +46,7 @@ namespace UmbMapper.Extensions
         /// </summary>
         /// <param name="source">The property to check</param>
         /// <returns>True if a lazy load attempt should be make</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool ShouldAttemptLazyLoad(this PropertyInfo source)
         {
             return source.IsVirtualAndOverridable();

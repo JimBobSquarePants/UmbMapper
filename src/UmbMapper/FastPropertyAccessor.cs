@@ -39,9 +39,7 @@ namespace UmbMapper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public FastPropertyAccessor(Type type)
         {
-            IEnumerable<PropertyInfo> properties = type.GetProperties(UmbMapperConstants.MappableFlags);
-
-            foreach (PropertyInfo property in properties)
+            foreach (PropertyInfo property in type.GetProperties(UmbMapperConstants.MappableFlags))
             {
                 string name = property.Name;
                 Type propertyType = property.PropertyType;

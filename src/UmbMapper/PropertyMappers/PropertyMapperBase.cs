@@ -27,6 +27,7 @@ namespace UmbMapper.PropertyMappers
         protected PropertyMapperBase(PropertyMapInfo info)
         {
             this.Info = info;
+            this.Alias = info.Aliases[0];
         }
 
         /// <inheritdoc/>
@@ -40,6 +41,17 @@ namespace UmbMapper.PropertyMappers
 
         /// <inheritdoc/>
         public UmbracoHelper Umbraco => new UmbracoHelper(this.UmbracoContext);
+
+        /// <summary>
+        /// Gets the current alias.
+        /// </summary>
+        protected string Alias { get; private set; }
+
+        /// <inheritdoc/>
+        public object GetRawValue(IPublishedContent content)
+        {
+            return this.GetRawValue(content, this.Info.Aliases);
+        }
 
         /// <inheritdoc/>
         public abstract object Map(IPublishedContent content, object value);
@@ -63,16 +75,67 @@ namespace UmbMapper.PropertyMappers
         }
 
         /// <summary>
+        /// Maps the raw property from the given content without conversion.
+        /// </summary>
+        /// <param name="content">The published content</param>
+        /// <param name="aliases">The collection of alias to check against.</param>
+        /// <returns>The <see cref="object"/></returns>
+        protected object GetRawValue(IPublishedContent content, string[] aliases)
+        {
+            PropertyMapInfo info = this.Info;
+            object value = info.DefaultValue;
+
+            // First try custom properties
+            for (int i = 0; i < aliases.Length; i++)
+            {
+                string alias = aliases[i];
+                value = content.GetPropertyValue(alias, info.Recursive);
+                if (!this.IsNullOrDefault(value))
+                {
+                    this.Alias = alias;
+                    return value;
+                }
+            }
+
+            // Then try class properties
+            Type contentType = content.GetType();
+            string key = contentType.AssemblyQualifiedName;
+
+            if (key != null)
+            {
+                UmbMapperRegistry.ContentAccessorCache.TryGetValue(key, out FastPropertyAccessor accessor);
+                if (accessor is null)
+                {
+                    accessor = new FastPropertyAccessor(contentType);
+                    UmbMapperRegistry.ContentAccessorCache.TryAdd(key, accessor);
+                }
+
+                for (int i = 0; i < aliases.Length; i++)
+                {
+                    string alias = aliases[i];
+                    value = accessor.GetValue(alias, content);
+                    if (!this.IsNullOrDefault(value))
+                    {
+                        this.Alias = alias;
+                        return value;
+                    }
+                }
+            }
+
+            return value ?? info.DefaultValue;
+        }
+
+        /// <summary>
         /// Checks the value to see if it is an instance of the given type and attempts to
         /// convert the value to the correct type if it is not.
         /// </summary>
-        /// <param name="value">The value</param>
+        /// <param name="value">The value to check.</param>
         /// <returns>The <see cref="object"/></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         protected object CheckConvertType(object value)
         {
             Type propType = this.Info.PropertyType;
-            if (value == null || propType.IsInstanceOfType(value))
+            if (value is null || propType.IsInstanceOfType(value))
             {
                 return value;
             }
@@ -92,7 +155,18 @@ namespace UmbMapper.PropertyMappers
             return value;
         }
 
+        /// <summary>
+        /// Returns a value indicating whether the given object is null of it's default value.
+        /// </summary>
+        /// <param name="value">The value to check.</param>
+        /// <returns>The <see cref="bool"/></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        protected bool IsNullOrDefault(object value)
+        {
+            return value.IsNullOrEmptyString() || value.Equals(this.Info.DefaultValue);
+        }
+
+        [MethodImpl(MethodImplOptions.NoInlining)]
         private UmbracoContext GetUmbracoContext()
         {
             return UmbracoContext.Current ?? throw new InvalidOperationException("UmbracoContext.Current is null.");

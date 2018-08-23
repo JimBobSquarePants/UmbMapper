@@ -30,10 +30,7 @@ namespace UmbMapper.Tests.Mapping
         {
             var config = new UmbMapperConfig<PublishedItem>();
 
-            Assert.Throws<InvalidOperationException>(() =>
-            {
-                config.AddMap(p => p.Id).AsLazy();
-            });
+            Assert.Throws<InvalidOperationException>(() => config.AddMap(p => p.Id).AsLazy());
         }
 
         [Fact]
@@ -48,9 +45,9 @@ namespace UmbMapper.Tests.Mapping
         {
             var config = new UmbMapperConfig<PublishedItem>();
 
-            UmbracoPropertyMapper idMapper = config.AddMap(p => p.Id).SetMapper<UmbracoPropertyMapper>();
-            UmbracoPropertyMapper nameMapper = config.AddMap(p => p.Name).SetMapper<UmbracoPropertyMapper>();
-            UmbracoPropertyMapper createdMapper = config.AddMap(p => p.CreateDate).SetMapper<UmbracoPropertyMapper>();
+            PropertyMap<PublishedItem> idMapper = config.AddMap(p => p.Id).SetMapper<UmbracoPropertyMapper>();
+            PropertyMap<PublishedItem> nameMapper = config.AddMap(p => p.Name).SetMapper<UmbracoPropertyMapper>();
+            PropertyMap<PublishedItem> createdMapper = config.AddMap(p => p.CreateDate).SetMapper<UmbracoPropertyMapper>();
 
             Assert.NotNull(idMapper);
             Assert.NotNull(nameMapper);

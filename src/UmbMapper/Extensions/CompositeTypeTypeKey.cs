@@ -10,7 +10,7 @@ namespace UmbMapper.Extensions
     /// <summary>
     /// A lightweight struct for storing a pair of types for caching.
     /// </summary>
-    internal struct CompositeTypeTypeKey : IEquatable<CompositeTypeTypeKey>
+    internal readonly struct CompositeTypeTypeKey : IEquatable<CompositeTypeTypeKey>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CompositeTypeTypeKey"/> struct.
@@ -42,7 +42,7 @@ namespace UmbMapper.Extensions
         /// <inheritdoc/>
         public override bool Equals(object obj)
         {
-            return (obj is CompositeTypeTypeKey) && this.Equals((CompositeTypeTypeKey)obj);
+            return obj is CompositeTypeTypeKey compositeTypeTypeKey && this.Equals(compositeTypeTypeKey);
         }
 
         /// <inheritdoc/>
@@ -51,8 +51,7 @@ namespace UmbMapper.Extensions
             unchecked
             {
                 int hashCode = this.Type1.GetHashCode();
-                hashCode = (hashCode * 397) ^ this.Type2.GetHashCode();
-                return hashCode;
+                return (hashCode * 397) ^ this.Type2.GetHashCode();
             }
         }
     }

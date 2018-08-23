@@ -11,7 +11,7 @@ namespace UmbMapper.PropertyMappers.NuPickers
     /// <summary>
     /// Maps from a NuPicker value to an enum
     /// </summary>
-    public class NuPickerEnumPropertyMapper : EnumPropertyMapper
+    public sealed class NuPickerEnumPropertyMapper : EnumPropertyMapper
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="NuPickerEnumPropertyMapper"/> class.

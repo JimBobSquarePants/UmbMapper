@@ -67,14 +67,14 @@ namespace UmbMapper.Extensions
         /// <returns>The <see cref="object"/></returns>
         public static object MapTo(this IPublishedContent content, Type type)
         {
-            if (content == null)
+            if (content is null)
             {
                 throw new ArgumentNullException(nameof(content));
             }
 
             UmbMapperRegistry.Mappers.TryGetValue(type, out IUmbMapperConfig mapper);
 
-            if (mapper == null)
+            if (mapper is null)
             {
                 throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
             }
@@ -92,7 +92,7 @@ namespace UmbMapper.Extensions
             where T : class
         {
             Type type = typeof(T);
-            MapTo(content, type, (T)destination);
+            MapTo(content, type, destination);
         }
 
         /// <summary>
@@ -103,14 +103,14 @@ namespace UmbMapper.Extensions
         /// <param name="destination">The destination object</param>
         public static void MapTo(this IPublishedContent content, Type type, object destination)
         {
-            if (content == null)
+            if (content is null)
             {
                 throw new ArgumentNullException(nameof(content));
             }
 
             UmbMapperRegistry.Mappers.TryGetValue(type, out IUmbMapperConfig mapper);
 
-            if (mapper == null)
+            if (mapper is null)
             {
                 throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
             }

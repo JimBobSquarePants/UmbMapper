@@ -52,8 +52,7 @@ namespace UmbMapper
         /// </summary>
         public UmbMapperConfig()
         {
-            Type type = typeof(T);
-            this.MappedType = type;
+            this.MappedType = typeof(T);
 
             // Check the validity of the mapped type constructor as early as possible.
             bool validConstructor = false;
@@ -112,7 +111,7 @@ namespace UmbMapper
         /// <exception cref="ArgumentException">Thrown if the expression is not a property member expression.</exception>
         public IEnumerable<PropertyMap<T>> AddMappings(params Expression<Func<T, object>>[] propertyExpressions)
         {
-            if (propertyExpressions == null)
+            if (propertyExpressions is null)
             {
                 return Enumerable.Empty<PropertyMap<T>>();
             }
@@ -157,7 +156,7 @@ namespace UmbMapper
         public bool Ignore(Expression<Func<T, object>> propertyExpression)
         {
             var property = propertyExpression.ToPropertyInfo();
-            PropertyMap<T> map = this.maps.FirstOrDefault(m => m.Info.Property == property);
+            PropertyMap<T> map = this.maps.Find(m => m.Info.Property == property);
 
             return map != null && this.maps.Remove(map);
         }
@@ -176,11 +175,11 @@ namespace UmbMapper
                 // We need to organize mapping now into separate groups as ordering of mappings is important when using predicates.
                 this.nonLazyMaps = this.maps.Where(m => !m.Info.HasPredicate && !m.Info.Lazy).ToArray();
                 this.lazyMaps = this.maps.Where(m => !m.Info.HasPredicate && m.Info.Lazy).ToArray();
-                this.hasLazy = this.lazyMaps.Any();
+                this.hasLazy = this.lazyMaps.Length > 0;
 
                 this.nonLazyPredicateMaps = this.maps.Where(m => m.Info.HasPredicate && !m.Info.Lazy).ToArray();
                 this.lazyPredicateMaps = this.maps.Where(m => m.Info.HasPredicate && m.Info.Lazy).ToArray();
-                this.hasPredicate = this.nonLazyPredicateMaps.Any() || this.lazyPredicateMaps.Any();
+                this.hasPredicate = this.nonLazyPredicateMaps.Length > 0 || this.lazyPredicateMaps.Length > 0;
 
                 this.createProxy = this.hasLazy || this.hasPredicate;
 
@@ -240,8 +239,7 @@ namespace UmbMapper
                 Dictionary<string, Lazy<object>> lazyProperties = this.MapLazyProperties(content, result);
 
                 // Set the interceptor and replace our result with the proxy
-                var interceptor = new LazyInterceptor(lazyProperties);
-                ((IProxy)result).Interceptor = interceptor;
+                ((IProxy)result).Interceptor = new LazyInterceptor(lazyProperties);
             }
             else
             {
@@ -307,24 +305,30 @@ namespace UmbMapper
         {
             object value = null;
 
-            // If we have a mapping function, use that and skip Umbraco
+            // If we have a mapping function, use that and skip Umbraco.
             if (map.Info.HasPredicate)
             {
                 value = map.Predicate.Invoke((T)result, content);
             }
             else
             {
-                // Ensure the property mapper is always invoked first
-                if (!(map.PropertyMapper is UmbracoPropertyMapper))
-                {
-                    value = new UmbracoPropertyMapper(map.Info).Map(content, null);
-                }
+                // Get the raw value from the content.
+                value = map.PropertyMapper.GetRawValue(content);
 
-                // Other mappers
+                // Now map using the given mappers.
                 value = map.PropertyMapper.Map(content, value);
             }
 
             PropertyMapInfo info = map.Info;
+
+            // Try to return if the value is correct.
+            if (!(value.IsNullOrEmptyString() || value.Equals(info.DefaultValue))
+                && info.PropertyType.IsInstanceOfType(value))
+            {
+                return value;
+            }
+
+            // Ensure everything is the correct return type.
             value = SantizeValue(value, info);
 
             if (value != null)
@@ -349,7 +353,7 @@ namespace UmbMapper
                 if (value.GetType().IsEnumerableOfType(typeof(IPublishedContent)) && info.IsEnumerableType)
                 {
                     Type genericType = info.EnumerableParamType;
-                    if (genericType != null && genericType.IsClass)
+                    if (genericType?.IsClass == true)
                     {
                         return ((IEnumerable<IPublishedContent>)value).MapTo(genericType);
                     }
@@ -524,9 +528,9 @@ namespace UmbMapper
         private bool GetOrCreateMap(PropertyInfo property, out PropertyMap<T> map)
         {
             bool exists = true;
-            map = this.maps.FirstOrDefault(x => x.Info.Property.Name == property.Name);
+            map = this.maps.Find(x => x.Info.Property.Name == property.Name);
 
-            if (map == null)
+            if (map is null)
             {
                 exists = false;
                 map = new PropertyMap<T>(property);

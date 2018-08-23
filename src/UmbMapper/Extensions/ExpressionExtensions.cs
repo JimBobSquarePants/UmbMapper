@@ -27,7 +27,7 @@ namespace UmbMapper.Extensions
             MemberExpression member = expression.Body as MemberExpression
                   ?? (expression.Body as UnaryExpression)?.Operand as MemberExpression;
 
-            if (member == null)
+            if (member is null)
             {
                 throw new ArgumentException("Action must be a member expression.");
             }

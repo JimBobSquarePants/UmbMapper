@@ -33,9 +33,10 @@ namespace UmbMapper.Extensions
         /// </summary>
         /// <param name="value">The object to test against.</param>
         /// <returns>True; if the value is null or an empty string; otherwise; false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNullOrEmptyString(this object value)
         {
-            return value == null || value as string == string.Empty;
+            return value is null || (value as string)?.Length == 0;
         }
 
         /// <summary>
@@ -43,6 +44,7 @@ namespace UmbMapper.Extensions
         /// </summary>
         /// <param name="value">The object to test against.</param>
         /// <returns>True; if the value is null or an empty string; otherwise; false.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsNullOrWhiteSpaceString(this object value)
         {
             return string.IsNullOrWhiteSpace(value as string);
@@ -86,12 +88,12 @@ namespace UmbMapper.Extensions
         {
             try
             {
-                if (destinationType == null)
+                if (destinationType is null)
                 {
                     return Attempt<object>.Fail();
                 }
 
-                if (input == null)
+                if (input is null)
                 {
                     // Nullable is ok
                     if (destinationType.IsGenericType && GetCachedGenericNullableType(destinationType) != null)

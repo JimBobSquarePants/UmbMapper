@@ -5,7 +5,13 @@
 <h1>@Model.Content.Name</h1>
 
 <h3>Vorto Content mapped using the custom <code>VortoPropertyMapper</code></h3>
+<p>When the property for culture <code>en-US</code> is empty the content for this falls back to the <code>BodyText</code> property.</p>
 @Model.Content.VortoBodyText
+<hr />
+
+<h3>Vorto Content mapped using the custom <code>VortoPropertyMapper</code> with a set culture</h3>
+<p>This is the <code>VortoBodyText</code> property but with the culture explicitly set to <code>fr-FR</code>.</p>
+@Model.Content.VortoBodyTextFr
 <hr />
 
 <h3>Standard RTE mapping</h3>

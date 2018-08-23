@@ -41,7 +41,7 @@ namespace UmbMapper
         public PropertyMapInfo Info { get; }
 
         /// <inheritdoc/>
-        public IPropertyMapper PropertyMapper { get; set; }
+        public IPropertyMapper PropertyMapper { get; internal set; }
 
         /// <summary>
         /// Gets the mapping predicate. Used for mapping from known values in the current instance.
@@ -56,7 +56,7 @@ namespace UmbMapper
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
         public PropertyMap<T> SetAlias<TProperty>(params Expression<Func<T, TProperty>>[] aliases)
         {
-            if (aliases == null)
+            if (aliases is null)
             {
                 return this;
             }
@@ -85,7 +85,7 @@ namespace UmbMapper
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
         public PropertyMap<T> SetAlias(params string[] aliases)
         {
-            if (aliases == null || !aliases.Any())
+            if (aliases is null || aliases.Length == 0)
             {
                 return this;
             }
@@ -98,12 +98,12 @@ namespace UmbMapper
         /// Sets the property mapper for the property
         /// </summary>
         /// <typeparam name="TMapper">The type of property mapper</typeparam>
-        /// <returns>The <see cref="IPropertyMapper"/></returns>
-        public TMapper SetMapper<TMapper>()
+        /// <returns>The <see cref="PropertyMap{T}"/></returns>
+        public PropertyMap<T> SetMapper<TMapper>()
             where TMapper : IPropertyMapper
         {
             this.PropertyMapper = (TMapper)typeof(TMapper).GetInstance(this.Info);
-            return (TMapper)this.PropertyMapper;
+            return this;
         }
 
         /// <summary>
@@ -167,7 +167,10 @@ namespace UmbMapper
         }
 
         /// <inheritdoc/>
-        public bool Equals(PropertyMap<T> other) => this.Info.Equals(other.Info);
+        public bool Equals(PropertyMap<T> other)
+        {
+            return this.Info.Equals(other.Info);
+        }
 
         /// <inheritdoc/>
         public override bool Equals(object obj)
@@ -214,7 +217,7 @@ namespace UmbMapper
         {
             unchecked
             {
-                return ((map.Info != null ? map.Info.GetHashCode() : 0) * 397) ^ (map.PropertyMapper != null ? map.PropertyMapper.GetHashCode() : 0);
+                return ((map.Info?.GetHashCode() ?? 0) * 397) ^ (map.PropertyMapper?.GetHashCode() ?? 0);
             }
         }
     }

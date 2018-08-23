@@ -130,8 +130,7 @@ namespace UmbMapper.Extensions
             private static void CacheInstanceCreationMethodIfRequired(Type type)
             {
                 // Bail out if we've already cached the instance creation method:
-                Func<TArg1, TArg2, TArg3, object> cached;
-                if (InstanceCreationMethods.TryGetValue(type, out cached))
+                if (InstanceCreationMethods.TryGetValue(type, out Func<TArg1, TArg2, TArg3, object> cached))
                 {
                     return;
                 }

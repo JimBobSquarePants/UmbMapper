@@ -20,7 +20,7 @@ namespace UmbMapper.Converters
         /// <inheritdoc/>
         public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
         {
-            if (sourceType == typeof(string))
+            if (sourceType.Equals(typeof(string)))
             {
                 return true;
             }
@@ -33,7 +33,7 @@ namespace UmbMapper.Converters
         {
             if (value is string str)
             {
-                if (str == null || str.Length == 0 || str == "0")
+                if (string.IsNullOrEmpty(str) || str == "0")
                 {
                     return false;
                 }

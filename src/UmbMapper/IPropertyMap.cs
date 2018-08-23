@@ -18,8 +18,8 @@ namespace UmbMapper
         PropertyMapInfo Info { get; }
 
         /// <summary>
-        /// Gets or sets the property mapper
+        /// Gets or the property mapper
         /// </summary>
-        IPropertyMapper PropertyMapper { get; set; }
+        IPropertyMapper PropertyMapper { get; }
     }
 }

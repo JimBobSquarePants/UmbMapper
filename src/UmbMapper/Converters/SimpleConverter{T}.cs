@@ -25,12 +25,11 @@ namespace UmbMapper.Converters
         /// The <see cref="CultureInfo"/> to use as the current culture.
         /// </param>
         /// <param name="value">The <see cref="string"/> to convert. </param>
-        /// <param name="propertyType">The property type that the converter will convert to.</param>
         /// <exception cref="NotSupportedException">The conversion cannot be performed.</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static object ConvertFrom(CultureInfo culture, string value, Type propertyType)
+        public static object ConvertFrom(CultureInfo culture, string value)
         {
-            if (value == null)
+            if (value is null)
             {
                 return default(T);
             }
@@ -38,7 +37,7 @@ namespace UmbMapper.Converters
             Type t = typeof(T);
             Type u = Nullable.GetUnderlyingType(t);
 
-            if (u != null)
+            if (!(u is null))
             {
                 return (T)Convert.ChangeType(value, u);
             }

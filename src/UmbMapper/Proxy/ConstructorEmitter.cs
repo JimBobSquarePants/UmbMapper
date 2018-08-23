@@ -27,10 +27,10 @@ namespace UmbMapper.Proxy
         public static void Emit(TypeBuilder typeBuilder, ConstructorInfo constructorInfo)
         {
             // Define the default constructor attributes.
-            const MethodAttributes constructorAttributes = MethodAttributes.Public |
-                                                           MethodAttributes.HideBySig |
-                                                           MethodAttributes.SpecialName |
-                                                           MethodAttributes.RTSpecialName;
+            const MethodAttributes constructorAttributes = MethodAttributes.Public
+                                                           | MethodAttributes.HideBySig
+                                                           | MethodAttributes.SpecialName
+                                                           | MethodAttributes.RTSpecialName;
 
             // Get the parameters.
             Type[] parameterTypes = constructorInfo.GetParameters().Select(p => p.ParameterType).ToArray();

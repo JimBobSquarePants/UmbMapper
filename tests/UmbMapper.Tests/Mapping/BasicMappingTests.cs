@@ -32,7 +32,6 @@ namespace UmbMapper.Tests.Mapping
             content.Name = name;
             content.CreateDate = created;
 
-
             PublishedItem result = content.MapTo<PublishedItem>();
 
             Assert.Equal(id, result.Id);
@@ -194,7 +193,7 @@ namespace UmbMapper.Tests.Mapping
             IEnumerable<decimal> decimalExpected = new decimal[] { 1, 0, 1.234M };
             IEnumerable<int> nullExpected = Enumerable.Empty<int>();
             IEnumerable<int> emptyExpected = Enumerable.Empty<int>();
-            int singleExpected = 1;
+            const int singleExpected = 1;
             IEnumerable<int> enumerableExpected = new[] { 1 };
 
             MockPublishedContent content = this.support.Content;
@@ -254,7 +253,7 @@ namespace UmbMapper.Tests.Mapping
             const int id = 999;
             const string name = "Foo";
             var created = new DateTime(2017, 1, 1);
-            PlaceOrder placeOrder = PlaceOrder.Second;
+            const PlaceOrder placeOrder = PlaceOrder.Second;
 
             MockPublishedContent content = this.support.Content;
             content.Id = id;

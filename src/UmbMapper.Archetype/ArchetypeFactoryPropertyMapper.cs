@@ -12,7 +12,7 @@ namespace UmbMapper.PropertyMappers.Archetype
     /// <summary>
     /// Maps Archetype properties in the backoffice
     /// </summary>
-    public class ArchetypeFactoryPropertyMapper : DocTypeFactoryPropertyMapper
+    public sealed class ArchetypeFactoryPropertyMapper : DocTypeFactoryPropertyMapper
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ArchetypeFactoryPropertyMapper"/> class.

@@ -346,7 +346,9 @@
     <Content Include="Content\Site.css" />
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="config\imageprocessor\security.config" />
     <Content Include="config\imageprocessor\processing.config" />
     <Content Include="config\imageprocessor\cache.config" />
@@ -404,7 +406,6 @@
     <Compile Include="ComponentModel\Mappers\PublishedPageMap.cs" />
     <Compile Include="ComponentModel\Mappers\PublishedImageMap.cs" />
     <Compile Include="ComponentModel\PropertyMappers\NamePickerPropertyMapper.cs" />
-    <Compile Include="ComponentModel\PropertyMappers\VortoPropertyMapper.cs" />
     <Compile Include="Controllers\BlogController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PostController.cs" />
@@ -446,6 +447,10 @@
     <ProjectReference Include="..\..\src\UmbMapper.PublishedContentModelFactory\UmbMapper.PublishedContentModelFactory.csproj">
       <Project>{d4d7dec8-23a5-408d-b602-7614410a46db}</Project>
       <Name>UmbMapper.PublishedContentModelFactory</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\UmbMapper.Vorto\UmbMapper.Vorto.csproj">
+      <Project>{53ce1ed7-9b83-423b-b191-1284224dc4bc}</Project>
+      <Name>UmbMapper.Vorto</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\src\UmbMapper\UmbMapper.csproj">
       <Project>{70794e9c-5e67-48a0-994c-fd67c7758fb7}</Project>

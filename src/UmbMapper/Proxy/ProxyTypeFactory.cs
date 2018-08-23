@@ -46,7 +46,7 @@ namespace UmbMapper.Proxy
                 // ConcurrentDictionary.GetOrAdd() is not atomic so we'll be doubly sure.
                 Locker.EnterWriteLock();
 
-                return ProxyCache.GetOrAdd(baseType, c => CreateUncachedProxyType(baseType, properties));
+                return ProxyCache.GetOrAdd(baseType, b => CreateUncachedProxyType(b, properties));
             }
             finally
             {
@@ -90,24 +90,23 @@ namespace UmbMapper.Proxy
 #endif
 
             // Define type attributes
-            const TypeAttributes typeAttributes = TypeAttributes.AutoClass |
-                                                  TypeAttributes.Class |
-                                                  TypeAttributes.Public |
-                                                  TypeAttributes.BeforeFieldInit;
+            const TypeAttributes typeAttributes = TypeAttributes.AutoClass
+                                                  | TypeAttributes.Class
+                                                  | TypeAttributes.Public
+                                                  | TypeAttributes.BeforeFieldInit;
 
             // Define the type.
             TypeBuilder typeBuilder = moduleBuilder.DefineType(typeName, typeAttributes, baseType);
 
             // Emit the default constructors for this proxy so that classes without parameterless constructors
             // can be proxied.
-            ConstructorInfo[] constructors = baseType.GetConstructors();
-            foreach (ConstructorInfo constructorInfo in constructors)
+            foreach (ConstructorInfo constructorInfo in baseType.GetConstructors())
             {
                 ConstructorEmitter.Emit(typeBuilder, constructorInfo);
             }
 
             // Emit the IProxy IInterceptor property.
-            FieldInfo interceptorField = InterceptorEmitter.Emit(typeBuilder);
+            InterceptorEmitter.Emit(typeBuilder);
 
             // Collect and filter our list of properties to intercept.
             MethodInfo[] methods = baseType.GetMethods(UmbMapperConstants.MappableFlags);
@@ -118,14 +117,14 @@ namespace UmbMapper.Proxy
             // Emit each property that is to be intercepted.
             foreach (MethodInfo methodInfo in proxyList)
             {
-                PropertyEmitter.Emit(typeBuilder, methodInfo, interceptorField);
+                PropertyEmitter.Emit(typeBuilder, methodInfo);
             }
 
             // Create and return.
             Type result = typeBuilder.CreateType();
 
 #if DEBUG
-           // assemblyBuilder.Save(typeName + ".dll");
+            // assemblyBuilder.Save(typeName + ".dll");
 #endif
             return result;
         }
@@ -187,7 +186,7 @@ namespace UmbMapper.Proxy
         /// </exception>
         private static PropertyInfo GetParentProperty(MethodInfo method)
         {
-            if (method == null)
+            if (method is null)
             {
                 throw new ArgumentNullException(nameof(method));
             }
@@ -206,15 +205,13 @@ namespace UmbMapper.Proxy
             {
                 if (method.DeclaringType != null)
                 {
-                    return method.DeclaringType.GetProperties(propertyFlags)
-                                 .FirstOrDefault(p => AreMethodsEqualForDeclaringType(p.GetSetMethod(), method));
+                    return Array.Find(method.DeclaringType.GetProperties(propertyFlags), p => AreMethodsEqualForDeclaringType(p.GetSetMethod(), method));
                 }
             }
 
             if (method.DeclaringType != null)
             {
-                return method.DeclaringType.GetProperties(propertyFlags)
-                             .FirstOrDefault(p => AreMethodsEqualForDeclaringType(p.GetGetMethod(), method));
+                return Array.Find(method.DeclaringType.GetProperties(propertyFlags), p => AreMethodsEqualForDeclaringType(p.GetGetMethod(), method));
             }
 
             return null;
@@ -234,7 +231,7 @@ namespace UmbMapper.Proxy
             byte[] firstBytes = { };
             byte[] secondBytes = { };
 
-            if (first != null && first.ReflectedType != null && first.DeclaringType != null)
+            if (first?.ReflectedType != null && first.DeclaringType != null)
             {
                 first = first.ReflectedType == first.DeclaringType ? first
                             : first.DeclaringType.GetMethod(
@@ -245,7 +242,7 @@ namespace UmbMapper.Proxy
                 firstBytes = body.GetILAsByteArray();
             }
 
-            if (second != null && second.ReflectedType != null && second.DeclaringType != null)
+            if (second?.ReflectedType != null && second.DeclaringType != null)
             {
                 second = second.ReflectedType == second.DeclaringType
                              ? second

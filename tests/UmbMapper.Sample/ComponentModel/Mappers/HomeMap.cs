@@ -3,7 +3,9 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
+using System.Globalization;
 using UmbMapper.PropertyMappers.Archetype;
+using UmbMapper.PropertyMappers.Vorto;
 using UmbMapper.Sample.ComponentModel.PropertyMappers;
 using UmbMapper.Sample.Models.Pages;
 
@@ -29,7 +31,12 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
             this.AddMap(x => x.PostNames).SetAlias(x => x.Posts).SetMapper<NamePickerPropertyMapper>();
 
             // Vorto requires a custom mapper to call its API.
-            this.AddMap(x => x.VortoBodyText).SetMapper<VortoPropertyMapper>();
+            // In this example we're falling back to the main body text if no Vorto value matching the
+            // current culture is found.
+            this.AddMap(x => x.VortoBodyText).SetAlias(x => x.VortoBodyText, x => x.BodyText).SetMapper<VortoPropertyMapper>();
+
+            // In this example we're using the property alias from the doctype but explicity setting a known culture.
+            this.AddMap(x => x.VortoBodyTextFr).SetAlias(x => x.VortoBodyText).SetCulture(new CultureInfo("fr-FR")).SetMapper<VortoPropertyMapper>();
 
             // Only Archetype requires additional configuration, Nested Content just works!!
             this.AddMap(x => x.ArchetypeGallery).SetMapper<ArchetypeFactoryPropertyMapper>();

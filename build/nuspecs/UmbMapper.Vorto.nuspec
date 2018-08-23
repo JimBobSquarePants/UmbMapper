@@ -1,24 +1,25 @@
 <?xml version="1.0"?>
 <package >
     <metadata>
-        <id>UmbMapper.PublishedContentModelFactory</id>
+        <id>UmbMapper.Vorto</id>
         <version>$version$</version>
-        <title>UmbMapper.PublishedContentModelFactory</title>
+        <title>UmbMapper.Vorto</title>
         <authors>James Jackson-South and Contributors</authors>
         <owners>James Jackson-South</owners>
         <iconUrl>https://raw.githubusercontent.com/JimBobSquarePants/UmbMapper/develop/build/assets/logo/umbmapper-64.png</iconUrl>
         <projectUrl>https://github.com/JimBobSquarePants/UmbMapper</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <description>Extensions for UmbMapper to allow the mapping of IPublishedContent based classes using the IPublishedContentModelFactory.</description>
+        <description>Extensions for UmbMapper to allow the mapping of Vorto properties.</description>
         <releaseNotes>See the Github release for notes.</releaseNotes>
         <copyright>Copyright © 2017</copyright>
         <tags>Umbraco</tags>
         <dependencies>
             <dependency id="UmbMapper" version="1.2.0" />
+            <dependency id="Our.Umbraco.Vorto" version="1.6.0" />
         </dependencies>
     </metadata>
     <files>
-        <file src="..\..\src\UmbMapper.PublishedContentModelFactory\bin\Release\UmbMapper.PublishedContentModelFactory.dll" target="lib\net452" />
-        <file src="..\..\src\UmbMapper.PublishedContentModelFactory\bin\Release\UmbMapper.PublishedContentModelFactory.xml" target="lib\net452" />
+        <file src="..\..\src\UmbMapper.Vorto\bin\Release\UmbMapper.Vorto.dll" target="lib\net452" />
+        <file src="..\..\src\UmbMapper.Vorto\bin\Release\UmbMapper.Vorto.xml" target="lib\net452" />
     </files>
 </package>

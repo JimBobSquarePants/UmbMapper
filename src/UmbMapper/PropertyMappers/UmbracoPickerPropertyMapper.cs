@@ -34,7 +34,7 @@ namespace UmbMapper.PropertyMappers
         /// <inheritdoc/>
         public override object Map(IPublishedContent content, object value)
         {
-            if (value == null)
+            if (value is null)
             {
                 return Enumerable.Empty<object>();
             }
@@ -73,7 +73,7 @@ namespace UmbMapper.PropertyMappers
             }
 
             // Now csv strings.
-            if (!nodeIds.Any())
+            if (nodeIds.Length == 0)
             {
                 string s = value as string ?? value.ToString();
                 if (!string.IsNullOrWhiteSpace(s))
@@ -84,7 +84,7 @@ namespace UmbMapper.PropertyMappers
                 }
             }
 
-            if (nodeIds.Any())
+            if (nodeIds.Length > 0)
             {
                 UmbracoObjectTypes objectType = UmbracoObjectTypes.Unknown;
                 var multiPicker = new List<IPublishedContent>();

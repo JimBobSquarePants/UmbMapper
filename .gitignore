@@ -318,3 +318,6 @@ __pycache__/
 
 # Don't ignore the compact database file 
 !**/App_Data/[Uu]mbraco.sdf
+
+#Ignore uneeded Vorto client scripts
+**/UmbMapper.Vorto/App_Plugins/

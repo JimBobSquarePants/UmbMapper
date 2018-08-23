@@ -11,7 +11,7 @@ namespace UmbMapper.Invocations
     /// <summary>
     /// A single method base cache item for identifying methods.
     /// </summary>
-    internal struct MethodBaseCacheItem : IEquatable<MethodBaseCacheItem>
+    internal readonly struct MethodBaseCacheItem : IEquatable<MethodBaseCacheItem>
     {
         /// <summary>
         /// Gets or sets the method base.
@@ -45,12 +45,7 @@ namespace UmbMapper.Invocations
         /// </returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj))
-            {
-                return false;
-            }
-
-            return obj is MethodBaseCacheItem && this.Equals((MethodBaseCacheItem)obj);
+            return obj is MethodBaseCacheItem methodBaseCacheItem && this.Equals(methodBaseCacheItem);
         }
 
         /// <summary>

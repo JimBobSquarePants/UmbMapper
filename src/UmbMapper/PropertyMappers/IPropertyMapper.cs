@@ -36,7 +36,14 @@ namespace UmbMapper.PropertyMappers
         UmbracoHelper Umbraco { get; }
 
         /// <summary>
-        /// Maps the property from the given content
+        /// Maps the raw property from the given content without conversion.
+        /// </summary>
+        /// <param name="content">The published content</param>
+        /// <returns>The <see cref="object"/></returns>
+        object GetRawValue(IPublishedContent content);
+
+        /// <summary>
+        /// Maps the property from the given content.
         /// </summary>
         /// <param name="content">The published content</param>
         /// <param name="value">The current value</param>

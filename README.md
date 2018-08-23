@@ -18,7 +18,8 @@ So far it's made up of the following libraries
 - [**UmbMapper.ArcheType**](https://www.nuget.org/packages/UmbMapper.ArcheType) - Allows the mapping of ArcheType models to POCO equivalents.
 - [**UmbMapper.NuPickers**](https://www.nuget.org/packages/UmbMapper.NuPickers) - Allows the mapping of NuPicker models to POCO equivalents.
 - [**UmbMapper.PublishedContentModelFactory**](https://www.nuget.org/packages/UmbMapper.PublishedContentModelFactory) - Allows the mapping of models using the Umbraco PublishedContentFactory.
- 
+- [**UmbMapper.Vorto**](https://www.nuget.org/packages/UmbMapper.Vorto) - Allows the mapping of Vorto models to POCO equivalents.
+
 ## Consuming The Libraries
 
 Nightlies are available on [Myget](https://www.myget.org/gallery/umbmapper) with battle tested releases available on [Nuget](https://www.nuget.org/packages/UmbMapper).
@@ -154,11 +155,12 @@ Available `IPropertyMapper`implementations all inherit from the `PropertyMapperB
 
 These mappers handle most use cases since they utilize Umbraco's `PropertyValueConverter` API. Additional mappers can be easily created though. Check the source for examples.
 
-Specialist mappers for Archetype and NuPickers are available also via installing the additional packages.
+Specialist mappers for Archetype, NuPickers, and Vorto are available also via installing the additional packages.
 
 - `ArchetypeFactoryPropertyMapper` Maps all Archetype properties
 - `NuPickerPropertyMapper` Maps NuPicker properties
 - `NuPickerEnumPropertyMapper` Maps from a NuPicker value to an enum
+- `VortoPropertyMapper` Maps all Vorto properties
 
 ### Calling a Mapper
 
@@ -230,11 +232,14 @@ that have `UmbracoContext` based requirements may fail otherwise.
 
 ## Performance
 
-**UmbMapper is blazingly quick**. The underpinning logic is simple also and requires very little run-time work as the rules are already determined at compile-time.
+**UmbMapper is blazingly quick. No other measurable mapper can match it's performance**. The underpinning logic is simple also and requires very little run-time work as the rules are already determined at compile-time.
 
 Additional performance boosting can be delivered using lazy mapping.
 
 Check out the benchmarks in the solution.
+
+<img src="https://raw.githubusercontent.com/JimBobSquarePants/UmbMapper/develop/build/assets/benchmark.jpg" alt="UmbMapper Benchmarks"/>
+   
 
 ## Dynamic Proxies and Lazy Mapping
 

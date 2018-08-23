@@ -7,38 +7,38 @@ namespace UmbMapper.Tests
 {
     public class IntegralNumberConverterTests
     {
-        const double Pi = 3.14159265358979;
-        static readonly string PiString = Pi.ToString(CultureInfo.InvariantCulture);
-        static readonly double RoundedPi = Math.Round(Pi, MidpointRounding.AwayFromZero);
+        private const double Pi = 3.14159265358979;
+        private static readonly string PiString = Pi.ToString(CultureInfo.InvariantCulture);
+        private static readonly double RoundedPi = Math.Round(Pi, MidpointRounding.AwayFromZero);
 
-        public static TheoryData<object, string, Type> IntegralValues = new TheoryData<object, string, Type> {
-            { (sbyte)1, "1", typeof(sbyte) },
-            { (byte)1, "1", typeof(byte) },
-            { (short)1, "1",typeof(short) },
-            { (ushort)1, "1",typeof(ushort) },
-            { (int)1, "1" ,typeof(int)},
-            { (uint)1, "1",typeof(uint) },
-            { (long)1, "1",typeof(long) },
-            { (ulong)1, "1",typeof(ulong) }
+        public static TheoryData<object, string> IntegralValues = new TheoryData<object, string> {
+            { (sbyte)1, "1"},
+            { (byte)1, "1" },
+            { (short)1, "1"},
+            { (ushort)1, "1" },
+            { 1, "1" },
+            { (uint)1, "1" },
+            { (long)1, "1"},
+            { (ulong)1, "1" }
         };
 
-        public static TheoryData<object, string, Type> RealValues = new TheoryData<object, string, Type> {
-            { (sbyte)RoundedPi, PiString , typeof(sbyte)},
-            { (byte)RoundedPi, PiString, typeof(byte)},
-            { (short)RoundedPi, PiString , typeof(short)},
-            { (ushort)RoundedPi, PiString , typeof(ushort)},
-            { (int)RoundedPi, PiString , typeof(int)},
-            { (uint)RoundedPi, PiString , typeof(uint)},
-            { (long)RoundedPi, PiString , typeof(long)},
-            { (ulong)RoundedPi, PiString, typeof(ulong) }
+        public static TheoryData<object, string> RealValues = new TheoryData<object, string> {
+            { (sbyte)RoundedPi, PiString},
+            { (byte)RoundedPi, PiString},
+            { (short)RoundedPi, PiString },
+            { (ushort)RoundedPi, PiString },
+            { (int)RoundedPi, PiString },
+            { (uint)RoundedPi, PiString},
+            { (long)RoundedPi, PiString },
+            { (ulong)RoundedPi, PiString }
         };
 
         [Theory]
         [MemberData(nameof(IntegralValues))]
         [MemberData(nameof(RealValues))]
-        public void CanConvertFromRealNumberString<T>(T expected, string value, Type type)
+        public void CanConvertFromRealNumberString<T>(T expected, string value)
         {
-            var actual = (T)IntegralNumberConverter<T>.ConvertFrom(CultureInfo.InvariantCulture, value, type);
+            var actual = (T)IntegralNumberConverter<T>.ConvertFrom(CultureInfo.InvariantCulture, value);
             Assert.Equal(expected, actual);
         }
     }

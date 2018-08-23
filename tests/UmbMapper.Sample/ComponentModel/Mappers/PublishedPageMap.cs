@@ -4,6 +4,7 @@
 // </copyright>
 
 using UmbMapper.PropertyMappers.NuPickers;
+using UmbMapper.PropertyMappers.Vorto;
 using UmbMapper.Sample.Models.Pages;
 
 namespace UmbMapper.Sample.ComponentModel.Mappers
@@ -24,7 +25,7 @@ namespace UmbMapper.Sample.ComponentModel.Mappers
             this.MapAll().ForEach(x => x.AsLazy());
 
             // Update specific mappings with extra configuration
-            this.AddMap(x => x.BrowserPageTitle).SetAlias(x => x.BrowserPageTitle, x => x.Name);
+            this.AddMap(x => x.BrowserPageTitle).SetAlias(x => x.BrowserPageTitle, x => x.Name).SetMapper<VortoPropertyMapper>();
             this.AddMap(x => x.OpenGraphType).SetMapper<NuPickerEnumPropertyMapper>();
             this.AddMap(x => x.OpenGraphImage).AsRecursive();
         }

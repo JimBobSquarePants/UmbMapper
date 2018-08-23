@@ -26,6 +26,11 @@ namespace UmbMapper.Sample.Models.Pages
         public virtual IHtmlString VortoBodyText { get; set; }
 
         /// <summary>
+        /// Gets or sets the main body copy in French
+        /// </summary>
+        public virtual IHtmlString VortoBodyTextFr { get; set; }
+
+        /// <summary>
         /// Gets or sets the image gallery
         /// </summary>
         public virtual IEnumerable<Slide> ArchetypeGallery { get; set; }

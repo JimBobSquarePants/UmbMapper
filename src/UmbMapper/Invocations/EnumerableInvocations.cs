@@ -49,7 +49,7 @@ namespace UmbMapper.Invocations
         {
             MethodBaseCacheItem key = GetMethodCacheKey(type);
 
-            if (!DelegateCache.TryGetValue(key, out var f))
+            if (!DelegateCache.TryGetValue(key, out Delegate f))
             {
                 f = StaticMethodSingleParameter<object>(CastMethod.MakeGenericMethod(type));
                 DelegateCache[key] = f;
@@ -72,7 +72,7 @@ namespace UmbMapper.Invocations
         {
             MethodBaseCacheItem key = GetMethodCacheKey(type);
 
-            if (!DelegateCache.TryGetValue(key, out var f))
+            if (!DelegateCache.TryGetValue(key, out Delegate f))
             {
                 f = StaticMethod<object>(EmptyMethod.MakeGenericMethod(type));
                 DelegateCache[key] = f;

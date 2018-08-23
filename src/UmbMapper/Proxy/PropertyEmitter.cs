@@ -42,25 +42,18 @@ namespace UmbMapper.Proxy
         /// <summary>
         /// Uses reflection to emit the given <see cref="MethodInfo"/> body for interception.
         /// </summary>
-        /// <param name="typeBuilder">
-        /// The <see cref="TypeBuilder"/> for the current type.
-        /// </param>
-        /// <param name="method">
-        /// The <see cref="MethodInfo"/> to intercept.
-        /// </param>
-        /// <param name="interceptorField">
-        /// The <see cref="IInterceptor"/> field.
-        /// </param>
-        public static void Emit(TypeBuilder typeBuilder, MethodInfo method, FieldInfo interceptorField)
+        /// <param name="typeBuilder">The <see cref="TypeBuilder"/> for the current type.</param>
+        /// <param name="method">The <see cref="MethodInfo"/> to intercept.</param>
+        public static void Emit(TypeBuilder typeBuilder, MethodInfo method)
         {
             // Get the method parameters for any setters.
             ParameterInfo[] parameters = method.GetParameters();
             ParameterInfo parameter = parameters.FirstOrDefault();
 
             // Define attributes.
-            const MethodAttributes methodAttributes = MethodAttributes.Public |
-                                                      MethodAttributes.HideBySig |
-                                                      MethodAttributes.Virtual;
+            const MethodAttributes methodAttributes = MethodAttributes.Public
+                                                      | MethodAttributes.HideBySig
+                                                      | MethodAttributes.Virtual;
 
             // Define the method.
             MethodBuilder methodBuilder = typeBuilder.DefineMethod(
@@ -78,7 +71,7 @@ namespace UmbMapper.Proxy
 
             // This is the equivalent to:
             // IInterceptor interceptor = ((IProxy)this).Interceptor;
-            // if (interceptor == null)
+            // if (interceptor is null)
             // {
             //    throw new ArgumentNullException();
             // }
@@ -97,7 +90,7 @@ namespace UmbMapper.Proxy
             il.Emit(OpCodes.Ldtoken, method);
             il.Emit(OpCodes.Call, GetMethodFromHandle);
 
-            if (parameter == null)
+            if (parameter is null)
             {
                 // Getter
                 // return interceptor.Intercept(MethodBase.GetMethodFromHandle(typeof(BaseType).GetMethod("get_PropertyName").MethodHandle), null);

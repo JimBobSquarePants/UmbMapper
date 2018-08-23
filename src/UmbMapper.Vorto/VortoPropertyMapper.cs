@@ -3,12 +3,14 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
+using System;
 using System.Globalization;
 using Our.Umbraco.Vorto.Extensions;
-using UmbMapper.PropertyMappers;
+using Our.Umbraco.Vorto.Models;
+using UmbMapper.Extensions;
 using Umbraco.Core.Models;
 
-namespace UmbMapper.Sample.ComponentModel.PropertyMappers
+namespace UmbMapper.PropertyMappers.Vorto
 {
     /// <summary>
     /// Maps from a Vorto wrapped <see cref="IPublishedContent"/>.
@@ -29,17 +31,19 @@ namespace UmbMapper.Sample.ComponentModel.PropertyMappers
         {
             PropertyMapInfo info = this.Info;
             string culture = this.GetRequestCulture().Name;
-            foreach (string name in info.Aliases)
-            {
-                if (content.HasVortoValue(name, culture, info.Recursive, CultureInfo.CurrentCulture.Name))
-                {
-                    value = this.CheckConvertType(content.GetVortoValue(name, culture, info.Recursive));
+            string fallbackCultureName = CultureInfo.CurrentCulture.Name;
 
-                    if (info.PropertyType.IsInstanceOfType(value))
-                    {
-                        break;
-                    }
-                }
+            if (value is VortoValue vortoValue
+                && content.HasVortoValue(this.Alias, culture, info.Recursive, fallbackCultureName))
+            {
+                value = this.CheckConvertType(content.GetVortoValue(this.Alias, culture, info.Recursive, fallbackCultureName));
+            }
+            else
+            {
+                // Vorto can have values in some cultures but not others.
+                // We want to be able to provide fallbacks for when there is no value for the given culture we want.
+                int index = Array.IndexOf(info.Aliases, this.Alias);
+                value = this.CheckConvertType(this.GetRawValue(content, info.Aliases.RemoveAt(index)));
             }
 
             return value ?? info.DefaultValue;

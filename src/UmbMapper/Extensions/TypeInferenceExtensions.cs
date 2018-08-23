@@ -35,7 +35,7 @@ namespace UmbMapper.Extensions
             // Get the default constructor, parameters and create an instance of the type.
             // Try and return from the cache first. TryGetValue is faster than GetOrAdd.
             ConstructorCache.TryGetValue(type, out ParameterInfo[] constructorParams);
-            if (constructorParams == null)
+            if (constructorParams is null)
             {
                 ConstructorInfo constructor = type.GetConstructors().OrderBy(x => x.GetParameters().Length).FirstOrDefault();
                 constructorParams = constructor != null ? constructor.GetParameters() : new ParameterInfo[0];
@@ -111,10 +111,10 @@ namespace UmbMapper.Extensions
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool IsEnumerableOfKeyValueType(this Type type)
         {
-            return type.TryGetElementType(typeof(IDictionary<,>)) != null ||
-                   (type.IsEnumerableType() && type.IsGenericType && type.GenericTypeArguments.Any()
-                    && type.GenericTypeArguments[0].IsGenericType
-                    && type.GenericTypeArguments[0].GetGenericTypeDefinition() == typeof(KeyValuePair<,>));
+            return type.TryGetElementType(typeof(IDictionary<,>)) != null
+                   || (type.IsEnumerableType() && type.IsGenericType && type.GenericTypeArguments.Length > 0
+                   && type.GenericTypeArguments[0].IsGenericType
+                   && type.GenericTypeArguments[0].GetGenericTypeDefinition() == typeof(KeyValuePair<,>));
         }
 
         /// <summary>
@@ -148,9 +148,9 @@ namespace UmbMapper.Extensions
             // String, though enumerable have no generic arguments.
             // Types with more than one generic argument cannot be cast.
             // Dictionary, though enumerable, requires linq to convert and shouldn't be attempted anyway.
-            return type.IsEnumerableType() && type.GenericTypeArguments.Any()
+            return type.IsEnumerableType() && type.GenericTypeArguments.Length > 0
                    && type.GenericTypeArguments.Length == 1
-                   && type.TryGetElementType(typeof(IDictionary<,>)) == null;
+                   && type.TryGetElementType(typeof(IDictionary<,>)) is null;
         }
 
         /// <summary>

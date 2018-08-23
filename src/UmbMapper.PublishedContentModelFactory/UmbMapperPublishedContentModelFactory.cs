@@ -27,7 +27,7 @@ namespace UmbMapper.PublishedContentModelFactory
         public UmbMapperPublishedContentModelFactory()
         {
             IEnumerable<Type> mappers = UmbMapperRegistry.CurrentMappedTypes();
-            if (mappers.Count() == 0)
+            if (!mappers.Any())
             {
                 throw new InvalidOperationException("No mappers have been registered. Ensure that registration occures before initialization of this factory.");
             }

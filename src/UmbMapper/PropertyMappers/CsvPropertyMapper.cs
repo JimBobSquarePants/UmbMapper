@@ -17,7 +17,7 @@ namespace UmbMapper.PropertyMappers
     /// <summary>
     /// Maps from the <see cref="IPublishedContent"/> containing to a collection of items.
     /// </summary>
-    public class CsvPropertyMapper : PropertyMapperBase
+    public sealed class CsvPropertyMapper : PropertyMapperBase
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CsvPropertyMapper"/> class.
@@ -43,7 +43,7 @@ namespace UmbMapper.PropertyMappers
                 : info.PropertyType;
 
             // Default to returning the string.
-            Func<CultureInfo, string, Type, object> func = (i, s, t) => s;
+            Func<CultureInfo, string, object> func = (_, s) => s;
 
             if (typeArg == typeof(sbyte))
             {
@@ -92,11 +92,9 @@ namespace UmbMapper.PropertyMappers
 
             var result = new List<object>();
             string valueString = value.ToString();
-            string[] items = GetStringArray(valueString, culture);
-
-            foreach (string s in items)
+            foreach (string s in GetStringArray(valueString, culture))
             {
-                object item = func.Invoke(culture, s, typeArg);
+                object item = func.Invoke(culture, s);
                 if (item != null)
                 {
                     result.Add(item);

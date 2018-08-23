@@ -12,7 +12,7 @@ namespace UmbMapper
     /// Provides a various static objects used to avoid creating multiple items for
     /// the generic mapping class.
     /// </summary>
-    internal class UmbMapperConfigStatics
+    internal static class UmbMapperConfigStatics
     {
         /// <summary>
         /// The object to lock against when initializing maps.

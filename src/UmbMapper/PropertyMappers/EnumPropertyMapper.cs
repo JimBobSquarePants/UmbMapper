@@ -32,7 +32,7 @@ namespace UmbMapper.PropertyMappers
         {
             PropertyMapInfo info = this.Info;
 
-            if (value == null)
+            if (value is null)
             {
                 return info.DefaultValue;
             }
@@ -45,10 +45,9 @@ namespace UmbMapper.PropertyMappers
                 if (strValue.IndexOf(',') != -1)
                 {
                     long convertedValue = 0;
-                    IList<string> values = strValue.ToDelimitedList();
 
                     // ReSharper disable once LoopCanBeConvertedToQuery
-                    foreach (string v in values)
+                    foreach (string v in strValue.ToDelimitedList())
                     {
                         // OR assignment. Stolen from ComponentModel EnumConverter.
                         convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), culture);
@@ -81,7 +80,7 @@ namespace UmbMapper.PropertyMappers
                 long convertedValue = 0;
                 var enumerable = ((IEnumerable<string>)value).ToList();
 
-                if (enumerable.Any())
+                if (enumerable.Count > 0)
                 {
                     // ReSharper disable once LoopCanBeConvertedToQuery
                     foreach (string v in enumerable)

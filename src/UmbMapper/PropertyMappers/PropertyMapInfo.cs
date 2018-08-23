@@ -55,7 +55,7 @@ namespace UmbMapper.PropertyMappers
         /// <summary>
         /// Gets the array of potential contructor parameters
         /// </summary>
-        public ParameterInfo[] ConstructorParams { get; private set; }
+        public ParameterInfo[] ConstructorParams { get; }
 
         /// <summary>
         /// Gets the generic parameter type for the type if it is an enumerable with a single parameter; otherwise, null.
@@ -173,20 +173,19 @@ namespace UmbMapper.PropertyMappers
         {
             unchecked
             {
-                int hashCode = info.Property != null ? info.Property.GetHashCode() : 0;
-                hashCode = (hashCode * 397) ^ (info.PropertyType != null ? info.PropertyType.GetHashCode() : 0);
+                int hashCode = info.Property?.GetHashCode() ?? 0;
+                hashCode = (hashCode * 397) ^ (info.PropertyType?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ info.ConstructorParams.GetHashCode();
-                hashCode = (hashCode * 397) ^ (info.EnumerableParamType != null ? info.EnumerableParamType.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (info.EnumerableParamType?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ info.IsEnumerableType.GetHashCode();
                 hashCode = (hashCode * 397) ^ info.IsCastableEnumerableType.GetHashCode();
                 hashCode = (hashCode * 397) ^ info.IsEnumerableOfKeyValueType.GetHashCode();
-                hashCode = (hashCode * 397) ^ (info.Aliases != null ? info.Aliases.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (info.Aliases?.GetHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ info.Recursive.GetHashCode();
                 hashCode = (hashCode * 397) ^ info.Lazy.GetHashCode();
                 hashCode = (hashCode * 397) ^ info.HasPredicate.GetHashCode();
-                hashCode = (hashCode * 397) ^ (info.DefaultValue != null ? info.DefaultValue.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (info.Culture != null ? info.Culture.GetHashCode() : 0);
-                return hashCode;
+                hashCode = (hashCode * 397) ^ (info.DefaultValue?.GetHashCode() ?? 0);
+                return (hashCode * 397) ^ (info.Culture?.GetHashCode() ?? 0);
             }
         }
 
@@ -197,7 +196,7 @@ namespace UmbMapper.PropertyMappers
         /// <returns>The <see cref="object"/> representing the default value.</returns>
         private static object GetDefaultValue(Type type)
         {
-            if (type == null)
+            if (type is null)
             {
                 throw new ArgumentNullException(nameof(type));
             }

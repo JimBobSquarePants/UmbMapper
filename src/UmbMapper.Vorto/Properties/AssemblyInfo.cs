@@ -1,19 +1,15 @@
-﻿// <copyright file="AssemblyInfo.cs" company="James Jackson-South">
-// Copyright (c) James Jackson-South and contributors.
-// Licensed under the Apache License, Version 2.0.
-// </copyright>
-
-using System.Reflection;
+﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("UmbMapper.PublishedContentModelFactory")]
-[assembly: AssemblyDescription("Extensions for UmbMapper to allow the mapping of IPublishedContent based classes using the IPublishedContentModelFactory")]
+[assembly: AssemblyTitle("UmbMapper.Vorto")]
+[assembly: AssemblyDescription("Extensions for UmbMapper to allow the mapping of Vorto properties")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("James Jackson-South")]
-[assembly: AssemblyProduct("UmbMapper.PublishedContentModelFactory")]
+[assembly: AssemblyProduct("UmbMapper.Vorto")]
 [assembly: AssemblyCopyright("Copyright (c) James Jackson-South and contributors.\nLicensed under the Apache License, Version 2.0.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -24,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("d4d7dec8-23a5-408d-b602-7614410a46db")]
+[assembly: Guid("53ce1ed7-9b83-423b-b191-1284224dc4bc")]
 
 // Version information for an assembly consists of the following four values:
 //

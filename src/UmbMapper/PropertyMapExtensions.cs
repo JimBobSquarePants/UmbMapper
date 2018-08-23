@@ -22,12 +22,12 @@ namespace UmbMapper
         public static void ForEach<T>(this IEnumerable<PropertyMap<T>> source, Action<PropertyMap<T>> action)
             where T : class
         {
-            if (source == null)
+            if (source is null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
 
-            if (action == null)
+            if (action is null)
             {
                 throw new ArgumentNullException(nameof(action));
             }
@@ -49,12 +49,12 @@ namespace UmbMapper
         public static void ForEachIndexed<T>(this IEnumerable<PropertyMap<T>> source, Action<PropertyMap<T>, int> action)
             where T : class
         {
-            if (source == null)
+            if (source is null)
             {
                 throw new ArgumentNullException(nameof(source));
             }
 
-            if (action == null)
+            if (action is null)
             {
                 throw new ArgumentNullException(nameof(action));
             }

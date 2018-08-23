@@ -25,12 +25,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper.Archetype", "src\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper.PublishedContentModelFactory", "src\UmbMapper.PublishedContentModelFactory\UmbMapper.PublishedContentModelFactory.csproj", "{D4D7DEC8-23A5-408D-B602-7614410A46DB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UmbMapper.Vorto", "src\UmbMapper.Vorto\UmbMapper.Vorto.csproj", "{53CE1ED7-9B83-423B-B191-1284224DC4BC}"
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{9F4A651D-5C8F-4071-A13B-8196FCBB785C}"
 	ProjectSection(SolutionItems) = preProject
 		build\nuspecs\UmbMapper.Archetype.nuspec = build\nuspecs\UmbMapper.Archetype.nuspec
 		build\nuspecs\UmbMapper.NuPickers.nuspec = build\nuspecs\UmbMapper.NuPickers.nuspec
 		build\nuspecs\UmbMapper.nuspec = build\nuspecs\UmbMapper.nuspec
 		build\nuspecs\UmbMapper.PublishedContentModelFactory.nuspec = build\nuspecs\UmbMapper.PublishedContentModelFactory.nuspec
+		build\nuspecs\UmbMapper.Vorto.nuspec = build\nuspecs\UmbMapper.Vorto.nuspec
 	EndProjectSection
 EndProject
 Global
@@ -63,6 +66,10 @@ Global
 		{D4D7DEC8-23A5-408D-B602-7614410A46DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D4D7DEC8-23A5-408D-B602-7614410A46DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4D7DEC8-23A5-408D-B602-7614410A46DB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{53CE1ED7-9B83-423B-B191-1284224DC4BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{53CE1ED7-9B83-423B-B191-1284224DC4BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{53CE1ED7-9B83-423B-B191-1284224DC4BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{53CE1ED7-9B83-423B-B191-1284224DC4BC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

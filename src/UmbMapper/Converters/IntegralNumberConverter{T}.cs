@@ -33,18 +33,15 @@ namespace UmbMapper.Converters
         /// <summary>
         /// Converts the given string to the type of this converter, using the specified culture information.
         /// </summary>
-        /// <returns>
-        /// An <see cref="string"/> that represents the converted value.
-        /// </returns>
-        /// <param name="culture">
-        /// The <see cref="CultureInfo"/> to use as the current culture.
-        /// </param>
-        /// <param name="value">The <see cref="string"/> to convert. </param>
-        /// <param name="propertyType">The property type that the converter will convert to.</param>
+        /// <returns>An <see cref="string"/> that represents the converted value.</returns>
+        /// <param name="culture">The <see cref="CultureInfo"/> to use as the current culture.</param>
+        /// <param name="value">The <see cref="string"/> to convert.</param>
         /// <exception cref="NotSupportedException">The conversion cannot be performed.</exception>
-        public static object ConvertFrom(CultureInfo culture, string value, Type propertyType)
+        public static object ConvertFrom(CultureInfo culture, string value)
         {
-            if (value == null || Array.IndexOf(IntegralTypes, propertyType) < 0)
+            Type propertyType = typeof(T);
+
+            if (value is null || Array.IndexOf(IntegralTypes, propertyType) < 0)
             {
                 return default(T);
             }
@@ -54,35 +51,35 @@ namespace UmbMapper.Converters
             decimal rounded = Math.Round((decimal)Convert.ChangeType(value, typeof(decimal), culture), MidpointRounding.AwayFromZero);
 
             // Now clamp it to the type ranges
-            if (propertyType == typeof(sbyte))
+            if (propertyType.Equals(typeof(sbyte)))
             {
                 rounded = rounded.Clamp(sbyte.MinValue, sbyte.MaxValue);
             }
-            else if (propertyType == typeof(byte))
+            else if (propertyType.Equals(typeof(byte)))
             {
                 rounded = rounded.Clamp(byte.MinValue, byte.MaxValue);
             }
-            else if (propertyType == typeof(short))
+            else if (propertyType.Equals(typeof(short)))
             {
                 rounded = rounded.Clamp(short.MinValue, short.MaxValue);
             }
-            else if (propertyType == typeof(ushort))
+            else if (propertyType.Equals(typeof(ushort)))
             {
                 rounded = rounded.Clamp(ushort.MinValue, ushort.MaxValue);
             }
-            else if (propertyType == typeof(int))
+            else if (propertyType.Equals(typeof(int)))
             {
                 rounded = rounded.Clamp(int.MinValue, int.MaxValue);
             }
-            else if (propertyType == typeof(uint))
+            else if (propertyType.Equals(typeof(uint)))
             {
                 rounded = rounded.Clamp(uint.MinValue, uint.MaxValue);
             }
-            else if (propertyType == typeof(long))
+            else if (propertyType.Equals(typeof(long)))
             {
                 rounded = rounded.Clamp(long.MinValue, long.MaxValue);
             }
-            else if (propertyType == typeof(ulong))
+            else if (propertyType.Equals(typeof(ulong)))
             {
                 rounded = rounded.Clamp(ulong.MinValue, ulong.MaxValue);
             }

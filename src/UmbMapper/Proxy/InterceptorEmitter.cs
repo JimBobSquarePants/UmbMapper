@@ -17,13 +17,8 @@ namespace UmbMapper.Proxy
         /// <summary>
         /// Implements the proxy interceptor fields.
         /// </summary>
-        /// <param name="typeBuilder">
-        /// The <see cref="TypeBuilder"/> for the current proxy type.
-        /// </param>
-        /// <returns>
-        /// The <see cref="FieldBuilder"/> for the interceptor.
-        /// </returns>
-        public static FieldBuilder Emit(TypeBuilder typeBuilder)
+        /// <param name="typeBuilder">The <see cref="TypeBuilder"/> for the current proxy type.</param>
+        public static void Emit(TypeBuilder typeBuilder)
         {
             // Implement the IProxy interface
             typeBuilder.AddInterfaceImplementation(typeof(IProxy));
@@ -32,11 +27,11 @@ namespace UmbMapper.Proxy
             FieldBuilder fieldBuilder = typeBuilder.DefineField("interceptor", typeof(IInterceptor), FieldAttributes.Private);
 
             // Define the correct attributes fot the property. This makes it public virtual.
-            const MethodAttributes attributes = MethodAttributes.Public |
-                                                MethodAttributes.HideBySig |
-                                                MethodAttributes.SpecialName |
-                                                MethodAttributes.NewSlot |
-                                                MethodAttributes.Virtual;
+            const MethodAttributes attributes = MethodAttributes.Public
+                                                | MethodAttributes.HideBySig
+                                                | MethodAttributes.SpecialName
+                                                | MethodAttributes.NewSlot
+                                                | MethodAttributes.Virtual;
 
             // Implement the getter
             MethodBuilder getterMethod = typeBuilder.DefineMethod(
@@ -84,9 +79,6 @@ namespace UmbMapper.Proxy
             // ReSharper disable AssignNullToNotNullAttribute
             typeBuilder.DefineMethodOverride(setterMethod, originalSetter);
             typeBuilder.DefineMethodOverride(getterMethod, originalGetter);
-
-            // ReSharper restore AssignNullToNotNullAttribute
-            return fieldBuilder;
         }
     }
 }
