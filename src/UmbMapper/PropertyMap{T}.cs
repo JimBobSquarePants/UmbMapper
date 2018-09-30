@@ -34,7 +34,9 @@ namespace UmbMapper
             }
 
             this.Info = new PropertyMapInfo(property);
-            this.PropertyMapper = new UmbracoPropertyMapper(this.Info);
+            this.PropertyMapper = this.Info.PropertyType.IsEnum
+                ? (IPropertyMapper)new EnumPropertyMapper(this.Info)
+                : new UmbracoPropertyMapper(this.Info);
         }
 
         /// <inheritdoc/>
@@ -167,10 +169,7 @@ namespace UmbMapper
         }
 
         /// <inheritdoc/>
-        public bool Equals(PropertyMap<T> other)
-        {
-            return this.Info.Equals(other.Info);
-        }
+        public bool Equals(PropertyMap<T> other) => this.Info.Equals(other.Info);
 
         /// <inheritdoc/>
         public override bool Equals(object obj)
@@ -194,10 +193,7 @@ namespace UmbMapper
         }
 
         /// <inheritdoc/>
-        public override int GetHashCode()
-        {
-            return GetHashCode(this);
-        }
+        public override int GetHashCode() => GetHashCode(this);
 
         /// <summary>
         /// Instructs the mapper to lazily map the property. This method will ignore any non <code>virtual</code> properties without warning.
