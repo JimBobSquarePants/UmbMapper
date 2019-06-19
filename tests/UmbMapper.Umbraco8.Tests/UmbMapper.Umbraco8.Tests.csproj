@@ -244,6 +244,9 @@
     <Reference Include="Umbraco.Examine, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\UmbracoCms.Web.8.0.2\lib\net472\Umbraco.Examine.dll</HintPath>
     </Reference>
+    <Reference Include="Umbraco.Tests">
+      <HintPath>..\library\Umbraco.Tests.dll</HintPath>
+    </Reference>
     <Reference Include="Umbraco.Web, Version=8.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\UmbracoCms.Web.8.0.2\lib\net472\Umbraco.Web.dll</HintPath>
     </Reference>
@@ -266,7 +269,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArrayExtensionTests.cs" />
+    <Compile Include="ExpressionExtensionsTests.cs" />
+    <Compile Include="FastPropertyAccessorTests.cs" />
+    <Compile Include="Mapping\BasicMappingTests.cs" />
+    <Compile Include="Mapping\Models\IPolyMorphic.cs" />
+    <Compile Include="Mapping\Models\PlaceOrder.cs" />
+    <Compile Include="Mapping\Models\PublishedItem.cs" />
+    <Compile Include="Mapping\Models\PublishedItemMap.cs" />
+    <Compile Include="Mapping\UmbMapperPublishedContentTests.cs" />
+    <Compile Include="Mocks\MockPublishedContent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ProxyFactoryTests.cs" />
+    <Compile Include="PublishedContent\AutoPublishedContentType.cs" />
     <Compile Include="SimpleConverterTests.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -282,6 +296,7 @@
       <Name>UmbMapper</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
