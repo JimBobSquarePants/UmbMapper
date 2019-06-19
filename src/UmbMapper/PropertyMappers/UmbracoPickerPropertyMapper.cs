@@ -9,6 +9,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using UmbMapper.Extensions;
+using UmbMapper.Helpers;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;

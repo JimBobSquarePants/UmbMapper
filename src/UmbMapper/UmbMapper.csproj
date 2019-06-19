@@ -269,6 +269,7 @@
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\PropertyInfoExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Helpers\XmlHelper.cs" />
     <Compile Include="Invocations\CachedInvocations.cs" />
     <Compile Include="Invocations\MethodBaseCacheItem.cs" />
     <Compile Include="Invocations\EnumerableInvocations.cs" />
