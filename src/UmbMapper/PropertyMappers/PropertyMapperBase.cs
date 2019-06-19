@@ -5,6 +5,7 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Web;
 using UmbMapper.Extensions;
@@ -94,11 +95,21 @@ namespace UmbMapper.PropertyMappers
                 string alias = aliases[i];
                 //TODO what is the recursive value indicating?
                 //value = content.GetPropertyValue(alias, info.Recursive);
-                value = content.Value(alias);
-                if (!this.IsNullOrDefault(value))
+
+                // have to use this instead of content.Value(alias) as this is done from an 
+                // extension method rather than the object its self
+                var property = content.GetProperty(alias);
+                var prop = content.Properties.Where(p => p.Alias.InvariantEquals(alias)).FirstOrDefault();
+
+                if (prop != null)
                 {
-                    this.Alias = alias;
-                    return value;
+                    value = prop.GetValue();
+                    //?.GetValue();
+                    if (!this.IsNullOrDefault(value))
+                    {
+                        this.Alias = alias;
+                        return value;
+                    }
                 }
             }
 

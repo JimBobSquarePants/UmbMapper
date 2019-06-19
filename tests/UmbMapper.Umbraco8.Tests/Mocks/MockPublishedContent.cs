@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbraco.Core;
 using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper.Umbraco8.Tests.Mocks
@@ -27,7 +28,6 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
             this.Properties = properties;
             this.Id = id;
             this.Name = name;
-            //this.ContentType = new AutoPublishedContentType(22, "myType", new PublishedPropertyType[] { }); this.GetType().Name;
             this.Children = children;
         }
 
@@ -39,37 +39,37 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
         public IEnumerable<IPublishedProperty> Properties { get; set; }
         public DateTime CreateDate { get; set; }
 
-        public string UrlSegment => throw new NotImplementedException();
+        public string UrlSegment { get; set; }
 
-        public int SortOrder => throw new NotImplementedException();
+        public int SortOrder { get; set; }
 
-        public int Level => throw new NotImplementedException();
+        public int Level { get; set; }
 
-        public string Path => throw new NotImplementedException();
+        public string Path { get; set; }
 
-        public int? TemplateId => throw new NotImplementedException();
+        public int? TemplateId { get; set; }
 
-        public int CreatorId => throw new NotImplementedException();
+        public int CreatorId { get; set; }
 
-        public string CreatorName => throw new NotImplementedException();
+        public string CreatorName { get; set; }
 
-        
 
-        public int WriterId => throw new NotImplementedException();
 
-        public string WriterName => throw new NotImplementedException();
+        public int WriterId { get; set; }
 
-        public DateTime UpdateDate => throw new NotImplementedException();
+        public string WriterName { get; set; }
 
-        public string Url => throw new NotImplementedException();
+        public DateTime UpdateDate { get; set; }
 
-        public IReadOnlyDictionary<string, PublishedCultureInfo> Cultures => throw new NotImplementedException();
+        public string Url { get; set; }
 
-        public PublishedItemType ItemType => throw new NotImplementedException();
+        public IReadOnlyDictionary<string, PublishedCultureInfo> Cultures { get; set; }
 
-        public IPublishedContent Parent => throw new NotImplementedException();
+        public PublishedItemType ItemType { get; set; }
 
-        public Guid Key => throw new NotImplementedException();
+        public IPublishedContent Parent { get; set; }
+
+        public Guid Key { get; set; }
 
 
 
@@ -80,7 +80,19 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
 
         public IPublishedProperty GetProperty(string alias)
         {
-            throw new NotImplementedException();
+            return this.GetProperty(alias, false);
+        }
+
+        public IPublishedProperty GetProperty(string alias, bool recurse)
+        {
+            IPublishedProperty prop = this.Properties.SingleOrDefault(p => p.PropertyType.Alias.InvariantEquals(alias));
+
+            if (prop == null && recurse && this.Parent != null)
+            {
+                return null;
+            }
+
+            return prop;
         }
 
         public string GetUrl(string culture = null)
@@ -97,5 +109,6 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
         {
             throw new NotImplementedException();
         }
+
     }
 }

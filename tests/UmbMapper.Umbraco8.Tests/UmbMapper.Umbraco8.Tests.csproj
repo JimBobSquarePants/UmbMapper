@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\packages\NUnit.3.12.0\build\NUnit.props" Condition="Exists('..\..\packages\NUnit.3.12.0\build\NUnit.props')" />
   <Import Project="..\..\packages\xunit.runner.console.2.3.1\build\xunit.runner.console.props" Condition="Exists('..\..\packages\xunit.runner.console.2.3.1\build\xunit.runner.console.props')" />
   <Import Project="..\..\packages\xunit.core.2.3.1\build\xunit.core.props" Condition="Exists('..\..\packages\xunit.core.2.3.1\build\xunit.core.props')" />
   <Import Project="..\..\packages\xunit.runner.visualstudio.2.3.1\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\..\packages\xunit.runner.visualstudio.2.3.1\build\net20\xunit.runner.visualstudio.props')" />
@@ -142,6 +143,9 @@
     <Reference Include="NPoco, Version=3.9.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\NPoco.3.9.4\lib\net45\NPoco.dll</HintPath>
     </Reference>
+    <Reference Include="nunit.framework, Version=3.12.0.0, Culture=neutral, PublicKeyToken=2638cd05610744eb, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NUnit.3.12.0\lib\net45\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
@@ -274,10 +278,13 @@
     <Compile Include="Mapping\BasicMappingTests.cs" />
     <Compile Include="Mapping\Models\IPolyMorphic.cs" />
     <Compile Include="Mapping\Models\PlaceOrder.cs" />
+    <Compile Include="Mapping\Models\PolymorphicItemOne.cs" />
+    <Compile Include="Mapping\Models\PolymorphicItemTwo.cs" />
     <Compile Include="Mapping\Models\PublishedItem.cs" />
     <Compile Include="Mapping\Models\PublishedItemMap.cs" />
-    <Compile Include="Mapping\UmbMapperPublishedContentTests.cs" />
+    <Compile Include="Mapping\UmbracoSupport.cs" />
     <Compile Include="Mocks\MockPublishedContent.cs" />
+    <Compile Include="Mocks\MockPublishedContentProperty.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ProxyFactoryTests.cs" />
     <Compile Include="PublishedContent\AutoPublishedContentType.cs" />
@@ -310,6 +317,7 @@
     <Error Condition="!Exists('..\..\packages\xunit.core.2.3.1\build\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.core.2.3.1\build\xunit.core.props'))" />
     <Error Condition="!Exists('..\..\packages\xunit.core.2.3.1\build\xunit.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.core.2.3.1\build\xunit.core.targets'))" />
     <Error Condition="!Exists('..\..\packages\xunit.runner.console.2.3.1\build\xunit.runner.console.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\xunit.runner.console.2.3.1\build\xunit.runner.console.props'))" />
+    <Error Condition="!Exists('..\..\packages\NUnit.3.12.0\build\NUnit.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\NUnit.3.12.0\build\NUnit.props'))" />
   </Target>
   <Import Project="..\..\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.targets" Condition="Exists('..\..\packages\MSTest.TestAdapter.1.3.2\build\net45\MSTest.TestAdapter.targets')" />
   <Import Project="..\..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets" Condition="Exists('..\..\packages\Umbraco.SqlServerCE.4.0.0.1\build\Umbraco.SqlServerCE.targets')" />

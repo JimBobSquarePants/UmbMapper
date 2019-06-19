@@ -12,11 +12,14 @@ namespace UmbMapper.Umbraco8.Tests.Mapping.Models
             this.AddMap(p => p.CreateDate).SetMapper<UmbracoPropertyMapper>();
             this.AddMap(p => p.UpdateDate).SetAlias(p => p.UpdateDate, p => p.CreateDate).SetMapper<UmbracoPropertyMapper>();
             this.AddMap(p => p.PlaceOrder).SetMapper<EnumPropertyMapper>();
+            this.AddMap(p => p.Link);
+            this.AddMap(p => p.Links);
+            this.AddMap(p => p.NullLinks);
             //this.AddMap(p => p.PublishedInterfaceContent).SetMapper<UmbracoPickerPropertyMapper>();
             //this.AddMap(p => p.PublishedContent).SetMapper<UmbracoPickerPropertyMapper>();
             //this.AddMap(p => p.Image).SetMapper<UmbracoPropertyMapper>();
             //this.AddMap(p => p.Child).SetMapper<UmbracoPickerPropertyMapper>();
-            //this.AddMap(p => p.RelatedLinks);
+
             //this.AddMap(p => p.RelatedLink);
             //this.AddMap(p => p.NullRelatedLinks);
             //this.AddMap(p => p.Polymorphic).SetMapper<DocTypeFactoryPropertyMapper>();
