@@ -5,8 +5,9 @@ using UmbMapper.Extensions;
 using UmbMapper.Tests.Mapping.Models;
 using UmbMapper.Tests.Mocks;
 using Umbraco.Core.Models;
-using Umbraco.Web;
-using Umbraco.Web.Models;
+//using Umbraco.Web;
+//using Umbraco.Web.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Xunit;
 
 namespace UmbMapper.Tests.Mapping

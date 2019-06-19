@@ -1,6 +1,6 @@
 ﻿using UmbMapper.Extensions;
 using UmbMapper.Tests.Mapping.Models;
-using Umbraco.Web;
+//using Umbraco.Web;
 using Xunit;
 
 namespace UmbMapper.Tests.Mapping
