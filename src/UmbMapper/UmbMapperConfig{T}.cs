@@ -19,7 +19,7 @@ using UmbMapper.PropertyMappers;
 using UmbMapper.Proxy;
 using Umbraco.Core;
 using Umbraco.Core.Configuration;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 using Umbraco.Web.Routing;
 using Umbraco.Web.Security;
@@ -430,19 +430,22 @@ namespace UmbMapper
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         private static void EnsureUmbracoContext()
         {
-            if (UmbracoContext.Current != null)
-            {
-                return;
-            }
+            //// Is this needed in Umbraco 8??
+            //if (UmbracoContext.Current != null)
+            //{
+            //    return;
+            //}
 
-            var dummyHttpContext = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
-            UmbracoContext.EnsureContext(
-                dummyHttpContext,
-                ApplicationContext.Current,
-                new WebSecurity(dummyHttpContext, ApplicationContext.Current),
-                UmbracoConfig.For.UmbracoSettings(),
-                UrlProviderResolver.Current.Providers,
-                false);
+            //var dummyHttpContext = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
+
+
+            //UmbracoContext.EnsureContext(
+            //    dummyHttpContext,
+            //    ApplicationContext.Current,
+            //    new WebSecurity(dummyHttpContext, ApplicationContext.Current),
+            //    UmbracoConfig.For.UmbracoSettings(),
+            //    UrlProviderResolver.Current.Providers,
+            //    false);
         }
 
         private Dictionary<string, Lazy<object>> MapLazyProperties(IPublishedContent content, object result)

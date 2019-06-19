@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 using UmbMapper.Extensions;
 using UmbMapper.Invocations;
 using Umbraco.Core;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper.PropertyMappers
 {

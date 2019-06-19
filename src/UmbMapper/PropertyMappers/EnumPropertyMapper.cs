@@ -9,7 +9,7 @@ using System.Globalization;
 using System.Linq;
 using UmbMapper.Extensions;
 using Umbraco.Core;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper.PropertyMappers
 {

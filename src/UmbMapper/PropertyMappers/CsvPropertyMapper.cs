@@ -10,7 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using UmbMapper.Converters;
 using UmbMapper.Extensions;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper.PropertyMappers
 {

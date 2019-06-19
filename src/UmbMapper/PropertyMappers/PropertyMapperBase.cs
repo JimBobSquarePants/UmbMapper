@@ -9,7 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Web;
 using UmbMapper.Extensions;
 using Umbraco.Core;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 using Umbraco.Web.Security;
 
@@ -65,11 +65,12 @@ namespace UmbMapper.PropertyMappers
             {
                 return culture;
             }
-
-            if (this.UmbracoContext?.PublishedContentRequest != null)
-            {
-                return this.UmbracoContext.PublishedContentRequest.Culture;
-            }
+            
+            //TODO - may not be needed
+            //if (this.UmbracoContext?.PublishedContentRequest != null)
+            //{
+            //    return this.UmbracoContext.PublishedContentRequest.Culture;
+            //}
 
             return CultureInfo.CurrentCulture;
         }
@@ -89,7 +90,9 @@ namespace UmbMapper.PropertyMappers
             for (int i = 0; i < aliases.Length; i++)
             {
                 string alias = aliases[i];
-                value = content.GetPropertyValue(alias, info.Recursive);
+                //TODO what is the recursive value indicating?
+                //value = content.GetPropertyValue(alias, info.Recursive);
+                value = content.Value(alias);
                 if (!this.IsNullOrDefault(value))
                 {
                     this.Alias = alias;

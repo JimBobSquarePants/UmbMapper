@@ -2,8 +2,7 @@
 // Copyright (c) James Jackson-South and contributors.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
-
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper.PropertyMappers
 {
@@ -22,6 +21,6 @@ namespace UmbMapper.PropertyMappers
         }
 
         /// <inheritdoc/>
-        public override string ResolveTypeName(IPublishedContent content) => content.DocumentTypeAlias;
+        public override string ResolveTypeName(IPublishedContent content) => content.ContentType.Alias;
     }
 }
