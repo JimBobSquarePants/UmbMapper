@@ -10,6 +10,7 @@ using System.Web;
 using UmbMapper.Extensions;
 using Umbraco.Core;
 using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Core.Services;
 using Umbraco.Web;
 using Umbraco.Web.Security;
 
@@ -37,10 +38,11 @@ namespace UmbMapper.PropertyMappers
         public UmbracoContext UmbracoContext => this.GetUmbracoContext();
 
         /// <inheritdoc/>
-        public MembershipHelper Members => new MembershipHelper(this.UmbracoContext);
-
+        public MembershipHelper Members =>
+            global::Umbraco.Web.Composing.Current.Factory.GetInstance<MembershipHelper>();
+        
         /// <inheritdoc/>
-        public UmbracoHelper Umbraco => new UmbracoHelper(this.UmbracoContext);
+        public UmbracoHelper Umbraco => global::Umbraco.Web.Composing.Current.UmbracoHelper;
 
         /// <summary>
         /// Gets the current alias.
@@ -172,7 +174,7 @@ namespace UmbMapper.PropertyMappers
         [MethodImpl(MethodImplOptions.NoInlining)]
         private UmbracoContext GetUmbracoContext()
         {
-            return UmbracoContext.Current ?? throw new InvalidOperationException("UmbracoContext.Current is null.");
+            return global::Umbraco.Web.Composing.Current.UmbracoContext ?? throw new InvalidOperationException("UmbracoContext.Current is null."); ;
         }
     }
 }
