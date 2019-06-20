@@ -7,7 +7,7 @@ using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
-    public class EnumMappingTests : IClassFixture<UmbracoSupport>
+    public class EnumMappingTests : BaseUmbracoMappingTest, IClassFixture<UmbracoSupport>
     {
         private readonly UmbracoSupport support;
 

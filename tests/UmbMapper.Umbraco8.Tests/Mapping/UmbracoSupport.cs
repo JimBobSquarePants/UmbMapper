@@ -28,7 +28,6 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         {
             this.Setup();
             this.InitPublishedProperties();
-            this.InitMappers();
         }
 
         public MockPublishedContent Content => this.GetContent();
@@ -36,6 +35,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         private void TearDown()
         {
             UmbMapperRegistry.ClearMappers();
+            //Current.Reset();
         }
 
         private void Setup()
@@ -48,7 +48,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             this.Composition.WithCollectionBuilder<PropertyValueConverterCollectionBuilder>();
             */
 
-            Current.Factory = Mock.Of<IFactory>();
+            //Current.Factory = Factory = Mock.Of<IFactory>();
         }
 
         private void InitPublishedProperties()
@@ -64,18 +64,6 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             // https://github.com/umbraco/Umbraco-CMS/blob/dev-v7/src/Umbraco.Tests/PropertyEditors/ImageCropperTest.cs
             string json = "{\"focalPoint\": {\"left\": 0.96,\"top\": 0.80827067669172936},\"src\": \"/media/1005/img_0671.jpg\",\"crops\": [{\"alias\":\"thumb\",\"width\": 100,\"height\": 100,\"coordinates\": {\"x1\": 0.58729977382575338,\"y1\": 0.055768992440203169,\"x2\": 0,\"y2\": 0.32457553600198386}}]}";
             this.dataSet = JsonConvert.DeserializeObject<ImageCropperValue>(json);
-        }
-
-        private void InitMappers()
-        {
-            UmbMapperRegistry.AddMapper(new PublishedItemMap());
-            //UmbMapperRegistry.AddMapper(new LazyPublishedItemMap());
-            UmbMapperRegistry.AddMapperFor<AutoMappedItem>();
-            UmbMapperRegistry.AddMapper(new BackedPublishedItemMap());
-            UmbMapperRegistry.AddMapper(new InheritedPublishedItemMap());
-            UmbMapperRegistry.AddMapper(new CsvPublishedItemMap());
-            UmbMapperRegistry.AddMapperFor<PolymorphicItemOne>();
-            UmbMapperRegistry.AddMapperFor<PolymorphicItemTwo>();
         }
 
         public MockPublishedContent GetContent()
