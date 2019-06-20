@@ -1,5 +1,4 @@
 ﻿using UmbMapper.PropertyMappers;
-using UmbMapper.Tests.Mapping.Models;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping.Models
 {

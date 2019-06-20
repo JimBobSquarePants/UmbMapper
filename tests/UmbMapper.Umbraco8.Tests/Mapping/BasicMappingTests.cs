@@ -1,11 +1,10 @@
 ﻿using System;
-using UmbMapper.Tests.Mapping.Models;
 using UmbMapper.Extensions;
 using UmbMapper.Umbraco8.Tests.Mocks;
 using Xunit;
+using Umbraco.Web;
 using Umbraco.Web.Models;
 using UmbMapper.Umbraco8.Tests.Mapping.Models;
-using UmbMapper.Umbraco8.Tests.Mocks;
 using System.Linq;
 using System.Collections.Generic;
 using Umbraco.Core.Models.PublishedContent;
@@ -191,6 +190,72 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             Assert.Equal(emptyExpected, result.EmptyItems);
             Assert.Equal(singleExpected, result.SingleItem);
             Assert.Equal(enumerableExpected, result.EnumerableItems);
+        }
+
+        [Fact]
+        public void MapperCanMapToExistingInstance()
+        {
+            const int id = 999;
+            const string name = "Foo";
+            var created = new DateTime(2017, 1, 1);
+            const PlaceOrder placeOrder = PlaceOrder.Second;
+
+            MockPublishedContent content = this.support.Content;
+            content.Id = id;
+            content.Name = name;
+            content.CreateDate = created;
+            content.Properties = new List<IPublishedProperty>
+            {
+                MockHelper.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), PlaceOrder.Fourth)
+            };
+
+            PublishedItem result = UmbMapperRegistry.CreateEmpty<PublishedItem>();
+
+            // Set a value before mapping.
+            result.PlaceOrder = placeOrder;
+
+            content.MapTo(result);
+
+            Assert.Equal(id, result.Id);
+            Assert.Equal(name, result.Name);
+            Assert.Equal(created, result.CreateDate);
+
+            // We expect it to be overwritten
+            Assert.NotEqual(placeOrder, result.PlaceOrder);
+        }
+
+        [Fact]
+        public void MapperCanMapInheritedMixedItems()
+        {
+            MockPublishedContent content = this.support.Content;
+            var created = new DateTime(2017, 1, 1);
+            content.Id = 98765;
+            content.Name = "InheritedMapped";
+            content.CreateDate = created;
+            content.UpdateDate = created;
+
+            InheritedPublishedItem result = content.MapTo<InheritedPublishedItem>();
+
+            Assert.NotNull(result);
+            Assert.Equal(content.Id, result.Id);
+            Assert.Equal(content.Name, result.Name);
+
+            Assert.NotNull(result.Slug);
+            Assert.True(result.Slug == result.Name.ToLowerInvariant());
+            Assert.NotNull(result.Image);
+            Assert.Equal(content.Value(nameof(BackedPublishedItem.Image)), result.Image);
+        }
+
+        [Fact]
+        public void MapperCanRemoveMap()
+        {
+            var map = new LazyPublishedItemMap();
+            int mapCount = map.Mappings.Count();
+
+            bool result = map.Ignore(x => x.CreateDate);
+
+            Assert.True(result);
+            Assert.Equal(mapCount - 1, map.Mappings.Count());
         }
     }
 }

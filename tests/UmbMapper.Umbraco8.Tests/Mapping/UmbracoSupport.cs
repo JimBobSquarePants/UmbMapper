@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Moq;
 using Newtonsoft.Json;
-using UmbMapper.Tests.Mapping.Models;
 using UmbMapper.Umbraco8.Tests.Mapping.Models;
 using UmbMapper.Umbraco8.Tests.Mocks;
 using Umbraco.Core.Cache;
@@ -13,7 +12,6 @@ using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
 using Umbraco.Core.PropertyEditors.ValueConverters;
 using Umbraco.Web.Models;
-using Umbraco.Web.PublishedCache;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
@@ -66,7 +64,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             //UmbMapperRegistry.AddMapper(new LazyPublishedItemMap());
             UmbMapperRegistry.AddMapperFor<AutoMappedItem>();
             UmbMapperRegistry.AddMapper(new BackedPublishedItemMap());
-            //UmbMapperRegistry.AddMapper(new InheritedPublishedItemMap());
+            UmbMapperRegistry.AddMapper(new InheritedPublishedItemMap());
             UmbMapperRegistry.AddMapper(new CsvPublishedItemMap());
             UmbMapperRegistry.AddMapperFor<PolymorphicItemOne>();
             UmbMapperRegistry.AddMapperFor<PolymorphicItemTwo>();

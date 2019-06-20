@@ -1,17 +1,23 @@
-﻿using UmbMapper.Umbraco8.Tests.Mocks;
+﻿using System;
+using UmbMapper.Umbraco8.Tests.Mocks;
+using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors.ValueConverters;
+using Umbraco.Web.Models;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping.Models
 {
-    public class BackedPublishedItem : PublishedContentModel
+    public class LazyPublishedItem
     {
-        public BackedPublishedItem(IPublishedContent content)
-            : base(content)
-        {
-        }
+        public virtual int Id { get; set; }
+
+        public virtual string Name { get; set; }
 
         public virtual string Slug { get; set; }
+
+        public virtual DateTime CreateDate { get; set; }
+
+        public virtual DateTime UpdateDate { get; set; }
 
         public virtual PlaceOrder PlaceOrder { get; set; }
 

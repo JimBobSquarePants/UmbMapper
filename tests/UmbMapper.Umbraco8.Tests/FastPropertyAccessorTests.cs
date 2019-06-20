@@ -1,5 +1,5 @@
 ﻿using System;
-using UmbMapper.Tests.Mapping.Models;
+using UmbMapper.Umbraco8.Tests.Mapping.Models;
 using Xunit;
 
 namespace UmbMapper.Umbraco8.Tests

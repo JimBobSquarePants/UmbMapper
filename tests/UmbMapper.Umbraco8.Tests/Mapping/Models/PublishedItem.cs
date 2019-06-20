@@ -6,7 +6,7 @@ using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors.ValueConverters;
 using Umbraco.Web.Models;
 
-namespace UmbMapper.Tests.Mapping.Models
+namespace UmbMapper.Umbraco8.Tests.Mapping.Models
 {
     public class PublishedItem
     { 
