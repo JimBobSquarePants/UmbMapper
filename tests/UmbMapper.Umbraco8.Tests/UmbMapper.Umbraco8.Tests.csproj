@@ -276,6 +276,7 @@
     <Compile Include="ExpressionExtensionsTests.cs" />
     <Compile Include="FastPropertyAccessorTests.cs" />
     <Compile Include="Mapping\BasicMappingTests.cs" />
+    <Compile Include="Mapping\EnumMappingTests.cs" />
     <Compile Include="Mapping\Models\InheritedPublishedItemMap.cs" />
     <Compile Include="Mapping\Models\AutoMappedItem.cs" />
     <Compile Include="Mapping\Models\BackedPublishedItem.cs" />
