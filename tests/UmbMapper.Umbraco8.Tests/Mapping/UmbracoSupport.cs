@@ -95,21 +95,23 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
                     new MockPublishedProperty(nameof(PublishedItem.NullLinks), null, this.GetPublishedPropertyType()),
 
                     // Polymorphic collections
-                    //new MockPublishedContentProperty(nameof(PublishedItem.Polymorphic)
-                    //,
-                    //new MockPublishedContent[]{
+                    new MockPublishedProperty(
+                        nameof(PublishedItem.Polymorphic),
+                        new MockPublishedContent[]{
 
-                    //    new MockPublishedContent()
-                    //    {
-                    //         = nameof(PolymorphicItemOne),
-                    //        Properties = new[]{ new MockPublishedContentProperty(nameof(IPolyMorphic.PolyMorphicText),"Foo")}
-                    //    },
-                    //    new MockPublishedContent()
-                    //    {
-                    //        DocumentTypeAlias = nameof(PolymorphicItemTwo),
-                    //        Properties = new[]{ new MockPublishedContentProperty(nameof(IPolyMorphic.PolyMorphicText),"Bar")}
-                    //    }
-                    //})
+                            new MockPublishedContent()
+                            {
+                                ContentType = new PublishedContentType(1, nameof(PolymorphicItemOne), PublishedItemType.Content,Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
+                                Properties = new[]{ new MockPublishedProperty(nameof(IPolyMorphic.PolyMorphicText),"Foo", this.GetPublishedPropertyType(nameof(IPolyMorphic.PolyMorphicText))) }
+                            },
+                            new MockPublishedContent()
+                            {
+                                ContentType = new PublishedContentType(1, nameof(PolymorphicItemTwo), PublishedItemType.Content,Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
+                                Properties = new[]{ new MockPublishedProperty(nameof(IPolyMorphic.PolyMorphicText),"Bar", this.GetPublishedPropertyType(nameof(IPolyMorphic.PolyMorphicText))) }
+                            }
+                        },
+                        this.GetPublishedPropertyType(nameof(PublishedItem.Polymorphic))
+                    )
                 }
             };
         }
