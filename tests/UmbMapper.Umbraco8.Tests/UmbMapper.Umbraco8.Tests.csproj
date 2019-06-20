@@ -312,6 +312,7 @@
     <Compile Include="ProxyFactoryTests.cs" />
     <Compile Include="PublishedContent\AutoPublishedContentType.cs" />
     <Compile Include="SimpleConverterTests.cs" />
+    <Compile Include="TypeInferenceTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
