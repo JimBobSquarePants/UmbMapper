@@ -296,7 +296,11 @@
     <Compile Include="Mapping\Models\PolymorphicItemTwo.cs" />
     <Compile Include="Mapping\Models\PublishedItem.cs" />
     <Compile Include="Mapping\Models\PublishedItemMap.cs" />
+    <Compile Include="Mapping\Models\PublishedItemMapAll.cs" />
+    <Compile Include="Mapping\Models\PublishedItemMapMany.cs" />
     <Compile Include="Mapping\UmbMapperConfigTests.cs" />
+    <Compile Include="Mapping\UmbMapperRegistryTests.cs" />
+    <Compile Include="Mapping\UmbracoPickerMappingTests.cs" />
     <Compile Include="Mapping\UmbracoSupport.cs" />
     <Compile Include="Mocks\MockHelper.cs" />
     <Compile Include="Mocks\MockPublishedContent.cs" />

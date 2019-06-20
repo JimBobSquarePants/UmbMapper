@@ -72,7 +72,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             {
                 Properties = new[]
                 {
-                    new MockPublishedProperty(nameof(PublishedItem.PublishedContent), 1000, this.GetPublishedPropertyType()),
+                    new MockPublishedProperty(nameof(PublishedItem.PublishedContent), 1000, this.GetPublishedPropertyType(nameof(PublishedItem.PublishedContent))),
                     new MockPublishedProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001, this.GetPublishedPropertyType()),
                     new MockPublishedProperty(nameof(PublishedItem.Image), this.dataSet, this.GetPublishedPropertyType("image")),
                     new MockPublishedProperty(nameof(PublishedItem.Child), 3333, this.GetPublishedPropertyType()),
