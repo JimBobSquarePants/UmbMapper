@@ -257,5 +257,15 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             Assert.True(result);
             Assert.Equal(mapCount - 1, map.Mappings.Count());
         }
+
+        [Fact]
+        public void RecursivePropertiesCanBeInherited()
+        {
+            IUmbMapperConfig mapper = UmbMapperRegistry.CurrentMappers().First(x => x.MappedType == typeof(InheritedPublishedItem));
+            IPropertyMap mapping = mapper.Mappings
+                .First(x => x.Info.Aliases.Contains(nameof(InheritedPublishedItem.Name), StringComparer.InvariantCultureIgnoreCase));
+
+            Assert.True(mapping.Info.Recursive);
+        }
     }
 }
