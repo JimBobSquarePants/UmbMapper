@@ -5,6 +5,10 @@ using UmbMapper.Umbraco8.Tests.Mocks;
 using Xunit;
 using Umbraco.Web.Models;
 using UmbMapper.Umbraco8.Tests.Mapping.Models;
+using UmbMapper.Umbraco8.Tests.Mocks;
+using System.Linq;
+using System.Collections.Generic;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
@@ -124,6 +128,69 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             Assert.True(result.Slug == result.Name.ToLowerInvariant());
             Assert.NotNull(result.Image);
             Assert.Equal(content.GetProperty(nameof(BackedPublishedItem.Image))?.GetValue(), result.Image);
+        }
+
+        [Fact]
+        public void MapperCanMapCsvValues()
+        {
+            const string input = "1,0,1.234";
+            const string singleInput = "1.234";
+            const string emptyInput = "   ";
+            IEnumerable<string> stringExpected = new[] { "1", "0", "1.234" };
+            IEnumerable<sbyte> sbyteExpected = new sbyte[] { 1, 0, 1 };
+            IEnumerable<byte> byteExpected = new byte[] { 1, 0, 1 };
+            IEnumerable<short> shortExpected = new short[] { 1, 0, 1 };
+            IEnumerable<ushort> ushortExpected = new ushort[] { 1, 0, 1 };
+            IEnumerable<int> intExpected = new[] { 1, 0, 1 };
+            IEnumerable<uint> uintExpected = new uint[] { 1, 0, 1 };
+            IEnumerable<long> longExpected = new long[] { 1, 0, 1 };
+            IEnumerable<ulong> ulongExpected = new ulong[] { 1, 0, 1 };
+            IEnumerable<float> floatExpected = new float[] { 1, 0, 1.234F };
+            IEnumerable<double> doubleExpected = new double[] { 1, 0, 1.234 };
+            IEnumerable<decimal> decimalExpected = new decimal[] { 1, 0, 1.234M };
+            IEnumerable<int> nullExpected = Enumerable.Empty<int>();
+            IEnumerable<int> emptyExpected = Enumerable.Empty<int>();
+            const int singleExpected = 1;
+            IEnumerable<int> enumerableExpected = new[] { 1 };
+
+            MockPublishedContent content = this.support.Content;
+            content.Properties = new List<IPublishedProperty>
+            {
+                //MockFactory.CreateMockPublishedProperty
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.StringItems), input),
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.SByteItems), input),
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.ByteItems), input),
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.ShortItems), input),
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.UShortItems), input),
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.IntItems), input),
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.UIntItems), input),
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.LongItems), input),
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.ULongItems), input),
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.FloatItems), input),
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.DoubleItems), input),
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.DecimalItems), input),
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.EmptyItems), emptyInput),
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.SingleItem), input),
+                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.EnumerableItems), singleInput)
+            };
+
+            CsvPublishedItem result = content.MapTo<CsvPublishedItem>();
+            Assert.Equal(stringExpected, result.StringItems);
+            Assert.Equal(sbyteExpected, result.SByteItems);
+            Assert.Equal(byteExpected, result.ByteItems);
+            Assert.Equal(shortExpected, result.ShortItems);
+            Assert.Equal(ushortExpected, result.UShortItems);
+            Assert.Equal(intExpected, result.IntItems);
+            Assert.Equal(uintExpected, result.UIntItems);
+            Assert.Equal(longExpected, result.LongItems);
+            Assert.Equal(ulongExpected, result.ULongItems);
+            Assert.Equal(floatExpected, result.FloatItems);
+            Assert.Equal(doubleExpected, result.DoubleItems);
+            Assert.Equal(decimalExpected, result.DecimalItems);
+            Assert.Equal(nullExpected, result.NullItems);
+            Assert.Equal(emptyExpected, result.EmptyItems);
+            Assert.Equal(singleExpected, result.SingleItem);
+            Assert.Equal(enumerableExpected, result.EnumerableItems);
         }
     }
 }

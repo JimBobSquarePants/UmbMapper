@@ -279,6 +279,8 @@
     <Compile Include="Mapping\Models\AutoMappedItem.cs" />
     <Compile Include="Mapping\Models\BackedPublishedItem.cs" />
     <Compile Include="Mapping\Models\BackedPublishedItemMap.cs" />
+    <Compile Include="Mapping\Models\CsvPublishedItem.cs" />
+    <Compile Include="Mapping\Models\CsvPublishedItemMap.cs" />
     <Compile Include="Mapping\Models\IPolyMorphic.cs" />
     <Compile Include="Mapping\Models\PlaceOrder.cs" />
     <Compile Include="Mapping\Models\PolymorphicItemOne.cs" />
@@ -286,6 +288,7 @@
     <Compile Include="Mapping\Models\PublishedItem.cs" />
     <Compile Include="Mapping\Models\PublishedItemMap.cs" />
     <Compile Include="Mapping\UmbracoSupport.cs" />
+    <Compile Include="Mocks\MockHelper.cs" />
     <Compile Include="Mocks\MockPublishedContent.cs" />
     <Compile Include="Mocks\MockPublishedContentProperty.cs" />
     <Compile Include="Mocks\MockPublishedPropertyType.cs" />
