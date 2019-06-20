@@ -96,20 +96,11 @@ namespace UmbMapper.PropertyMappers
                 //TODO what is the recursive value indicating?
                 //value = content.GetPropertyValue(alias, info.Recursive);
 
-                // have to use this instead of content.Value(alias) as this is done from an 
-                // extension method rather than the object its self
-                var property = content.GetProperty(alias);
-                var prop = content.Properties.Where(p => p.Alias.InvariantEquals(alias)).FirstOrDefault();
-
-                if (prop != null)
+                value = content.Value(alias, null, null, Fallback.ToAncestors, null);
+                if (!this.IsNullOrDefault(value))
                 {
-                    value = prop.GetValue();
-                    //?.GetValue();
-                    if (!this.IsNullOrDefault(value))
-                    {
-                        this.Alias = alias;
-                        return value;
-                    }
+                    this.Alias = alias;
+                    return value;
                 }
             }
 

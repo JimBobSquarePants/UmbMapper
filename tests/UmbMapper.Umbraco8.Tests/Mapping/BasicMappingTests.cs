@@ -4,6 +4,7 @@ using UmbMapper.Extensions;
 using UmbMapper.Umbraco8.Tests.Mocks;
 using Xunit;
 using Umbraco.Web.Models;
+using UmbMapper.Umbraco8.Tests.Mapping.Models;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
@@ -80,6 +81,49 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             Assert.NotNull(result.Link);
             Assert.NotNull(result.Links);
             Assert.True(result.Links.GetType().IsEnumerableOfType(typeof(Link)));
+        }
+
+        [Fact]
+        public void MapperCanMapAutoMappedProperties()
+        {
+            MockPublishedContent content = this.support.Content;
+            var created = new DateTime(2017, 1, 1);
+            content.Id = 98765;
+            content.Name = "AutoMapped";
+            content.CreateDate = created;
+            content.UpdateDate = created;
+
+            AutoMappedItem result = content.MapTo<AutoMappedItem>();
+
+            Assert.NotNull(result);
+            Assert.Equal(content.Id, result.Id);
+            Assert.Equal(content.Name, result.Name);
+            Assert.Equal(content.CreateDate, result.CreateDate);
+            Assert.Equal(content.UpdateDate, result.UpdateDate);
+        }
+
+        [Fact]
+        public void MapperCanMapPublishedModelType()
+        {
+            MockPublishedContent content = this.support.Content;
+            var created = new DateTime(2017, 1, 1);
+            content.Id = 98765;
+            content.Name = "BackMapped";
+            content.CreateDate = created;
+            content.UpdateDate = created;
+
+            BackedPublishedItem result = content.MapTo<BackedPublishedItem>();
+
+            Assert.NotNull(result);
+            Assert.Equal(content.Id, result.Id);
+            Assert.Equal(content.Name, result.Name);
+            Assert.Equal(content.CreateDate, result.CreateDate);
+            Assert.Equal(content.UpdateDate, result.UpdateDate);
+
+            Assert.NotNull(result.Slug);
+            Assert.True(result.Slug == result.Name.ToLowerInvariant());
+            Assert.NotNull(result.Image);
+            Assert.Equal(content.GetProperty(nameof(BackedPublishedItem.Image))?.GetValue(), result.Image);
         }
     }
 }

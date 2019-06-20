@@ -3,22 +3,24 @@ using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper.Umbraco8.Tests.Mocks
 {
-    public class MockPublishedContentProperty : IPublishedProperty
+    public class MockPublishedProperty : IPublishedProperty
     {
-        public MockPublishedContentProperty()
+        private readonly object _sourceValue;
+        public MockPublishedProperty()
         {
         }
 
-        public MockPublishedContentProperty(string alias, object value)
+        public MockPublishedProperty(string alias, object value)
         {
             this.PropertyTypeAlias = alias;
+            this.Alias = alias;
             this.Value = value;
+
+            this._sourceValue = value;
         }
 
-        public MockPublishedContentProperty(string alias, object value, PublishedPropertyType propertyType)
+        public MockPublishedProperty(string alias, object value, PublishedPropertyType propertyType) : this (alias, value)
         {
-            this.PropertyTypeAlias = alias;
-            this.Value = value;
             this.PropertyType = propertyType;
         }
 
@@ -34,7 +36,7 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
 
         public PublishedPropertyType PropertyType { get; set; }
 
-        public string Alias => this.PropertyTypeAlias;
+        public string Alias { get; set; }
 
         public object GetSourceValue(string culture = null, string segment = null)
         {
@@ -53,7 +55,10 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
 
         bool IPublishedProperty.HasValue(string culture, string segment)
         {
-            throw new NotImplementedException();
+            // Similar to Umbraco implementation
+            // May need to be expanded to account for variants
+            return this._sourceValue != null && 
+                ((_sourceValue is string) == false || string.IsNullOrWhiteSpace((string)_sourceValue) == false);
         }
     }
 }

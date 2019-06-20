@@ -1,20 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Moq;
+using Newtonsoft.Json;
 using UmbMapper.Tests.Mapping.Models;
 using UmbMapper.Umbraco8.Tests.Mapping.Models;
 using UmbMapper.Umbraco8.Tests.Mocks;
-using Umbraco.Core;
+using Umbraco.Core.Cache;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
 using Umbraco.Core.PropertyEditors.ValueConverters;
-using Umbraco.Web;
 using Umbraco.Web.Models;
+using Umbraco.Web.PublishedCache;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
@@ -24,6 +23,9 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         private Link link;
         private ImageCropperValue dataSet;
 
+        protected Composition Composition { get; private set; }
+        IFactory Factory { get; set; }
+
         public UmbracoSupport()
         {
             this.Setup();
@@ -31,7 +33,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             this.InitMappers();
         }
 
-        public MockPublishedContent Content => GetContent();
+        public MockPublishedContent Content => this.GetContent();
 
         private void TearDown()
         {
@@ -40,7 +42,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
 
         private void Setup()
         {
-            //Composition.RegisterUnique<IPublishedModelFactory>(f => new PublishedModelFactory(f.GetInstance<TypeLoader>().GetTypes<PublishedContentModel>()));
+            Current.Factory = Factory = Mock.Of<IFactory>();
         }
 
         private void InitPublishedProperties()
@@ -52,11 +54,17 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
                 Type = LinkType.Content,
                 Url = ""
             };
+            // JSON test data taken from Umbraco unit-test:
+            // https://github.com/umbraco/Umbraco-CMS/blob/dev-v7/src/Umbraco.Tests/PropertyEditors/ImageCropperTest.cs
+            string json = "{\"focalPoint\": {\"left\": 0.96,\"top\": 0.80827067669172936},\"src\": \"/media/1005/img_0671.jpg\",\"crops\": [{\"alias\":\"thumb\",\"width\": 100,\"height\": 100,\"coordinates\": {\"x1\": 0.58729977382575338,\"y1\": 0.055768992440203169,\"x2\": 0,\"y2\": 0.32457553600198386}}]}";
+            this.dataSet = JsonConvert.DeserializeObject<ImageCropperValue>(json);
         }
 
         private void InitMappers()
         {
             UmbMapperRegistry.AddMapper(new PublishedItemMap());
+            UmbMapperRegistry.AddMapperFor<AutoMappedItem>();
+            UmbMapperRegistry.AddMapper(new BackedPublishedItemMap());
         }
 
         public MockPublishedContent GetContent()
@@ -65,15 +73,15 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             {
                 Properties = new[]
                 {
-                    new MockPublishedContentProperty(nameof(PublishedItem.PublishedContent), 1000, CreatePublishedPropertyType()),
-                    new MockPublishedContentProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001, CreatePublishedPropertyType()),
-                    new MockPublishedContentProperty(nameof(PublishedItem.Image), this.dataSet, CreatePublishedPropertyType()),
-                    new MockPublishedContentProperty(nameof(PublishedItem.Child), 3333, CreatePublishedPropertyType()),
+                    new MockPublishedProperty(nameof(PublishedItem.PublishedContent), 1000, this.GetPublishedPropertyType()),
+                    new MockPublishedProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001, this.GetPublishedPropertyType()),
+                    new MockPublishedProperty(nameof(PublishedItem.Image), this.dataSet, this.GetPublishedPropertyType("image")),
+                    new MockPublishedProperty(nameof(PublishedItem.Child), 3333, this.GetPublishedPropertyType()),
 
                     // We're deliberately switching these values to test enumerable conversion
-                    new MockPublishedContentProperty(nameof(PublishedItem.Link), this.link, CreatePublishedPropertyType()),
-                    new MockPublishedContentProperty(nameof(PublishedItem.Links), new List<Link> { this.link }, CreatePublishedPropertyType() ),
-                    new MockPublishedContentProperty(nameof(PublishedItem.NullLinks), null, CreatePublishedPropertyType()),
+                    new MockPublishedProperty(nameof(PublishedItem.Link), this.link, this.GetPublishedPropertyType("link")),
+                    new MockPublishedProperty(nameof(PublishedItem.Links), new List<Link> { this.link }, this.GetPublishedPropertyType("links") ),
+                    new MockPublishedProperty(nameof(PublishedItem.NullLinks), null, this.GetPublishedPropertyType()),
 
                     // Polymorphic collections
                     //new MockPublishedContentProperty(nameof(PublishedItem.Polymorphic)
@@ -95,15 +103,23 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             };
         }
 
-        private PublishedPropertyType CreatePublishedPropertyType()
+        protected virtual AppCaches GetAppCaches()
+        {
+            return AppCaches.Disabled;
+        }
+
+        private PublishedPropertyType GetPublishedPropertyType(string alias="test")
         {
             var mockPublishedContentTypeFactory = new Mock<IPublishedContentTypeFactory>();
 
             var publishedPropType = new PublishedPropertyType(
-                new PublishedContentType(1234, "test", PublishedItemType.Content, Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
-                new PropertyType("test", ValueStorageType.Nvarchar) { DataTypeId = 123 },
+                alias,
+                1,
+                true,
+                ContentVariation.CultureAndSegment,
                 new PropertyValueConverterCollection(Enumerable.Empty<IPropertyValueConverter>()),
-                Mock.Of<IPublishedModelFactory>(), mockPublishedContentTypeFactory.Object);
+                Mock.Of<IPublishedModelFactory>(),
+                mockPublishedContentTypeFactory.Object);
 
             return publishedPropType;
         }
