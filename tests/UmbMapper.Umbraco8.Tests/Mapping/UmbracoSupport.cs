@@ -40,7 +40,15 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
 
         private void Setup()
         {
-            Current.Factory = Factory = Mock.Of<IFactory>();
+            /*
+             * Ideally we want to mock a composition to do everything
+            var compositionMock = new Mock<Composition>();
+
+            this.Composition = compositionMock.Object;
+            this.Composition.WithCollectionBuilder<PropertyValueConverterCollectionBuilder>();
+            */
+
+            Current.Factory = Mock.Of<IFactory>();
         }
 
         private void InitPublishedProperties()
