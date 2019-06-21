@@ -15,8 +15,7 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
     /// </summary>
     public static class MockPublishedPropertService
     {
-        private static List<string> mockPropertyTypes = new List<string> { nameof(PublishedItem.PublishedContent), nameof(PublishedItem.PublishedInterfaceContent), nameof(PublishedItem.Child) };
-
+        //TODO - look at how Umbraco does this internally and implement something similar that's suitable for testing
         public static IPublishedProperty GetProperty(IPublishedContent content, string alias, bool recurse)
         {
             IPublishedProperty prop = content.Properties.SingleOrDefault(p => p.PropertyType.Alias.InvariantEquals(alias));
@@ -32,13 +31,18 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
             }
 
             int id;
-            if (int.TryParse(prop.GetValue().ToString(), out id))
+            if (int.TryParse(prop.GetValue()?.ToString(), out id))
             {
-                return new
-                    MockPublishedProperty(
-                    prop.PropertyType.Alias,
-                    new MockPublishedContent() { Id = id}
-                    );
+                // If - how does umbraco test that this is a valid id?
+                // How do we replicate the same functionality?
+                if (id > 999)
+                {
+                    return new
+                        MockPublishedProperty(
+                        prop.PropertyType.Alias,
+                        new MockPublishedContent() { Id = id }
+                        );
+                }
 
             }
 
