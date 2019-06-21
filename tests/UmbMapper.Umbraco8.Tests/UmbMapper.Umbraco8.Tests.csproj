@@ -306,6 +306,7 @@
     <Compile Include="Mocks\MockHelper.cs" />
     <Compile Include="Mocks\MockPublishedContent.cs" />
     <Compile Include="Mocks\MockPublishedContentProperty.cs" />
+    <Compile Include="Mocks\MockPublishedContentService.cs" />
     <Compile Include="Mocks\MockPublishedPropertyType.cs" />
     <Compile Include="ObjectExtensionsTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

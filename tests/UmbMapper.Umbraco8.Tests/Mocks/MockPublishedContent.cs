@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UmbMapper.Umbraco8.Tests.Mapping.Models;
 using Umbraco.Core;
 using Umbraco.Core.Models.PublishedContent;
 
@@ -85,14 +86,23 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
 
         public IPublishedProperty GetProperty(string alias, bool recurse)
         {
-            IPublishedProperty prop = this.Properties.SingleOrDefault(p => p.PropertyType.Alias.InvariantEquals(alias));
+            // trying to mock what umbraco does internally
+            //var mockContentProperty = MockPublishedPropertService.GetProperty(this, alias, recurse);
+            return MockPublishedPropertService.GetProperty(this, alias, recurse);
+            //if (mockContentProperty != null)
+            //{
+            //    return mockContentProperty;
+            //}
 
-            if (prop == null && recurse && this.Parent != null)
-            {
-                return null;
-            }
 
-            return prop;
+            //IPublishedProperty prop = this.Properties.SingleOrDefault(p => p.PropertyType.Alias.InvariantEquals(alias));
+
+            //if (prop == null && recurse && this.Parent != null)
+            //{
+            //    return null;
+            //}
+
+            //return prop;
         }
 
         public string GetUrl(string culture = null)
