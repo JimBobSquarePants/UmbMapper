@@ -303,9 +303,10 @@
     <Compile Include="Mapping\UmbMapperRegistryTests.cs" />
     <Compile Include="Mapping\UmbracoPickerMappingTests.cs" />
     <Compile Include="Mapping\UmbracoSupport.cs" />
+    <Compile Include="Mocks\MockContentPickerValueConverter.cs" />
     <Compile Include="Mocks\MockHelper.cs" />
     <Compile Include="Mocks\MockPublishedContent.cs" />
-    <Compile Include="Mocks\MockPublishedContentProperty.cs" />
+    <Compile Include="Mocks\MockPublishedProperty.cs" />
     <Compile Include="Mocks\MockPublishedContentService.cs" />
     <Compile Include="Mocks\MockPublishedPropertyType.cs" />
     <Compile Include="ObjectExtensionsTests.cs" />
@@ -330,6 +331,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Base\" />
+    <Folder Include="Mocks\Property\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets" Condition="Exists('$(VSToolsPath)\TeamTest\Microsoft.TestTools.targets')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

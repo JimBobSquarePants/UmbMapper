@@ -8,11 +8,11 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
         private readonly object _sourceValue;
         public MockPublishedProperty()
         {
+            
         }
 
         public MockPublishedProperty(string alias, object value)
         {
-            this.PropertyTypeAlias = alias;
             this.Alias = alias;
             this.Value = value;
 
@@ -45,6 +45,33 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
 
         public object GetValue(string culture = null, string segment = null)
         {
+            int nodeId;
+            if (int.TryParse(this.Value.ToString(), out nodeId))
+            {
+                try
+                {
+                    object convertedValue =
+                        this.PropertyType.ConvertInterToObject(
+                            new MockPublishedContent(),
+                            Umbraco.Core.PropertyEditors.PropertyCacheLevel.Element,
+                            nodeId,
+                            true
+                        );
+
+                    if (convertedValue != null)
+                    {
+                        return convertedValue;
+                    }
+                }
+                catch
+                {
+                    // We're only passing in a property value editor convertor 
+                    // for published content types.  When one isn't found for the other
+                    // types an exception will be thrown - in this case we can return 
+                    // the current value
+                }
+            }
+
             return this.Value;
         }
 

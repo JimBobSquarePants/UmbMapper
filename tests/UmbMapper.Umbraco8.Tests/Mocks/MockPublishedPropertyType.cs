@@ -75,5 +75,9 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
         {
             //this._alias = propertyTypeAlias;
         }
+
+        //public new string EditorAlias =>
+        //    return this.pro
+        //    string.Empty;
     }
 }

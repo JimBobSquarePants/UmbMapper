@@ -72,15 +72,15 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             {
                 Properties = new[]
                 {
-                    new MockPublishedProperty(nameof(PublishedItem.PublishedContent), 1000, this.GetPublishedPropertyType(nameof(PublishedItem.PublishedContent))),
-                    new MockPublishedProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001, this.GetPublishedPropertyType(nameof(PublishedItem.PublishedInterfaceContent))),
-                    new MockPublishedProperty(nameof(PublishedItem.Image), this.dataSet, this.GetPublishedPropertyType("image")),
-                    new MockPublishedProperty(nameof(PublishedItem.Child), 3333, this.GetPublishedPropertyType(nameof(PublishedItem.Child))),
+                    new MockPublishedProperty(nameof(PublishedItem.PublishedContent), 1000, MockHelper.CreateMockUmbracoContentPublishedPropertyType()),
+                    new MockPublishedProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001, MockHelper.CreateMockUmbracoContentPublishedPropertyType()),
+                    new MockPublishedProperty(nameof(PublishedItem.Image), this.dataSet, MockHelper.CreateMockPublishedPropertyType("image")),
+                    new MockPublishedProperty(nameof(PublishedItem.Child), 1003, MockHelper.CreateMockUmbracoContentPublishedPropertyType()),
 
                     // We're deliberately switching these values to test enumerable conversion
-                    new MockPublishedProperty(nameof(PublishedItem.Link), this.link, this.GetPublishedPropertyType("link")),
-                    new MockPublishedProperty(nameof(PublishedItem.Links), new List<Link> { this.link }, this.GetPublishedPropertyType("links") ),
-                    new MockPublishedProperty(nameof(PublishedItem.NullLinks), null, this.GetPublishedPropertyType()),
+                    new MockPublishedProperty(nameof(PublishedItem.Link), this.link, MockHelper.CreateMockPublishedPropertyType("link")),
+                    new MockPublishedProperty(nameof(PublishedItem.Links), new List<Link> { this.link }, MockHelper.CreateMockPublishedPropertyType("links") ),
+                    new MockPublishedProperty(nameof(PublishedItem.NullLinks), null, MockHelper.CreateMockPublishedPropertyType()),
 
                     // Polymorphic collections
                     new MockPublishedProperty(
@@ -90,39 +90,56 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
                             new MockPublishedContent()
                             {
                                 ContentType = new PublishedContentType(1, nameof(PolymorphicItemOne), PublishedItemType.Content,Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
-                                Properties = new[]{ new MockPublishedProperty(nameof(IPolyMorphic.PolyMorphicText),"Foo", this.GetPublishedPropertyType(nameof(IPolyMorphic.PolyMorphicText))) }
+                                Properties = new[]{ new MockPublishedProperty(nameof(IPolyMorphic.PolyMorphicText),"Foo", MockHelper.CreateMockPublishedPropertyType(nameof(IPolyMorphic.PolyMorphicText))) }
                             },
                             new MockPublishedContent()
                             {
                                 ContentType = new PublishedContentType(1, nameof(PolymorphicItemTwo), PublishedItemType.Content,Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
-                                Properties = new[]{ new MockPublishedProperty(nameof(IPolyMorphic.PolyMorphicText),"Bar", this.GetPublishedPropertyType(nameof(IPolyMorphic.PolyMorphicText))) }
+                                Properties = new[]{ new MockPublishedProperty(nameof(IPolyMorphic.PolyMorphicText),"Bar", MockHelper.CreateMockPublishedPropertyType(nameof(IPolyMorphic.PolyMorphicText))) }
                             }
                         },
-                        this.GetPublishedPropertyType(nameof(PublishedItem.Polymorphic))
+                        MockHelper.CreateMockPublishedPropertyType(nameof(PublishedItem.Polymorphic))
                     )
                 }
             };
-        }
 
-        protected virtual AppCaches GetAppCaches()
-        {
-            return AppCaches.Disabled;
-        }
+            //TODO - return content without property types except where necessary
+            // e.g. need a property editor value convertor, e.g. Content Picker/Media Picker
+            //return new MockPublishedContent
+            //{
+            //    Properties = new[]
+            //    {
+            //        new MockPublishedProperty(nameof(PublishedItem.PublishedContent), 1000),
+            //        new MockPublishedProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001),
+            //        new MockPublishedProperty(nameof(PublishedItem.Image), this.dataSet),
+            //        new MockPublishedProperty(nameof(PublishedItem.Child), 3333),
 
-        public PublishedPropertyType GetPublishedPropertyType(string alias="test")
-        {
-            var mockPublishedContentTypeFactory = new Mock<IPublishedContentTypeFactory>();
+            //        // We're deliberately switching these values to test enumerable conversion
+            //        new MockPublishedProperty(nameof(PublishedItem.Link), this.link),
+            //        new MockPublishedProperty(nameof(PublishedItem.Links), new List<Link> { this.link }),
+            //        new MockPublishedProperty(nameof(PublishedItem.NullLinks), null),
 
-            var publishedPropType = new PublishedPropertyType(
-                alias,
-                1,
-                true,
-                ContentVariation.CultureAndSegment,
-                new PropertyValueConverterCollection(Enumerable.Empty<IPropertyValueConverter>()),
-                Mock.Of<IPublishedModelFactory>(),
-                mockPublishedContentTypeFactory.Object);
+            //        // Polymorphic collections
+            //        new MockPublishedProperty(
+            //            nameof(PublishedItem.Polymorphic),
+            //            new MockPublishedContent[]{
 
-            return publishedPropType;
+            //                new MockPublishedContent()
+            //                {
+            //                    ContentType = new PublishedContentType(1, nameof(PolymorphicItemOne), PublishedItemType.Content,Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
+            //                    Properties = new[]{ new MockPublishedProperty(nameof(IPolyMorphic.PolyMorphicText),"Foo", MockHelper.CreateMockPublishedPropertyType(nameof(IPolyMorphic.PolyMorphicText))) }
+            //                },
+            //                new MockPublishedContent()
+            //                {
+            //                    ContentType = new PublishedContentType(1, nameof(PolymorphicItemTwo), PublishedItemType.Content,Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
+            //                    Properties = new[]{ new MockPublishedProperty(nameof(IPolyMorphic.PolyMorphicText),"Bar", MockHelper.CreateMockPublishedPropertyType(nameof(IPolyMorphic.PolyMorphicText))) }
+            //                }
+            //            }
+            //        )
+            //    }
+            //};
+
+
         }
 
         public void Dispose()

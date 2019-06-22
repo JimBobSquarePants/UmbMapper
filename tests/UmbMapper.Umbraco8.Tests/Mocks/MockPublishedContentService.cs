@@ -18,7 +18,7 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
         //TODO - look at how Umbraco does this internally and implement something similar that's suitable for testing
         public static IPublishedProperty GetProperty(IPublishedContent content, string alias, bool recurse)
         {
-            IPublishedProperty prop = content.Properties.SingleOrDefault(p => p.PropertyType.Alias.InvariantEquals(alias));
+            IPublishedProperty prop = content.Properties.SingleOrDefault(p => p.Alias.InvariantEquals(alias));
 
             if (prop == null && recurse && content.Parent != null)
             {

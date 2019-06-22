@@ -88,21 +88,21 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
         {
             // trying to mock what umbraco does internally
             //var mockContentProperty = MockPublishedPropertService.GetProperty(this, alias, recurse);
-            return MockPublishedPropertService.GetProperty(this, alias, recurse);
+            //return MockPublishedPropertService.GetProperty(this, alias, recurse);
             //if (mockContentProperty != null)
             //{
             //    return mockContentProperty;
             //}
 
 
-            //IPublishedProperty prop = this.Properties.SingleOrDefault(p => p.PropertyType.Alias.InvariantEquals(alias));
+            IPublishedProperty prop = this.Properties.SingleOrDefault(p => p.Alias.InvariantEquals(alias));
 
-            //if (prop == null && recurse && this.Parent != null)
-            //{
-            //    return null;
-            //}
+            if (prop == null && recurse && this.Parent != null)
+            {
+                return null;
+            }
 
-            //return prop;
+            return prop;
         }
 
         public string GetUrl(string culture = null)
