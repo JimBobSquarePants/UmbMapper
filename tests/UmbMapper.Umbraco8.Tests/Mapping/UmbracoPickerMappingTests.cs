@@ -1,6 +1,4 @@
-﻿// COMMENTED OUT - UmbMapper.PropertyMappers.UmbracoPickerPropertyMapper states that:
-// This mapper is only required when using Umbraco prior to version 7.6
-using UmbMapper.Extensions;
+﻿using UmbMapper.Extensions;
 using UmbMapper.Umbraco8.Tests.Mapping.Models;
 using UmbMapper.Umbraco8.Tests.Mocks;
 using Umbraco.Core.Models.PublishedContent;

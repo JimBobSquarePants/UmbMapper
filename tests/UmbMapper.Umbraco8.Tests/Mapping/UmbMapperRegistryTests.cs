@@ -29,8 +29,6 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             IEnumerable<IPropertyMap> currentMaps = mapper.Mappings;
             int currentCount = currentMaps.Count();
 
-            Assert.DoesNotContain(mapper.Mappings, m => m.PropertyMapper is UmbracoPickerPropertyMapper);
-
             IEnumerable<PropertyMap<PublishedItem>> maps = mapper.AddMappings(
                   p => p.PublishedInterfaceContent,
                   p => p.PublishedContent,
@@ -42,10 +40,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             // Original map list count is unchanged
             Assert.True(mapper.Mappings.Count() == currentCount);
 
-            maps.ForEach(x => x.SetMapper<UmbracoPickerPropertyMapper>());
-
-            Assert.Contains(mapper.Mappings, m => m.PropertyMapper is UmbracoPickerPropertyMapper);
-            Assert.True(mapper.Mappings.Count(m => m.PropertyMapper is UmbracoPickerPropertyMapper) == 4);
+            
         }
     }
 }
