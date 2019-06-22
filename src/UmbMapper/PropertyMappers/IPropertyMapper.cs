@@ -26,16 +26,6 @@ namespace UmbMapper.PropertyMappers
         UmbracoContext UmbracoContext { get; }
 
         /// <summary>
-        /// Gets the MembershipHelper instance
-        /// </summary>
-        MembershipHelper Members { get; }
-
-        /// <summary>
-        /// Gets the UmbracoHelper instance
-        /// </summary>
-        UmbracoHelper Umbraco { get; }
-
-        /// <summary>
         /// Maps the raw property from the given content without conversion.
         /// </summary>
         /// <param name="content">The published content</param>

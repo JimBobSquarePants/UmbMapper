@@ -38,13 +38,6 @@ namespace UmbMapper.PropertyMappers
         /// <inheritdoc/>
         public UmbracoContext UmbracoContext => this.GetUmbracoContext();
 
-        /// <inheritdoc/>
-        public MembershipHelper Members =>
-            global::Umbraco.Web.Composing.Current.Factory.GetInstance<MembershipHelper>();
-        
-        /// <inheritdoc/>
-        public UmbracoHelper Umbraco => global::Umbraco.Web.Composing.Current.UmbracoHelper;
-
         /// <summary>
         /// Gets the current alias.
         /// </summary>
@@ -68,11 +61,13 @@ namespace UmbMapper.PropertyMappers
             {
                 return culture;
             }
-            
-            //TODO - may not be needed
-            //if (this.UmbracoContext?.PublishedContentRequest != null)
+
+            ////TODO - how to we ensure this? Should UmbracoContext/PublishedRequest
+            ///be passed/injected in somehow? We can't use 'EnsureUmbracoContext' as this
+            ///can't be set 
+            //if (this.UmbracoContext?.PublishedRequest != null)
             //{
-            //    return this.UmbracoContext.PublishedContentRequest.Culture;
+            //    return this.UmbracoContext.PublishedRequest.Culture;
             //}
 
             return CultureInfo.CurrentCulture;
