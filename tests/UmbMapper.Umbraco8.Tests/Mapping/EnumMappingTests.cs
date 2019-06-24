@@ -16,6 +16,7 @@ using Umbraco.Web.Security;
 using Umbraco.Core.Services;
 using Umbraco.Web.Routing;
 using Umbraco.Tests.Testing.Objects.Accessors;
+using System.Globalization;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
@@ -77,6 +78,10 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             Assert.Equal(placeOrder, result.PlaceOrder);
         }
 
+        /// <summary>
+        /// Trying to create an umbraco context
+        /// Umbraco.Tests.TestHelpers.TestObjects.GetUmbracoContextMock()
+        /// </summary>
         [Fact]
         public void UmbracoContextNotNull()
         {
@@ -107,7 +112,32 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
                     }
                 );
 
+            var umbracoContext = instance as UmbracoContext;
 
+            var publishedRequestCtor = typeof(PublishedRequest)
+                .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).First();
+
+            var publishedRequestInstance =
+                publishedRequestCtor.Invoke(
+                    new object[] {
+                        Mock.Of<IPublishedRouter>(),
+                        umbracoContext,
+                        null
+                    });
+
+            umbracoContext.PublishedRequest = publishedRequestInstance as PublishedRequest;
+            umbracoContext.PublishedRequest.Culture = new CultureInfo("en-US");
+
+            var contextAccessor = new Mock<IUmbracoContextAccessor>();
+            contextAccessor.Setup(x => x.UmbracoContext).Returns(umbracoContext);
+
+            Umbraco.Web.Composing.Current.UmbracoContextAccessor = contextAccessor.Object;
+
+            var testCulture = Umbraco.Web.Composing.Current.UmbracoContext.PublishedRequest.Culture;
+
+            var culture = umbracoContext.PublishedRequest?.Culture;
+
+            Assert.NotNull(culture);
         }
     }
 }
