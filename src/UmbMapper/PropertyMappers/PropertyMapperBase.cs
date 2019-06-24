@@ -62,13 +62,10 @@ namespace UmbMapper.PropertyMappers
                 return culture;
             }
 
-            ////TODO - how to we ensure this? Should UmbracoContext/PublishedRequest
-            ///be passed/injected in somehow? We can't use 'EnsureUmbracoContext' as this
-            ///can't be set 
-            //if (this.UmbracoContext?.PublishedRequest != null)
-            //{
-            //    return this.UmbracoContext.PublishedRequest.Culture;
-            //}
+            if (this.UmbracoContext?.PublishedRequest != null)
+            {
+                return this.UmbracoContext.PublishedRequest.Culture;
+            }
 
             return CultureInfo.CurrentCulture;
         }

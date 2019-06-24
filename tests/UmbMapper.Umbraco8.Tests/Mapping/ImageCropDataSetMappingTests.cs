@@ -12,6 +12,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         public ImageCropDataSetMappingTests(UmbracoSupport support)
         {
             this.support = support;
+            this.support.SetupUmbracoContext();
         }
 
         [Fact]

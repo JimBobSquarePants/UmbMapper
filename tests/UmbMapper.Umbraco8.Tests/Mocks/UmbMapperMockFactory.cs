@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Moq;
 using Umbraco.Core.Configuration.UmbracoSettings;
 using Umbraco.Core.Models;
@@ -16,15 +13,11 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
     {
         public static MockPublishedProperty CreateMockPublishedProperty(string alias, object value)
         {
-            //var propType = CreateMockPublishedPropertyType(alias);
-
             return new MockPublishedProperty(alias, value);
         }
 
         public static MockPublishedProperty CreateMockUmbracoContentPublishedProperty(string alias, object value)
         {
-            //var propType = CreateMockPublishedPropertyType(alias);
-
             return new MockPublishedProperty(alias, value);
         }
 

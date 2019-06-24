@@ -4,7 +4,6 @@ using UmbMapper.Extensions;
 using UmbMapper.Proxy;
 using UmbMapper.Umbraco8.Tests.Mapping.Models;
 using UmbMapper.Umbraco8.Tests.Mocks;
-using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Xunit;
 
@@ -17,6 +16,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         public LazyMappingTests(UmbracoSupport support)
         {
             this.support = support;
+            this.support.SetupUmbracoContext();
         }
 
         [Fact]

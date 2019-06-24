@@ -1,22 +1,9 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using UmbMapper.Umbraco8.Tests.Mapping.Models;
 using UmbMapper.Umbraco8.Tests.Mocks;
 using UmbMapper.Extensions;
 using Xunit;
 using Umbraco.Core.Models.PublishedContent;
-using Umbraco.Web;
-using System.Reflection;
-using Moq;
-using Umbraco.Tests.TestHelpers;
-using Umbraco.Core.Configuration.UmbracoSettings;
-using Umbraco.Web.PublishedCache;
-using Umbraco.Core.Configuration;
-using Umbraco.Web.Security;
-using Umbraco.Core.Services;
-using Umbraco.Web.Routing;
-using Umbraco.Tests.Testing.Objects.Accessors;
-using System.Globalization;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
@@ -28,7 +15,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         {
             this.support = support;
             // This is needed to access the culture info
-            //this.support.SetupUmbracoContext();
+            this.support.SetupUmbracoContext();
         }
 
         [Fact]

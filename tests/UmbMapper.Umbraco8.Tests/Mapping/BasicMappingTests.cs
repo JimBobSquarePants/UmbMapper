@@ -18,6 +18,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         public BasicMappingTests(UmbracoSupport support)
         {
             this.support = support;
+            this.support.SetupUmbracoContext();
         }
 
         [Fact]
