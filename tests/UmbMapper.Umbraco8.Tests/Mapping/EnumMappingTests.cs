@@ -20,13 +20,15 @@ using System.Globalization;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
-    public class EnumMappingTests : BaseUmbracoMappingTest, IClassFixture<UmbracoSupport>
+    public class EnumMappingTests : IClassFixture<UmbracoSupport>
     {
         private readonly UmbracoSupport support;
 
         public EnumMappingTests(UmbracoSupport support)
         {
             this.support = support;
+            // This is needed to access the culture info
+            //this.support.SetupUmbracoContext();
         }
 
         [Fact]
@@ -76,68 +78,6 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             PublishedItem result = content.MapTo<PublishedItem>();
 
             Assert.Equal(placeOrder, result.PlaceOrder);
-        }
-
-        /// <summary>
-        /// Trying to create an umbraco context
-        /// Umbraco.Tests.TestHelpers.TestObjects.GetUmbracoContextMock()
-        /// </summary>
-        [Fact]
-        public void UmbracoContextNotNull()
-        {
-            // Get the internal constructor
-            var constructor = typeof(UmbracoContext)
-                .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).First();
-
-            var ctorParams = constructor.GetParameters();
-
-            // build required parameters
-            var _httpContextFactory = new FakeHttpContextFactory("~/Home");
-            var umbracoSettings = UmbMapperMockFactory.GetUmbracoSettings();// Mock.Of<IUmbracoSettingsSection>();
-            var globalSettings = Mock.Of<IGlobalSettings>();
-            var publishedSnapshotService = new Mock<IPublishedSnapshotService>();
-            publishedSnapshotService.Setup(x => x.CreatePublishedSnapshot(It.IsAny<string>())).Returns(Mock.Of<IPublishedSnapshot>());
-            var ctxMock = new Mock<UmbracoContext>();
-
-            var instance =
-                constructor.Invoke(
-                    new object[] {
-                        _httpContextFactory.HttpContext,
-                        publishedSnapshotService.Object,
-                        new WebSecurity(_httpContextFactory.HttpContext, Mock.Of<IUserService>(), globalSettings),
-                        umbracoSettings,
-                        Enumerable.Empty<IUrlProvider>(),
-                        globalSettings,
-                        new TestVariationContextAccessor()
-                    }
-                );
-
-            var umbracoContext = instance as UmbracoContext;
-
-            var publishedRequestCtor = typeof(PublishedRequest)
-                .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).First();
-
-            var publishedRequestInstance =
-                publishedRequestCtor.Invoke(
-                    new object[] {
-                        Mock.Of<IPublishedRouter>(),
-                        umbracoContext,
-                        null
-                    });
-
-            umbracoContext.PublishedRequest = publishedRequestInstance as PublishedRequest;
-            umbracoContext.PublishedRequest.Culture = new CultureInfo("en-US");
-
-            var contextAccessor = new Mock<IUmbracoContextAccessor>();
-            contextAccessor.Setup(x => x.UmbracoContext).Returns(umbracoContext);
-
-            Umbraco.Web.Composing.Current.UmbracoContextAccessor = contextAccessor.Object;
-
-            var testCulture = Umbraco.Web.Composing.Current.UmbracoContext.PublishedRequest.Culture;
-
-            var culture = umbracoContext.PublishedRequest?.Culture;
-
-            Assert.NotNull(culture);
         }
     }
 }

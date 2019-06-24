@@ -10,7 +10,7 @@ using Xunit;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
-    public class LazyMappingTests : BaseUmbracoMappingTest, IClassFixture<UmbracoSupport>
+    public class LazyMappingTests : IClassFixture<UmbracoSupport>
     {
         private readonly UmbracoSupport support;
 

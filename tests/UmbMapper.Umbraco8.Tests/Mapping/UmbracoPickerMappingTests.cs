@@ -6,7 +6,7 @@ using Xunit;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
-    public class UmbracoPickerMappingTests : BaseUmbracoMappingTest, IClassFixture<UmbracoSupport>
+    public class UmbracoPickerMappingTests : IClassFixture<UmbracoSupport>
     {
         private readonly UmbracoSupport support;
 

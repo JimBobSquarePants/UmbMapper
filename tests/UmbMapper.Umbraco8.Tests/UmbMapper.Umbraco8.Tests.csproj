@@ -275,7 +275,6 @@
     <Compile Include="ArrayExtensionTests.cs" />
     <Compile Include="ExpressionExtensionsTests.cs" />
     <Compile Include="FastPropertyAccessorTests.cs" />
-    <Compile Include="Mapping\BaseUmbracoMappingTest.cs" />
     <Compile Include="Mapping\BasicMappingTests.cs" />
     <Compile Include="Mapping\EnumMappingTests.cs" />
     <Compile Include="Mapping\ImageCropDataSetMappingTests.cs" />

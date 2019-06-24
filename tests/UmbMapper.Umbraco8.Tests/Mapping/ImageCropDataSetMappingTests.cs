@@ -5,7 +5,7 @@ using Xunit;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
-    public class ImageCropDataSetMappingTests : BaseUmbracoMappingTest, IClassFixture<UmbracoSupport>
+    public class ImageCropDataSetMappingTests : IClassFixture<UmbracoSupport>
     {
         private readonly UmbracoSupport support;
 
