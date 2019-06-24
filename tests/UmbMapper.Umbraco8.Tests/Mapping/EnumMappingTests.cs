@@ -36,7 +36,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             MockPublishedContent content = this.support.Content;
             content.Properties = new List<IPublishedProperty>
             {
-                MockHelper.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), null)
+                Mocks.UmbMapperMockFactory.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), null)
             };
 
             PublishedItem result = content.MapTo<PublishedItem>();
@@ -53,7 +53,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             MockPublishedContent content = this.support.Content;
             content.Properties = new List<IPublishedProperty>
             {
-                MockHelper.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), (int)placeOrder)
+                Mocks.UmbMapperMockFactory.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), (int)placeOrder)
             };
 
             PublishedItem result = content.MapTo<PublishedItem>();
@@ -69,7 +69,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             MockPublishedContent content = this.support.Content;
             content.Properties = new List<IPublishedProperty>
             {
-                MockHelper.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), placeOrder.ToString())
+                Mocks.UmbMapperMockFactory.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), placeOrder.ToString())
             };
 
             PublishedItem result = content.MapTo<PublishedItem>();
@@ -88,7 +88,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
 
             // build required parameters
             var _httpContextFactory = new FakeHttpContextFactory("~/Home");
-            var umbracoSettings = Mock.Of<IUmbracoSettingsSection>();
+            var umbracoSettings = UmbMapperMockFactory.GetUmbracoSettings();// Mock.Of<IUmbracoSettingsSection>();
             var globalSettings = Mock.Of<IGlobalSettings>();
             var publishedSnapshotService = new Mock<IPublishedSnapshotService>();
             publishedSnapshotService.Setup(x => x.CreatePublishedSnapshot(It.IsAny<string>())).Returns(Mock.Of<IPublishedSnapshot>());

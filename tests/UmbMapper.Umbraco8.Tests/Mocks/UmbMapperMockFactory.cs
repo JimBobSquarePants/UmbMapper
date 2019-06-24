@@ -4,13 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Moq;
+using Umbraco.Core.Configuration.UmbracoSettings;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
+using Umbraco.Web.Routing;
 
 namespace UmbMapper.Umbraco8.Tests.Mocks
 {
-    public static class MockHelper
+    public static class UmbMapperMockFactory
     {
         public static MockPublishedProperty CreateMockPublishedProperty(string alias, object value)
         {
@@ -57,6 +59,18 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
 
 
             return publishedPropType;
+        }
+
+        public static IUmbracoSettingsSection GetUmbracoSettings()
+        {
+            // FIXME: Why not use the SettingsForTest.GenerateMock ... ?
+            // FIXME: Shouldn't we use the default ones so they are the same instance for each test?
+
+            var umbracoSettingsMock = new Mock<IUmbracoSettingsSection>();
+            var webRoutingSectionMock = new Mock<IWebRoutingSection>();
+            webRoutingSectionMock.Setup(x => x.UrlProviderMode).Returns(UrlProviderMode.Auto.ToString());
+            umbracoSettingsMock.Setup(x => x.WebRouting).Returns(webRoutingSectionMock.Object);
+            return umbracoSettingsMock.Object;
         }
     }
 }

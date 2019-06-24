@@ -156,21 +156,21 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             content.Properties = new List<IPublishedProperty>
             {
                 //MockFactory.CreateMockPublishedProperty
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.StringItems), input),
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.SByteItems), input),
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.ByteItems), input),
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.ShortItems), input),
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.UShortItems), input),
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.IntItems), input),
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.UIntItems), input),
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.LongItems), input),
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.ULongItems), input),
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.FloatItems), input),
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.DoubleItems), input),
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.DecimalItems), input),
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.EmptyItems), emptyInput),
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.SingleItem), input),
-                MockHelper.CreateMockPublishedProperty(nameof(CsvPublishedItem.EnumerableItems), singleInput)
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.StringItems), input),
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.SByteItems), input),
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.ByteItems), input),
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.ShortItems), input),
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.UShortItems), input),
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.IntItems), input),
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.UIntItems), input),
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.LongItems), input),
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.ULongItems), input),
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.FloatItems), input),
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.DoubleItems), input),
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.DecimalItems), input),
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.EmptyItems), emptyInput),
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.SingleItem), input),
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(CsvPublishedItem.EnumerableItems), singleInput)
             };
 
             CsvPublishedItem result = content.MapTo<CsvPublishedItem>();
@@ -219,7 +219,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             content.CreateDate = created;
             content.Properties = new List<IPublishedProperty>
             {
-                MockHelper.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), PlaceOrder.Fourth)
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), PlaceOrder.Fourth)
             };
 
             PublishedItem result = UmbMapperRegistry.CreateEmpty<PublishedItem>();

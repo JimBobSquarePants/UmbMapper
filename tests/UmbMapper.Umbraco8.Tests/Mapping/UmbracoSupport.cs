@@ -72,10 +72,10 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             {
                 Properties = new[]
                 {
-                    new MockPublishedProperty(nameof(PublishedItem.PublishedContent), 1000, MockHelper.CreateMockUmbracoContentPublishedPropertyType()),
-                    new MockPublishedProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001, MockHelper.CreateMockUmbracoContentPublishedPropertyType()),
+                    new MockPublishedProperty(nameof(PublishedItem.PublishedContent), 1000, Mocks.UmbMapperMockFactory.CreateMockUmbracoContentPublishedPropertyType()),
+                    new MockPublishedProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001, Mocks.UmbMapperMockFactory.CreateMockUmbracoContentPublishedPropertyType()),
                     new MockPublishedProperty(nameof(PublishedItem.Image), this.dataSet),
-                    new MockPublishedProperty(nameof(PublishedItem.Child), 1003, MockHelper.CreateMockUmbracoContentPublishedPropertyType()),
+                    new MockPublishedProperty(nameof(PublishedItem.Child), 1003, Mocks.UmbMapperMockFactory.CreateMockUmbracoContentPublishedPropertyType()),
 
                     // We're deliberately switching these values to test enumerable conversion
                     new MockPublishedProperty(nameof(PublishedItem.Link), this.link),
@@ -89,12 +89,12 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
 
                             new MockPublishedContent()
                             {
-                                ContentType = new PublishedContentType(1, nameof(PolymorphicItemOne), PublishedItemType.Content,Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
+                                ContentType = new PublishedContentType(1, nameof(Models.PolymorphicItemOne), PublishedItemType.Content,Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
                                 Properties = new[]{ new MockPublishedProperty(nameof(IPolyMorphic.PolyMorphicText),"Foo") }
                             },
                             new MockPublishedContent()
                             {
-                                ContentType = new PublishedContentType(1, nameof(PolymorphicItemTwo), PublishedItemType.Content,Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
+                                ContentType = new PublishedContentType(1, nameof(Models.PolymorphicItemTwo), PublishedItemType.Content,Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
                                 Properties = new[]{ new MockPublishedProperty(nameof(IPolyMorphic.PolyMorphicText),"Bar") }
                             }
                         }

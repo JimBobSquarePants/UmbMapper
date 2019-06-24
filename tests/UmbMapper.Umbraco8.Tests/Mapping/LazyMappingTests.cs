@@ -53,7 +53,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             content.CreateDate = created;
             content.Properties = new List<IPublishedProperty>
             {
-                new MockPublishedProperty(nameof(PublishedItem.PlaceOrder), PlaceOrder.Fourth, MockHelper.CreateMockPublishedPropertyType( nameof(PublishedItem.PlaceOrder)))
+                new MockPublishedProperty(nameof(PublishedItem.PlaceOrder), PlaceOrder.Fourth, UmbMapperMockFactory.CreateMockPublishedPropertyType( nameof(PublishedItem.PlaceOrder)))
             };
 
 
