@@ -102,7 +102,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             //var publishedSnapshotService = new Mock<IPublishedSnapshotService>();
             //publishedSnapshotService.Setup(x => x.CreatePublishedSnapshot(It.IsAny<string>())).Returns(publishedShapshot);
             ///// END
-
+            
             object umbracoContextObject =
                 umbracoContextCtor.Invoke(
                     new object[] {
