@@ -20,15 +20,10 @@ namespace UmbMapper.Umbraco8.Sample.Controllers.SurfaceControllers
             var siteRoot = this.GetSiteRoot();
             var pageMeta = this.CurrentPage.MapTo<MetaDataComposition>();
 
-            string metaTitle;
-            if (string.IsNullOrWhiteSpace(siteRoot?.SiteName) == false)
-            {
-                metaTitle = $"{siteRoot.SiteName} - {pageMeta.MetaDescription}";
-            }
-            else
-            {
-                metaTitle = pageMeta.MetaTitle;
-            }
+            string metaTitle =
+                (string.IsNullOrWhiteSpace(siteRoot?.SiteName) == false)
+                ? $"{siteRoot.SiteName} - {pageMeta.MetaTitle}"
+                : pageMeta.MetaTitle;
 
             PageMetaViewModel vm = new PageMetaViewModel
             {
