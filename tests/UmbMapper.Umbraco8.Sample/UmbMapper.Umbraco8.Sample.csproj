@@ -392,6 +392,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Composing\UmbMapperRegistryComponent.cs" />
+    <Compile Include="Composing\UmbMapperTestSiteComposer.cs" />
+    <Compile Include="Controllers\SurfaceControllers\MetaController.cs" />
+    <Compile Include="Models\UmbracoDocTypes\MetaDataComposition.cs" />
+    <Compile Include="Models\UmbracoDocTypes\SiteRoot.cs" />
+    <Compile Include="Models\ViewModels\PageMetaViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -433,6 +439,7 @@
     <Content Include="Views\BlogListingPage.cshtml" />
     <Content Include="Views\HomeLandingPage.cshtml" />
     <Content Include="Views\_Layout.cshtml" />
+    <Content Include="Views\Partials\Meta\_PageMeta.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -443,11 +450,17 @@
   <ItemGroup>
     <Folder Include="App_Plugins\" />
     <Folder Include="Media\" />
-    <Folder Include="Views\Partials\" />
+    <Folder Include="Views\Meta\" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.1\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.1\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\UmbMapper\UmbMapper.csproj">
+      <Project>{70794e9c-5e67-48a0-994c-fd67c7758fb7}</Project>
+      <Name>UmbMapper</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
