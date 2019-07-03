@@ -1,0 +1,15 @@
+﻿@model UmbMapper.Umbraco8.Sample.Models.ViewModels.BasicHeaderViewModel
+
+<div>
+    <img src=""/>
+    <div>
+        @if (String.IsNullOrWhiteSpace(Model.Strapline) == false)
+        {
+            <span>@Model.Strapline</span>
+        }
+        @if (Model.Link != null)
+        {
+            <a href="@Model.Link.Url">@Model.Link.Name</a>
+        }
+    </div>
+</div>

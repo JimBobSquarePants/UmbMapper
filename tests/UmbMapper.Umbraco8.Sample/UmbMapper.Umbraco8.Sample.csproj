@@ -394,9 +394,15 @@
   <ItemGroup>
     <Compile Include="Composing\UmbMapperRegistryComponent.cs" />
     <Compile Include="Composing\UmbMapperTestSiteComposer.cs" />
+    <Compile Include="Controllers\SurfaceControllers\HeaderController.cs" />
     <Compile Include="Controllers\SurfaceControllers\MetaController.cs" />
+    <Compile Include="Mapping\BasicHeaderCompositionItemMap.cs" />
+    <Compile Include="Mapping\BasicImageItemMap.cs" />
+    <Compile Include="Models\UmbracoDocTypes\BasicHeaderComposition.cs" />
+    <Compile Include="Models\UmbracoDocTypes\BasicImage.cs" />
     <Compile Include="Models\UmbracoDocTypes\MetaDataComposition.cs" />
     <Compile Include="Models\UmbracoDocTypes\SiteRoot.cs" />
+    <Compile Include="Models\ViewModels\BasicHeaderViewModel.cs" />
     <Compile Include="Models\ViewModels\PageMetaViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -440,6 +446,7 @@
     <Content Include="Views\HomeLandingPage.cshtml" />
     <Content Include="Views\_Layout.cshtml" />
     <Content Include="Views\Partials\Meta\_PageMeta.cshtml" />
+    <Content Include="Views\Partials\Header\_BasicHeader.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
