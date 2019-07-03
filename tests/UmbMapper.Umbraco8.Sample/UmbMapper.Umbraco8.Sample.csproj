@@ -392,13 +392,24 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComponentModel\Mappers\BlogMap.cs" />
+    <Compile Include="ComponentModel\Mappers\HomeMap.cs" />
+    <Compile Include="ComponentModel\Mappers\PostMap.cs" />
+    <Compile Include="ComponentModel\Mappers\PublishedImageMap.cs" />
+    <Compile Include="ComponentModel\Mappers\PublishedPageMap.cs" />
+    <Compile Include="ComponentModel\PropertyMappers\NamePickerPropertyMapper.cs" />
     <Compile Include="Composing\UmbMapperRegistryComponent.cs" />
     <Compile Include="Composing\UmbMapperTestSiteComposer.cs" />
+    <Compile Include="Controllers\RenderMvcControllers\HomeController.cs" />
     <Compile Include="Controllers\SurfaceControllers\HeaderController.cs" />
     <Compile Include="Controllers\SurfaceControllers\MetaController.cs" />
+    <Compile Include="Extensions\EnumExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Helpers\UrlHelpers.cs" />
     <Compile Include="Models\IPublishedEntity.cs" />
     <Compile Include="Models\Media\IPublishedFile.cs" />
     <Compile Include="Models\Media\PublishedImage.cs" />
+    <Compile Include="Models\Pages\Blog.cs" />
     <Compile Include="Models\Pages\Home.cs" />
     <Compile Include="Models\Pages\IMeta.cs" />
     <Compile Include="Models\Pages\IRoutable.cs" />
@@ -456,6 +467,7 @@
     <Content Include="Views\Home.cshtml" />
     <Content Include="Views\Post.cshtml" />
     <Content Include="Views\Site.cshtml" />
+    <Content Include="Views\Partials\Shared\_Meta.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -467,7 +479,6 @@
     <Folder Include="App_Plugins\" />
     <Folder Include="Media\" />
     <Folder Include="Views\Meta\" />
-    <Folder Include="Views\Partials\" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.2.6.1\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
