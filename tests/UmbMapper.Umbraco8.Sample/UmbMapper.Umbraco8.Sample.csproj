@@ -396,8 +396,6 @@
     <Compile Include="Composing\UmbMapperTestSiteComposer.cs" />
     <Compile Include="Controllers\SurfaceControllers\HeaderController.cs" />
     <Compile Include="Controllers\SurfaceControllers\MetaController.cs" />
-    <Compile Include="Mapping\BasicHeaderCompositionItemMap.cs" />
-    <Compile Include="Mapping\BasicImageItemMap.cs" />
     <Compile Include="Models\UmbracoDocTypes\BasicHeaderComposition.cs" />
     <Compile Include="Models\UmbracoDocTypes\BasicImage.cs" />
     <Compile Include="Models\UmbracoDocTypes\MetaDataComposition.cs" />

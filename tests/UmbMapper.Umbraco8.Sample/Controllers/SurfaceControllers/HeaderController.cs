@@ -7,6 +7,7 @@ using UmbMapper.Extensions;
 using UmbMapper.Umbraco8.Sample.Models.UmbracoDocTypes;
 using UmbMapper.Umbraco8.Sample.Models.ViewModels;
 using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Core.PropertyEditors.ValueConverters;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
@@ -19,10 +20,9 @@ namespace UmbMapper.Umbraco8.Sample.Controllers.SurfaceControllers
         {
             var header = this.CurrentPage.MapTo<BasicHeaderComposition>();
 
-            var image = this.CurrentPage.Value("image");
-
             BasicHeaderViewModel vm = new BasicHeaderViewModel
             {
+                ImageUrl = header.Image.Url,
                 Strapline = header.Strapline,
                 Link = header.Link
             };

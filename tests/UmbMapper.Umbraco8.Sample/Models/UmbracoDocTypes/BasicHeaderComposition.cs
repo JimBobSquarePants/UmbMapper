@@ -6,7 +6,8 @@ namespace UmbMapper.Umbraco8.Sample.Models.UmbracoDocTypes
 {
     public class BasicHeaderComposition
     {
-        public IPublishedContent Image { get; set; }
+        //public BasicImage Image { get; set; }
+        public BasicImage Image { get; set; }
         public string Strapline { get; set; }
         public Link Link { get; set; }
     }
