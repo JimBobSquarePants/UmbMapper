@@ -398,6 +398,7 @@
     <Compile Include="Controllers\SurfaceControllers\MetaController.cs" />
     <Compile Include="Models\UmbracoDocTypes\BasicHeaderComposition.cs" />
     <Compile Include="Models\UmbracoDocTypes\BasicImage.cs" />
+    <Compile Include="Models\UmbracoDocTypes\BlogListingPage.cs" />
     <Compile Include="Models\UmbracoDocTypes\MetaDataComposition.cs" />
     <Compile Include="Models\UmbracoDocTypes\SiteRoot.cs" />
     <Compile Include="Models\ViewModels\BasicHeaderViewModel.cs" />
