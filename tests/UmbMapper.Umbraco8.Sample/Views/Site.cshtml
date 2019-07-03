@@ -1,0 +1,33 @@
+﻿@using UmbMapper.Umbraco8.Sample.RenderModels
+@using UmbMapper.Umbraco8.Sample.Models.Pages
+
+@inherits  UmbracoViewPage<IRenderPage<PublishedPage>>
+
+<!DOCTYPE html>
+<html lang="@Model.CurrentCulture.TwoLetterISOLanguageName" prefix="og: http://ogp.me/ns#">
+<head>
+    @Html.Partial("~/Views/Partials/Shared/_Meta.cshtml", Model)
+    @RenderSection("HeaderAssets", false)
+    <style type="text/css">
+        html {
+            line-height: 1.15;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+        }
+
+        .slides {
+            width: 100%;
+            overflow-y: auto;
+        }
+
+            .slides figure {
+                display: inline-block;
+                width: 200px;
+                vertical-align: top;
+            }
+    </style>
+</head>
+<body>
+    @RenderBody()
+    @RenderSection("BodyAssets", false)
+</body>
+</html>
