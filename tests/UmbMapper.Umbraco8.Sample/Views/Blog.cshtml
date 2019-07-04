@@ -1,4 +1,6 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage
-@{
-	Layout = null;
-}
+﻿@using UmbMapper.Umbraco8.Sample.RenderModels
+@using UmbMapper.Umbraco8.Sample.Models.Pages
+
+@inherits UmbracoViewPage<RenderPage<Blog>>
+
+<h1>@Model.Content.Name</h1>

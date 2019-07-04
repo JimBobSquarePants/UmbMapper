@@ -1,7 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿// <copyright file="PostController.cs" company="James Jackson-South">
+// Copyright (c) James Jackson-South and contributors.
+// Licensed under the Apache License, Version 2.0.
+// </copyright>
+
 using System.Web.Mvc;
 using UmbMapper.Extensions;
 using UmbMapper.Umbraco8.Sample.Models.Pages;
@@ -11,13 +12,16 @@ using Umbraco.Web.Mvc;
 
 namespace UmbMapper.Umbraco8.Sample.Controllers.RenderMvcControllers
 {
-    public class HomeController : RenderMvcController
+    /// <summary>
+    /// The post page controller
+    /// </summary>
+    public class PostController : RenderMvcController
     {
         /// <inheritdoc/>
         public override ActionResult Index(ContentModel model)
         {
-            Home home = model.Content.MapTo<Home>();
-            var viewModel = new RenderPage<Home>(home);
+            Post post = model.Content.MapTo<Post>();
+            var viewModel = new RenderPage<Post>(post);
 
             return this.CurrentTemplate(viewModel);
         }

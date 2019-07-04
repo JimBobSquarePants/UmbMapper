@@ -28,20 +28,10 @@
 <h2>Gallery</h2>
 <div class="slides">
     <h3>These gallery items are mapped from Nested Content; no customization required</h3>
-    @*@if (Model.Content.Gallery.Any())
-        {
-            foreach (Slide slide in Model.Content.Gallery)
-            {
-                <figure>
-                    <img src="@slide.Image.Crops.Src" alt="@slide.Image.Name" width="150" />
-                    <figcaption>
-                        @slide.Description
-                    </figcaption>
-                </figure>
-            }
-        }*@
-
-    @foreach (Slide slide in Model.Content.Gallery)
+    @* Currently Not working*@
+    @if (Model.Content.Gallery.Any())
+    {
+        foreach (Slide slide in Model.Content.Gallery)
         {
             <figure>
                 <img src="@slide.Image.Crops.Src" alt="@slide.Image.Name" width="150" />
@@ -50,7 +40,6 @@
                 </figcaption>
             </figure>
         }
-    
-
+    }
 
 </div>

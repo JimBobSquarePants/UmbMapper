@@ -400,7 +400,9 @@
     <Compile Include="ComponentModel\PropertyMappers\NamePickerPropertyMapper.cs" />
     <Compile Include="Composing\UmbMapperRegistryComponent.cs" />
     <Compile Include="Composing\UmbMapperTestSiteComposer.cs" />
+    <Compile Include="Controllers\RenderMvcControllers\BlogController.cs" />
     <Compile Include="Controllers\RenderMvcControllers\HomeController.cs" />
+    <Compile Include="Controllers\RenderMvcControllers\PostController.cs" />
     <Compile Include="Controllers\SurfaceControllers\HeaderController.cs" />
     <Compile Include="Controllers\SurfaceControllers\MetaController.cs" />
     <Compile Include="Extensions\EnumExtensions.cs" />
