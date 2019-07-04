@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
+using UmbMapper.Umbraco8.Sample.Models.Components;
 
 namespace UmbMapper.Umbraco8.Sample.Models.Pages
 {

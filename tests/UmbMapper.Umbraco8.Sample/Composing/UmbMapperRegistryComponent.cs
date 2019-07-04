@@ -1,4 +1,5 @@
 ﻿using UmbMapper.Umbraco8.Sample.ComponentModel.Mappers;
+using UmbMapper.Umbraco8.Sample.Models.Components;
 using UmbMapper.Umbraco8.Sample.Models.Pages;
 using UmbMapper.Umbraco8.Sample.Models.UmbracoDocTypes;
 using Umbraco.Core.Composing;

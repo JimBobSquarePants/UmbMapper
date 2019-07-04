@@ -19,6 +19,12 @@ namespace UmbMapper.Umbraco8.Sample.Controllers.RenderMvcControllers
             Home home = model.Content.MapTo<Home>();
             var viewModel = new RenderPage<Home>(home);
 
+            foreach (var s in viewModel.Content.Gallery)
+            {
+                var slide = s;
+                var image = slide.Image;
+            }
+
             return this.CurrentTemplate(viewModel);
         }
     }
