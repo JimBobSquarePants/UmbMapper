@@ -11,12 +11,6 @@ namespace UmbMapper.Umbraco8.Sample.Composing
     {
         public void Initialize()
         {
-            //UmbMapperRegistry.AddMapperFor<SiteRoot>();
-            //UmbMapperRegistry.AddMapperFor<ImageCropperValue>();
-            //UmbMapperRegistry.AddMapperFor<MetaDataComposition>();
-            //UmbMapperRegistry.AddMapperFor<BasicHeaderComposition>();
-            //UmbMapperRegistry.AddMapperFor<BasicImage>();
-
             // Register our custom maps
             UmbMapperRegistry.AddMapper(new PublishedImageMap());
             UmbMapperRegistry.AddMapper(new HomeMap());
