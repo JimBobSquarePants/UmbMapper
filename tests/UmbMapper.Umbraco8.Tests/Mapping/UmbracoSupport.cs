@@ -1,17 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
+using System.Reflection;
 using Moq;
 using Newtonsoft.Json;
 using UmbMapper.Umbraco8.Tests.Mapping.Models;
 using UmbMapper.Umbraco8.Tests.Mocks;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Composing;
+using Umbraco.Core.Configuration;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
 using Umbraco.Core.PropertyEditors.ValueConverters;
+using Umbraco.Core.Services;
+using Umbraco.Tests.TestHelpers;
+using Umbraco.Tests.Testing.Objects.Accessors;
+using Umbraco.Web;
 using Umbraco.Web.Models;
+using Umbraco.Web.PublishedCache;
+using Umbraco.Web.Routing;
+using Umbraco.Web.Security;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
@@ -35,7 +45,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         private void TearDown()
         {
             UmbMapperRegistry.ClearMappers();
-            //Current.Reset();
+            Current.Reset();
         }
 
         private void Setup()
@@ -47,8 +57,85 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             this.Composition = compositionMock.Object;
             this.Composition.WithCollectionBuilder<PropertyValueConverterCollectionBuilder>();
             */
+            Current.Factory = Mock.Of<IFactory>();
+            this.InitMappers();
+        }
 
-            //Current.Factory = Factory = Mock.Of<IFactory>();
+        private void InitMappers()
+        {
+            UmbMapperRegistry.AddMapper(new PublishedItemMap());
+            UmbMapperRegistry.AddMapper(new LazyPublishedItemMap());
+            UmbMapperRegistry.AddMapperFor<AutoMappedItem>();
+            UmbMapperRegistry.AddMapper(new BackedPublishedItemMap());
+            UmbMapperRegistry.AddMapper(new InheritedPublishedItemMap());
+            UmbMapperRegistry.AddMapper(new CsvPublishedItemMap());
+            UmbMapperRegistry.AddMapperFor<PolymorphicItemOne>();
+            UmbMapperRegistry.AddMapperFor<PolymorphicItemTwo>();
+        }
+
+        public void SetupUmbracoContext()
+        {
+            // Get the internal constructor
+            ConstructorInfo umbracoContextCtor = typeof(UmbracoContext)
+                .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).First();
+
+            // build required parameters to invoke UmbracoContext
+            var _httpContextFactory = new FakeHttpContextFactory("~/Home");
+            var umbracoSettings = UmbMapperMockFactory.GetUmbracoSettings();
+            var globalSettings = Mock.Of<IGlobalSettings>();
+            var publishedSnapshotService = new Mock<IPublishedSnapshotService>();
+            publishedSnapshotService.Setup(x => x.CreatePublishedSnapshot(It.IsAny<string>())).Returns(Mock.Of<IPublishedSnapshot>());
+            var ctxMock = new Mock<UmbracoContext>();
+
+            // This has been copied from Umbraco source code Umbraco.Tests.Cache.PublishedCache.PublishContentCacheTests.Initialize
+            // This is where you could start setting up more Umbraco stuff to test against, e.g. content xml
+            //_xml = new XmlDocument();
+            //_xml.LoadXml(GetXml());
+            //var xmlStore = new XmlStore(() => _xml, null, null, null);
+            //var appCache = new DictionaryAppCache();
+            //var domainCache = new DomainCache(ServiceContext.DomainService, DefaultCultureAccessor);
+            //var publishedShapshot = new PublishedSnapshot(
+            //    new PublishedContentCache(xmlStore, domainCache, appCache, globalSettings, new SiteDomainHelper(), umbracoContextAccessor, ContentTypesCache, null, null),
+            //    new PublishedMediaCache(xmlStore, ServiceContext.MediaService, ServiceContext.UserService, appCache, ContentTypesCache, Factory.GetInstance<IEntityXmlSerializer>(), umbracoContextAccessor),
+            //    new PublishedMemberCache(null, appCache, Current.Services.MemberService, ContentTypesCache, umbracoContextAccessor),
+            //    domainCache);
+            //var publishedSnapshotService = new Mock<IPublishedSnapshotService>();
+            //publishedSnapshotService.Setup(x => x.CreatePublishedSnapshot(It.IsAny<string>())).Returns(publishedShapshot);
+            ///// END
+            
+            object umbracoContextObject =
+                umbracoContextCtor.Invoke(
+                    new object[] {
+                        _httpContextFactory.HttpContext,
+                        publishedSnapshotService.Object,
+                        new WebSecurity(_httpContextFactory.HttpContext, Mock.Of<IUserService>(), globalSettings),
+                        umbracoSettings,
+                        Enumerable.Empty<IUrlProvider>(),
+                        globalSettings,
+                        new TestVariationContextAccessor()
+                    }
+                );
+
+            UmbracoContext umbracoContext = umbracoContextObject as UmbracoContext;
+
+            ConstructorInfo publishedRequestCtor = typeof(PublishedRequest)
+                .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).First();
+
+            object publishedRequestObject =
+                publishedRequestCtor.Invoke(
+                    new object[] {
+                        Mock.Of<IPublishedRouter>(),
+                        umbracoContext,
+                        null
+                    });
+
+            umbracoContext.PublishedRequest = publishedRequestObject as PublishedRequest;
+            umbracoContext.PublishedRequest.Culture = new CultureInfo("en-US");
+
+            var contextAccessor = new Mock<IUmbracoContextAccessor>();
+            contextAccessor.Setup(x => x.UmbracoContext).Returns(umbracoContext);
+
+            Umbraco.Web.Composing.Current.UmbracoContextAccessor = contextAccessor.Object;
         }
 
         private void InitPublishedProperties()
@@ -72,10 +159,10 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             {
                 Properties = new[]
                 {
-                    new MockPublishedProperty(nameof(PublishedItem.PublishedContent), 1000, MockHelper.CreateMockUmbracoContentPublishedPropertyType()),
-                    new MockPublishedProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001, MockHelper.CreateMockUmbracoContentPublishedPropertyType()),
+                    new MockPublishedProperty(nameof(PublishedItem.PublishedContent), 1000, Mocks.UmbMapperMockFactory.CreateMockUmbracoContentPublishedPropertyType()),
+                    new MockPublishedProperty(nameof(PublishedItem.PublishedInterfaceContent), 1001, Mocks.UmbMapperMockFactory.CreateMockUmbracoContentPublishedPropertyType()),
                     new MockPublishedProperty(nameof(PublishedItem.Image), this.dataSet),
-                    new MockPublishedProperty(nameof(PublishedItem.Child), 1003, MockHelper.CreateMockUmbracoContentPublishedPropertyType()),
+                    new MockPublishedProperty(nameof(PublishedItem.Child), 1003, Mocks.UmbMapperMockFactory.CreateMockUmbracoContentPublishedPropertyType()),
 
                     // We're deliberately switching these values to test enumerable conversion
                     new MockPublishedProperty(nameof(PublishedItem.Link), this.link),
@@ -89,12 +176,12 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
 
                             new MockPublishedContent()
                             {
-                                ContentType = new PublishedContentType(1, nameof(PolymorphicItemOne), PublishedItemType.Content,Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
+                                ContentType = new PublishedContentType(1, nameof(Models.PolymorphicItemOne), PublishedItemType.Content,Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
                                 Properties = new[]{ new MockPublishedProperty(nameof(IPolyMorphic.PolyMorphicText),"Foo") }
                             },
                             new MockPublishedContent()
                             {
-                                ContentType = new PublishedContentType(1, nameof(PolymorphicItemTwo), PublishedItemType.Content,Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
+                                ContentType = new PublishedContentType(1, nameof(Models.PolymorphicItemTwo), PublishedItemType.Content,Enumerable.Empty<string>(), Enumerable.Empty<PublishedPropertyType>(), ContentVariation.Nothing),
                                 Properties = new[]{ new MockPublishedProperty(nameof(IPolyMorphic.PolyMorphicText),"Bar") }
                             }
                         }

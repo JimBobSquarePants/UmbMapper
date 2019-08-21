@@ -4,19 +4,19 @@ using UmbMapper.Extensions;
 using UmbMapper.Proxy;
 using UmbMapper.Umbraco8.Tests.Mapping.Models;
 using UmbMapper.Umbraco8.Tests.Mocks;
-using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Xunit;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
-    public class LazyMappingTests : BaseUmbracoMappingTest, IClassFixture<UmbracoSupport>
+    public class LazyMappingTests : IClassFixture<UmbracoSupport>
     {
         private readonly UmbracoSupport support;
 
         public LazyMappingTests(UmbracoSupport support)
         {
             this.support = support;
+            this.support.SetupUmbracoContext();
         }
 
         [Fact]
@@ -53,7 +53,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             content.CreateDate = created;
             content.Properties = new List<IPublishedProperty>
             {
-                new MockPublishedProperty(nameof(PublishedItem.PlaceOrder), PlaceOrder.Fourth, MockHelper.CreateMockPublishedPropertyType( nameof(PublishedItem.PlaceOrder)))
+                new MockPublishedProperty(nameof(PublishedItem.PlaceOrder), PlaceOrder.Fourth, UmbMapperMockFactory.CreateMockPublishedPropertyType( nameof(PublishedItem.PlaceOrder)))
             };
 
 

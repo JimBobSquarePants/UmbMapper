@@ -54,8 +54,6 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
 
         public string CreatorName { get; set; }
 
-
-
         public int WriterId { get; set; }
 
         public string WriterName { get; set; }
@@ -72,8 +70,6 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
 
         public Guid Key { get; set; }
 
-
-
         public PublishedCultureInfo GetCulture(string culture = null)
         {
             throw new NotImplementedException();
@@ -86,15 +82,6 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
 
         public IPublishedProperty GetProperty(string alias, bool recurse)
         {
-            // trying to mock what umbraco does internally
-            //var mockContentProperty = MockPublishedPropertService.GetProperty(this, alias, recurse);
-            //return MockPublishedPropertService.GetProperty(this, alias, recurse);
-            //if (mockContentProperty != null)
-            //{
-            //    return mockContentProperty;
-            //}
-
-
             IPublishedProperty prop = this.Properties.SingleOrDefault(p => p.Alias.InvariantEquals(alias));
 
             if (prop == null && recurse && this.Parent != null)

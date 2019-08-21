@@ -62,13 +62,10 @@ namespace UmbMapper.PropertyMappers
                 return culture;
             }
 
-            ////TODO - how to we ensure this? Should UmbracoContext/PublishedRequest
-            ///be passed/injected in somehow? We can't use 'EnsureUmbracoContext' as this
-            ///can't be set 
-            //if (this.UmbracoContext?.PublishedRequest != null)
-            //{
-            //    return this.UmbracoContext.PublishedRequest.Culture;
-            //}
+            if (this.UmbracoContext?.PublishedRequest != null)
+            {
+                return this.UmbracoContext.PublishedRequest.Culture;
+            }
 
             return CultureInfo.CurrentCulture;
         }
@@ -88,10 +85,14 @@ namespace UmbMapper.PropertyMappers
             for (int i = 0; i < aliases.Length; i++)
             {
                 string alias = aliases[i];
-                //TODO what is the recursive value indicating?
-                //value = content.GetPropertyValue(alias, info.Recursive);
 
-                value = content.Value(alias, null, null, Fallback.ToAncestors, null);
+                // Fallback updated to boolean to enum
+                Fallback fallback =
+                    info.Recursive
+                    ? Fallback.ToAncestors
+                    : Fallback.ToDefaultValue;
+
+                value = content.Value(alias, null, null, fallback, null);
                 if (!this.IsNullOrDefault(value))
                 {
                     this.Alias = alias;
@@ -171,7 +172,7 @@ namespace UmbMapper.PropertyMappers
         [MethodImpl(MethodImplOptions.NoInlining)]
         private UmbracoContext GetUmbracoContext()
         {
-            return global::Umbraco.Web.Composing.Current.UmbracoContext ?? throw new InvalidOperationException("UmbracoContext.Current is null."); ;
+            return Umbraco.Web.Composing.Current.UmbracoContext ?? throw new InvalidOperationException("UmbracoContext.Current is null."); ;
         }
     }
 }

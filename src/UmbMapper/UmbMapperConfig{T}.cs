@@ -18,9 +18,12 @@ using UmbMapper.Invocations;
 using UmbMapper.PropertyMappers;
 using UmbMapper.Proxy;
 using Umbraco.Core;
+using Umbraco.Core.Composing;
 using Umbraco.Core.Configuration;
+using Umbraco.Core.Configuration.UmbracoSettings;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
+using Umbraco.Web.PublishedCache;
 using Umbraco.Web.Routing;
 using Umbraco.Web.Security;
 
@@ -435,9 +438,6 @@ namespace UmbMapper
             //{
             //    return;
             //}
-
-            //var dummyHttpContext = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
-
 
             //UmbracoContext.EnsureContext(
             //    dummyHttpContext,

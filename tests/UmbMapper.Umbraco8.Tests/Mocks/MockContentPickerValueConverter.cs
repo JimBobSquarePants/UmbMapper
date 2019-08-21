@@ -9,7 +9,7 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
 {
     public class MockContentPickerValueConverter : PropertyValueConverterBase
     {
-        IPublishedContentCache _cache;
+        private readonly IPublishedContentCache _cache;
 
         public MockContentPickerValueConverter()
         {
@@ -17,7 +17,7 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
             cacheMock.Setup(c => c.GetById(It.IsAny<int>())).Returns((int nodeId) => new MockPublishedContent { Id = nodeId });
             cacheMock.Setup(c => c.GetById(It.IsAny<Guid>())).Returns(new MockPublishedContent());
 
-            _cache = cacheMock.Object;
+            this._cache = cacheMock.Object;
         }
 
         public override bool IsConverter(PublishedPropertyType propertyType)
@@ -49,7 +49,7 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
                 IPublishedContent content;
                 if (inter is int id)
                 {
-                    content = _cache.GetById(id);
+                    content = this._cache.GetById(id);
                     if (content != null)
                         return content;
                 }
@@ -58,7 +58,7 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
                     var udi = inter as GuidUdi;
                     if (udi == null)
                         return null;
-                    content = _cache.GetById(udi.Guid);
+                    content = this._cache.GetById(udi.Guid);
                     if (content != null && content.ItemType == PublishedItemType.Content)
                         return content;
                 }

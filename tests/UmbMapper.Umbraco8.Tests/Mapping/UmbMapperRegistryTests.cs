@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using UmbMapper.PropertyMappers;
 using UmbMapper.Umbraco8.Tests.Mapping.Models;
 using Xunit;
 
