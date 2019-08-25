@@ -15,6 +15,11 @@ namespace UmbMapper
     {
         ConcurrentDictionary<Type, IUmbMapperConfig> Mappers { get; }
         IEnumerable<Type> CurrentMappedTypes();
+
+        void AddMapperFor<T>()
+            where T : class;
+
+        void AddMapper(IUmbMapperConfig config);
     }
 
     /// <summary>

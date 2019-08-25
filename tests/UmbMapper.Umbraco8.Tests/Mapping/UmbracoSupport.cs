@@ -58,19 +58,19 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             this.Composition.WithCollectionBuilder<PropertyValueConverterCollectionBuilder>();
             */
             Current.Factory = Mock.Of<IFactory>();
-            this.InitMappers();
+            //this.InitMappers();
         }
 
-        private void InitMappers()
+        public void InitMappers(IUmbMapperRegistry umbMapperRegistry)
         {
-            //UmbMapperRegistry.AddMapper(new PublishedItemMap());
-            //UmbMapperRegistry.AddMapper(new LazyPublishedItemMap());
-            //UmbMapperRegistry.AddMapperFor<AutoMappedItem>();
-            //UmbMapperRegistry.AddMapper(new BackedPublishedItemMap());
-            //UmbMapperRegistry.AddMapper(new InheritedPublishedItemMap());
-            //UmbMapperRegistry.AddMapper(new CsvPublishedItemMap());
-            //UmbMapperRegistry.AddMapperFor<PolymorphicItemOne>();
-            //UmbMapperRegistry.AddMapperFor<PolymorphicItemTwo>();
+            umbMapperRegistry.AddMapper(new PublishedItemMap());
+            //umbMapperRegistry.AddMapper(new LazyPublishedItemMap());
+            umbMapperRegistry.AddMapperFor<AutoMappedItem>();
+            umbMapperRegistry.AddMapper(new BackedPublishedItemMap());
+            //umbMapperRegistry.AddMapper(new InheritedPublishedItemMap());
+            umbMapperRegistry.AddMapper(new CsvPublishedItemMap());
+            umbMapperRegistry.AddMapperFor<PolymorphicItemOne>();
+            umbMapperRegistry.AddMapperFor<PolymorphicItemTwo>();
         }
 
         public void SetupUmbracoContext()

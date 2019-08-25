@@ -4,6 +4,8 @@ using UmbMapper.Umbraco8.Tests.Mocks;
 using UmbMapper.Extensions;
 using Xunit;
 using Umbraco.Core.Models.PublishedContent;
+using Moq;
+using Umbraco.Web;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
@@ -21,6 +23,10 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         [Fact]
         public void MapperReturnsDefaultEnum()
         {
+            var registry = new UmbMapperRegistry(Mock.Of<IUmbracoContextFactory>());
+            this.support.InitMappers(registry);
+
+            var mapperService = new UmbMapperService(registry);
             const PlaceOrder placeOrder = PlaceOrder.Fourth;
 
             MockPublishedContent content = this.support.Content;
@@ -29,7 +35,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
                 Mocks.UmbMapperMockFactory.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), null)
             };
 
-            PublishedItem result = content.MapTo<PublishedItem>();
+            PublishedItem result = mapperService.MapTo<PublishedItem>(content);
 
             Assert.NotEqual(placeOrder, result.PlaceOrder);
             Assert.Equal(default(PlaceOrder), result.PlaceOrder);
