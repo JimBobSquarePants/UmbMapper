@@ -49,10 +49,12 @@ namespace UmbMapper
         private bool hasLazy;
         private bool hasPredicate;
         private bool createProxy;
+        private IUmbracoContextFactory umbracoContextFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbMapperConfig{T}"/> class.
         /// </summary>
+        //public UmbMapperConfig(IUmbracoContextFactory umbracoContextFactory)
         public UmbMapperConfig()
         {
             this.MappedType = typeof(T);
@@ -165,8 +167,10 @@ namespace UmbMapper
         }
 
         /// <inheritdoc/>
-        void IUmbMapperConfig.Init()
+        void IUmbMapperConfig.Init(IUmbracoContextFactory umbracoContextFactory)
         {
+            this.umbracoContextFactory = umbracoContextFactory;
+
             // We run the initialization code here so we don't have to run it per mapping.
             lock (UmbMapperConfigStatics.Locker)
             {

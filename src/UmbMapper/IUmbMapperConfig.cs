@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 
 namespace UmbMapper
 {
@@ -54,6 +55,6 @@ namespace UmbMapper
         /// <summary>
         /// Runs any additional code required to setup the configuration
         /// </summary>
-        void Init();
+        void Init(IUmbracoContextFactory umbracoContextFactory);
     }
 }

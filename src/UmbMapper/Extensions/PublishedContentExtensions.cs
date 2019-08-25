@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web.Mvc;
 using UmbMapper.Invocations;
 using Umbraco.Core.Models.PublishedContent;
 
@@ -72,7 +73,11 @@ namespace UmbMapper.Extensions
                 throw new ArgumentNullException(nameof(content));
             }
 
-            UmbMapperRegistry.Mappers.TryGetValue(type, out IUmbMapperConfig mapper);
+            // TODO
+            // Done to get project compiling and initial tests running
+            var mapperRegistry = DependencyResolver.Current.GetService<IUmbMapperRegistry>();
+            mapperRegistry.Mappers.TryGetValue(type, out IUmbMapperConfig mapper);
+            //UmbMapperRegistry.Mappers.TryGetValue(type, out IUmbMapperConfig mapper);
 
             if (mapper is null)
             {
@@ -108,7 +113,11 @@ namespace UmbMapper.Extensions
                 throw new ArgumentNullException(nameof(content));
             }
 
-            UmbMapperRegistry.Mappers.TryGetValue(type, out IUmbMapperConfig mapper);
+            // TODO
+            // Done to get project compiling and initial tests running
+            var mapperRegistry = DependencyResolver.Current.GetService<IUmbMapperRegistry>();
+            mapperRegistry.Mappers.TryGetValue(type, out IUmbMapperConfig mapper);
+            //UmbMapperRegistry.Mappers.TryGetValue(type, out IUmbMapperConfig mapper);
 
             if (mapper is null)
             {

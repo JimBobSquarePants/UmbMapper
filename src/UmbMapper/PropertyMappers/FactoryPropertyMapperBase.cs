@@ -6,6 +6,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Web.Mvc;
 using UmbMapper.Extensions;
 using UmbMapper.Invocations;
 using Umbraco.Core;
@@ -41,7 +42,11 @@ namespace UmbMapper.PropertyMappers
             Type propType = info.PropertyType;
             bool propTypeIsEnumerable = info.IsEnumerableType;
             Type baseType = info.IsEnumerableType ? info.EnumerableParamType : propType;
-            IEnumerable<Type> types = UmbMapperRegistry.CurrentMappedTypes();
+            // TODO
+            // Done to get project compiling and initial tests running
+            var mapperRegistry = DependencyResolver.Current.GetService<IUmbMapperRegistry>();
+            IEnumerable<Type> types = mapperRegistry.CurrentMappedTypes();
+            //IEnumerable<Type> types = UmbMapperRegistry.CurrentMappedTypes();
 
             // Check for IEnumerable<IPublishedContent> value
             if (value is IEnumerable<IPublishedContent> enumerableContentValue)

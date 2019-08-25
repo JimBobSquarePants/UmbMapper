@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Moq;
 using UmbMapper.Umbraco8.Tests.Mapping.Models;
+using Umbraco.Web;
 using Xunit;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
@@ -10,8 +12,10 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         [Fact]
         public void UmbMapperRegistryCanStoreMapper()
         {
-            UmbMapperRegistry.AddMapper(new PublishedItemMap());
-            Assert.Contains(UmbMapperRegistry.CurrentMappers(), m => m.MappedType == typeof(PublishedItem));
+            var registry = new UmbMapperRegistry(Mock.Of<IUmbracoContextFactory>());
+
+            registry.AddMapper(new PublishedItemMap());
+            Assert.Contains(registry.CurrentMappers(), m => m.MappedType == typeof(PublishedItem));
         }
 
         [Fact]
@@ -39,7 +43,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             // Original map list count is unchanged
             Assert.True(mapper.Mappings.Count() == currentCount);
 
-            
+
         }
     }
 }

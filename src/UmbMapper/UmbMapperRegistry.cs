@@ -7,70 +7,115 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 
 namespace UmbMapper
 {
+    public interface IUmbMapperRegistry
+    {
+        ConcurrentDictionary<Type, IUmbMapperConfig> Mappers { get; }
+        IEnumerable<Type> CurrentMappedTypes();
+    }
+
     /// <summary>
     /// The registry for mapper configurations
     /// </summary>
-    public static class UmbMapperRegistry
+    public class UmbMapperRegistry : IUmbMapperRegistry
     {
+        private readonly IUmbracoContextFactory umbracoContextFactory;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UmbMapperRegistry"/> class.
+        /// </summary>
+        /// <param name="umbracoContextFactory">Umbraco Context factory</param>
+        public UmbMapperRegistry(IUmbracoContextFactory umbracoContextFactory)
+        {
+            this.umbracoContextFactory = umbracoContextFactory;
+        }
+
         /// <summary>
         /// Gets the content accessor cache for the different types of published content.
         /// </summary>
         internal static ConcurrentDictionary<string, FastPropertyAccessor> ContentAccessorCache { get; }
-        = new ConcurrentDictionary<string, FastPropertyAccessor>();
+            = new ConcurrentDictionary<string, FastPropertyAccessor>();
 
         /// <summary>
         /// Gets the collection of mappers
         /// </summary>
-        internal static ConcurrentDictionary<Type, IUmbMapperConfig> Mappers { get; } = new ConcurrentDictionary<Type, IUmbMapperConfig>();
+        /// //TODO - why is this internal - do we need a separate class/interface for and internal and public members?
+        public ConcurrentDictionary<Type, IUmbMapperConfig> Mappers { get; } = new ConcurrentDictionary<Type, IUmbMapperConfig>();
+        //internal ConcurrentDictionary<Type, IUmbMapperConfig> Mappers { get; } = new ConcurrentDictionary<Type, IUmbMapperConfig>();
 
         /// <summary>
         /// Gets a readonly collection of the registered mappers
         /// </summary>
         /// <returns>The <see cref="IReadOnlyCollection{T}"/></returns>
-        public static IEnumerable<IUmbMapperConfig> CurrentMappers() => Mappers.Values;
+        public IEnumerable<IUmbMapperConfig> CurrentMappers()
+            => this.Mappers.Values;
 
         /// <summary>
         /// Gets a readonly collection of the registered mapped types
         /// </summary>
         /// <returns>The <see cref="IReadOnlyCollection{T}"/></returns>
-        public static IEnumerable<Type> CurrentMappedTypes() => Mappers.Keys;
+        public IEnumerable<Type> CurrentMappedTypes()
+            => this.Mappers.Keys;
 
         /// <summary>
         /// Adds the mapper configuration to the mapping registry
         /// </summary>
         /// <param name="config">The mapper configuration</param>
-        public static void AddMapper(IUmbMapperConfig config)
+        public void AddMapper(IUmbMapperConfig config)
         {
-            if (Mappers.ContainsKey(config.MappedType))
+            if (this.Mappers.ContainsKey(config.MappedType))
             {
                 return;
             }
 
-            config.Init();
-            Mappers.TryAdd(config.MappedType, config);
+            config.Init(this.umbracoContextFactory);
+            this.Mappers.TryAdd(config.MappedType, config);
         }
+
+        /// <summary>
+        /// Adds the mapper configuration to the mapping registry
+        /// </summary>
+        /// <param name="config">The mapper configuration</param>
+        //public void AddMapper<T>()
+        //{
+        //    // TODO - why does this return false? How else can we constrain this?
+        //    //if (typeof(T).IsAssignableFrom(typeof(IUmbMapperConfig)) == false)
+        //    //{
+        //    //    throw new InvalidOperationException("Attempt to add invalid mapper");
+        //    //}
+
+        //    var config = Activator.CreateInstance(typeof(T), this.umbracoContextFactory) as IUmbMapperConfig;
+
+        //    if (this.Mappers.ContainsKey(config.MappedType))
+        //    {
+        //        return;
+        //    }
+
+        //    config.Init(this.umbracoContextFactory);
+        //    this.Mappers.TryAdd(config.MappedType, config);
+        //}
 
         /// <summary>
         /// Creates a mapper for the given type, adding that mapper to the mapping registry
         /// </summary>
         /// <remarks>Any properties marked <code>virtual</code> are automatically lazy mapped.</remarks>
         /// <typeparam name="T">The type of object to map</typeparam>
-        public static void AddMapperFor<T>()
+        public void AddMapperFor<T>()
             where T : class
         {
-            if (Mappers.ContainsKey(typeof(T)))
+            if (this.Mappers.ContainsKey(typeof(T)))
             {
                 return;
             }
 
             var config = new UmbMapperConfig<T>();
             config.MapAllWritable().ForEach(x => x.AsAutoLazy());
-            ((IUmbMapperConfig)config).Init();
+            ((IUmbMapperConfig)config).Init(this.umbracoContextFactory);
 
-            Mappers.TryAdd(config.MappedType, config);
+            this.Mappers.TryAdd(config.MappedType, config);
         }
 
         /// <summary>
@@ -79,10 +124,10 @@ namespace UmbMapper
         /// </summary>
         /// <typeparam name="T">The type of object to create</typeparam>
         /// <returns>The <typeparamref name="T"/></returns>
-        public static T CreateEmpty<T>()
+        public T CreateEmpty<T>()
             where T : class
         {
-            Mappers.TryGetValue(typeof(T), out IUmbMapperConfig mapper);
+            this.Mappers.TryGetValue(typeof(T), out IUmbMapperConfig mapper);
 
             if (mapper is null)
             {
@@ -99,10 +144,10 @@ namespace UmbMapper
         /// <typeparam name="T">The type of object to create</typeparam>
         /// <param name="content">The content that this instance will map from.</param>
         /// <returns>The <typeparamref name="T"/></returns>
-        public static T CreateEmpty<T>(IPublishedContent content)
+        public T CreateEmpty<T>(IPublishedContent content)
             where T : class
         {
-            Mappers.TryGetValue(typeof(T), out IUmbMapperConfig mapper);
+            this.Mappers.TryGetValue(typeof(T), out IUmbMapperConfig mapper);
 
             if (mapper is null)
             {
@@ -115,9 +160,9 @@ namespace UmbMapper
         /// <summary>
         /// Clears the mappers from the registry
         /// </summary>
-        public static void ClearMappers()
+        public void ClearMappers()
         {
-            Mappers.Clear();
+            this.Mappers.Clear();
         }
     }
 }
