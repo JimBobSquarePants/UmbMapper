@@ -76,29 +76,6 @@ namespace UmbMapper
         }
 
         /// <summary>
-        /// Adds the mapper configuration to the mapping registry
-        /// </summary>
-        /// <param name="config">The mapper configuration</param>
-        //public void AddMapper<T>()
-        //{
-        //    // TODO - why does this return false? How else can we constrain this?
-        //    //if (typeof(T).IsAssignableFrom(typeof(IUmbMapperConfig)) == false)
-        //    //{
-        //    //    throw new InvalidOperationException("Attempt to add invalid mapper");
-        //    //}
-
-        //    var config = Activator.CreateInstance(typeof(T), this.umbracoContextFactory) as IUmbMapperConfig;
-
-        //    if (this.Mappers.ContainsKey(config.MappedType))
-        //    {
-        //        return;
-        //    }
-
-        //    config.Init(this.umbracoContextFactory);
-        //    this.Mappers.TryAdd(config.MappedType, config);
-        //}
-
-        /// <summary>
         /// Creates a mapper for the given type, adding that mapper to the mapping registry
         /// </summary>
         /// <remarks>Any properties marked <code>virtual</code> are automatically lazy mapped.</remarks>
