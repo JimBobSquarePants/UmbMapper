@@ -25,7 +25,7 @@ namespace UmbMapper
     /// <summary>
     /// The registry for mapper configurations
     /// </summary>
-    public class UmbMapperRegistry : IUmbMapperRegistry
+    public class UmbMapperRegistry : IUmbMapperRegistry, IDisposable
     {
         private readonly IUmbracoContextFactory umbracoContextFactory;
 
@@ -145,6 +145,11 @@ namespace UmbMapper
         public void ClearMappers()
         {
             this.Mappers.Clear();
+        }
+
+        public void Dispose()
+        {
+            this.ClearMappers();
         }
     }
 }
