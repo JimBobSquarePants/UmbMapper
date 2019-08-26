@@ -37,12 +37,59 @@ namespace UmbMapper
 
         public object Map(IUmbMapperConfig mappingConfig, IPublishedContent content)
         {
-            throw new NotImplementedException();
+            object result;
+            if (mappingConfig.CreateProxy)
+            {
+                // Create a proxy instance to replace our object.
+                result = mappingConfig.HasIPublishedConstructor ? mappingConfig.ProxyType.GetInstance(content) : mappingConfig.ProxyType.GetInstance();
+
+                // Map the lazy properties and predicate mappings
+                Dictionary<string, Lazy<object>> lazyProperties = this.MapLazyProperties(content, result);
+
+                // Set the interceptor and replace our result with the proxy
+                ((IProxy)result).Interceptor = new LazyInterceptor(lazyProperties);
+            }
+            else
+            {
+                result = mappingConfig.HasIPublishedConstructor ? mappingConfig.MappedType.GetInstance(content) : mappingConfig.MappedType.GetInstance();
+            }
+
+            // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
+            // Certain mappers like Archetype require the context so we want to ensure it exists.
+            //EnsureUmbracoContext();
+
+            // Now map the non-lazy properties and non-lazy predicate mappings
+            //this.MapNonLazyProperties(content, result);
+
+            return result;
         }
 
         public void Map(IUmbMapperConfig mappingConfig, IPublishedContent content, object destination)
         {
-            throw new NotImplementedException();
+            // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
+            // Certain mappers like Archetype require the context so we want to ensure it exists.
+            //TODO is this needed?
+            //EnsureUmbracoContext();
+
+            // We don't know whether the destination was created by UmbMapper or by something else so we have to check to see if it
+            // is a proxy instance.
+            if (destination is IProxy proxy)
+            {
+                // Map the lazy properties and predicate mappings
+                Dictionary<string, Lazy<object>> lazyProperties = mappingConfig.MapLazyProperties(content, destination);
+
+                // Replace the interceptor with our new one.
+                var interceptor = new LazyInterceptor(lazyProperties);
+                proxy.Interceptor = interceptor;
+            }
+            else
+            {
+                // Map our collated lazy properties as non-lazy instead.
+                mappingConfig.MapLazyPropertiesAsNonLazy(content, destination);
+            }
+
+            // Map the non-lazy properties and non-lazy predicate mappings
+            mappingConfig.MapNonLazyProperties(content, destination);
         }
     }
 }

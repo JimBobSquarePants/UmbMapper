@@ -92,6 +92,8 @@ namespace UmbMapper
 
         public bool CreateProxy => this.createProxy;
 
+        bool IUmbMapperConfig.HasIPublishedConstructor => this.hasIPublishedConstructor;
+
         /// <inheritdoc/>
         public IEnumerable<IPropertyMap> Mappings => this.maps;
 

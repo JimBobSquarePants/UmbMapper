@@ -22,6 +22,7 @@ namespace UmbMapper
 
         bool CreateProxy { get; }
         Type ProxyType { get; }
+        bool HasIPublishedConstructor { get; }
 
         /// <summary>
         /// Gets the collection of mappings registered with the mapper
