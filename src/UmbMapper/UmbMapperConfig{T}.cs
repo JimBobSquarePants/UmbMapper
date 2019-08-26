@@ -94,6 +94,14 @@ namespace UmbMapper
 
         bool IUmbMapperConfig.HasIPublishedConstructor => this.hasIPublishedConstructor;
 
+        public IPropertyMap[] NonLazyMaps => this.nonLazyMaps;
+        public IPropertyMap[] LazyMaps => this.lazyMaps;
+        public IPropertyMap[] NonLazyPredicateMaps => this.nonLazyPredicateMaps;
+        public IPropertyMap[] LazyPredicateMaps => this.lazyPredicateMaps;
+        public List<string> LazyNames => this.lazyNames;
+
+        FastPropertyAccessor IUmbMapperConfig.PropertyAccessor => this.propertyAccessor;
+
         /// <inheritdoc/>
         public IEnumerable<IPropertyMap> Mappings => this.maps;
 
@@ -172,9 +180,9 @@ namespace UmbMapper
         }
 
         /// <inheritdoc/>
-        void IUmbMapperConfig.Init(IUmbracoContextFactory umbracoContextFactory)
+        void IUmbMapperConfig.Init()
         {
-            this.umbracoContextFactory = umbracoContextFactory;
+            //this.umbracoContextFactory = umbracoContextFactory;
 
             // We run the initialization code here so we don't have to run it per mapping.
             lock (UmbMapperConfigStatics.Locker)

@@ -269,7 +269,9 @@
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="Extensions\PropertyInfoExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Factories\IMappingProcessorFactory.cs" />
     <Compile Include="Factories\IPropertyMapFactory.cs" />
+    <Compile Include="Factories\MappingProcessorFactory.cs" />
     <Compile Include="Factories\PropertyMapFactory.cs" />
     <Compile Include="Helpers\XmlHelper.cs" />
     <Compile Include="IMappingProcessor.cs" />

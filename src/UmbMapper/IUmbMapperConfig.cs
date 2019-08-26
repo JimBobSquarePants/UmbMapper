@@ -24,6 +24,13 @@ namespace UmbMapper
         Type ProxyType { get; }
         bool HasIPublishedConstructor { get; }
 
+        IPropertyMap[] NonLazyMaps { get; }
+        IPropertyMap[] LazyMaps { get; }
+        IPropertyMap[] NonLazyPredicateMaps { get; }
+        IPropertyMap[] LazyPredicateMaps { get; }
+        List<string> LazyNames { get; }
+        FastPropertyAccessor PropertyAccessor { get; }
+
         /// <summary>
         /// Gets the collection of mappings registered with the mapper
         /// </summary>
@@ -59,6 +66,6 @@ namespace UmbMapper
         /// <summary>
         /// Runs any additional code required to setup the configuration
         /// </summary>
-        void Init(IUmbracoContextFactory umbracoContextFactory);
+        void Init();
     }
 }

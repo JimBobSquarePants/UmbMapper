@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -12,14 +13,16 @@ using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper
 {
-    class MappingProcessor<T> : IMappingProcessor
+    public class MappingProcessor<T> : IMappingProcessor
         where T : class
     {
         private readonly IUmbMapperConfig mappingConfig;
+        private readonly IUmbMapperService umbMapperService;
 
-        public MappingProcessor(IUmbMapperConfig mappingConfig)
+        public MappingProcessor(IUmbMapperConfig mappingConfig, IUmbMapperService umbMapperService)
         {
             this.mappingConfig = mappingConfig;
+            this.umbMapperService = umbMapperService;
         }
         public object CreateEmpty()
         {
@@ -69,7 +72,7 @@ namespace UmbMapper
             //EnsureUmbracoContext();
 
             // Now map the non-lazy properties and non-lazy predicate mappings
-            //this.MapNonLazyProperties(content, result);
+            this.MapNonLazyProperties(content, result);
 
             return result;
         }
@@ -86,7 +89,7 @@ namespace UmbMapper
             if (destination is IProxy proxy)
             {
                 // Map the lazy properties and predicate mappings
-                Dictionary<string, Lazy<object>> lazyProperties = mappingConfig.MapLazyProperties(content, destination);
+                Dictionary<string, Lazy<object>> lazyProperties = this.MapLazyProperties(content, destination);
 
                 // Replace the interceptor with our new one.
                 var interceptor = new LazyInterceptor(lazyProperties);
@@ -95,11 +98,11 @@ namespace UmbMapper
             else
             {
                 // Map our collated lazy properties as non-lazy instead.
-                mappingConfig.MapLazyPropertiesAsNonLazy(content, destination);
+                this.MapLazyPropertiesAsNonLazy(content, destination);
             }
 
             // Map the non-lazy properties and non-lazy predicate mappings
-            mappingConfig.MapNonLazyProperties(content, destination);
+            this.MapNonLazyProperties(content, destination);
         }
 
         private object RecursivelyMap(object value, PropertyMapInfo info)
@@ -109,9 +112,7 @@ namespace UmbMapper
                 // If the property value is an IPublishedContent, then we can map it to the target type.
                 if (value is IPublishedContent content && info.PropertyType.IsClass)
                 {
-                    //new UmbMapperService(new UmbMapperRegistry()).MapTo(content, info.PropertyType);
-                    //return this.MapTo(content, info.PropertyType);
-                    return null;
+                    return this.umbMapperService.MapTo(content, info.PropertyType);
                 }
 
                 // If the property value is an IEnumerable<IPublishedContent>, then we can map it to the target type.
@@ -120,12 +121,94 @@ namespace UmbMapper
                     Type genericType = info.EnumerableParamType;
                     if (genericType?.IsClass == true)
                     {
-                        return ((IEnumerable<IPublishedContent>)value).MapTo(genericType);
+                        return this.umbMapperService.MapTo((IEnumerable<IPublishedContent>)value, genericType);
+
+                        //return ((IEnumerable<IPublishedContent>)value).MapTo(genericType);
                     }
                 }
             }
 
             return value;
+        }
+
+        private Dictionary<string, Lazy<object>> MapLazyProperties(IPublishedContent content, object result)
+        {
+            // First add any lazy mappings, use count to prevent allocations
+            var lazyProperties = new Dictionary<string, Lazy<object>>(this.mappingConfig.LazyNames.Count);
+            for (int i = 0; i < this.mappingConfig.LazyMaps.Length; i++)
+            {
+                // It's better to allocate the `int` via closure than PropertyMap<T>
+                int i1 = i;
+                lazyProperties[this.mappingConfig.LazyMaps[i].Info.Property.Name] = new Lazy<object>(() =>
+                {
+                    //EnsureUmbracoContext();
+                    return this.MapProperty(this.mappingConfig.LazyMaps[i1], content, result);
+                });
+            }
+
+            // Then lazy predicate mappings
+            for (int i = 0; i < this.mappingConfig.LazyPredicateMaps.Length; i++)
+            {
+                // It's better to allocate the `int` via closure than PropertyMap<T>
+                int i1 = i;
+                lazyProperties[this.mappingConfig.LazyPredicateMaps[i].Info.Property.Name] = new Lazy<object>(() =>
+                {
+                    //EnsureUmbracoContext();
+                    return this.MapProperty(this.mappingConfig.LazyPredicateMaps[i1], content, result);
+                });
+            }
+
+            return lazyProperties;
+        }
+
+        private void MapNonLazyProperties(IPublishedContent content, object destination)
+        {
+            // First map the non-lazy properties
+            for (int i = 0; i < this.mappingConfig.NonLazyMaps.Length; i++)
+            {
+                PropertyMap<T> map = this.mappingConfig.NonLazyMaps[i] as PropertyMap<T>;
+                object value = this.MapProperty(map, content, destination);
+                if (value != null)
+                {
+                    this.mappingConfig.PropertyAccessor.SetValue(map.Info.Property.Name, destination, value);
+                }
+            }
+
+            // Then non-lazy predicate mappings
+            for (int i = 0; i < this.mappingConfig.NonLazyPredicateMaps.Length; i++)
+            {
+                PropertyMap<T> map = this.mappingConfig.NonLazyPredicateMaps[i] as PropertyMap<T>;
+                object value = this.MapProperty(map, content, destination);
+                if (value != null)
+                {
+                    this.mappingConfig.PropertyAccessor.SetValue(map.Info.Property.Name, destination, value);
+                }
+            }
+        }
+
+        private void MapLazyPropertiesAsNonLazy(IPublishedContent content, object destination)
+        {
+            // First map the lazy properties
+            for (int i = 0; i < this.mappingConfig.LazyMaps.Length; i++)
+            {
+                PropertyMap<T> map = this.mappingConfig.LazyMaps[i] as PropertyMap<T>;
+                object value = this.MapProperty(map, content, destination);
+                if (value != null)
+                {
+                    this.mappingConfig.PropertyAccessor.SetValue(map.Info.Property.Name, destination, value);
+                }
+            }
+
+            // Then lazy predicate mappings
+            for (int i = 0; i < this.mappingConfig.LazyPredicateMaps.Length; i++)
+            {
+                PropertyMap<T> map = this.mappingConfig.LazyPredicateMaps[i] as PropertyMap<T>;
+                object value = MapProperty(map, content, destination);
+                if (value != null)
+                {
+                    this.mappingConfig.PropertyAccessor.SetValue(map.Info.Property.Name, destination, value);
+                }
+            }
         }
 
         private static object SantizeValue(object value, PropertyMapInfo info)
@@ -192,6 +275,13 @@ namespace UmbMapper
             return value;
         }
 
+        private object MapProperty(IPropertyMap map, IPublishedContent content, object result)
+        {
+            var propertyMap = map as PropertyMap<T>;
+
+            return this.MapProperty(propertyMap, content, result);
+        }
+
         private object MapProperty(PropertyMap<T> map, IPublishedContent content, object result)
         {
             object value = null;
@@ -224,7 +314,7 @@ namespace UmbMapper
 
             if (value != null)
             {
-                value = RecursivelyMap(value, info);
+                value = this.RecursivelyMap(value, info);
             }
 
             return value;

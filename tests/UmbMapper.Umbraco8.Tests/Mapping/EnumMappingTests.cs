@@ -6,6 +6,7 @@ using Xunit;
 using Umbraco.Core.Models.PublishedContent;
 using Moq;
 using Umbraco.Web;
+using UmbMapper.Factories;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
@@ -24,7 +25,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             this.umbMapperRegistry = new UmbMapperRegistry(Mock.Of<IUmbracoContextFactory>());
             this.support.InitMappers(this.umbMapperRegistry);
 
-            this.umbMapperService = new UmbMapperService(this.umbMapperRegistry);
+            this.umbMapperService = new UmbMapperService(this.umbMapperRegistry, Mock.Of<IMappingProcessorFactory>());
         }
 
         [Fact]
@@ -33,7 +34,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             var registry = new UmbMapperRegistry(Mock.Of<IUmbracoContextFactory>());
             this.support.InitMappers(registry);
 
-            var mapperService = new UmbMapperService(registry);
+            var mapperService = new UmbMapperService(registry, Mock.Of<IMappingProcessorFactory>());
             const PlaceOrder placeOrder = PlaceOrder.Fourth;
 
             MockPublishedContent content = this.support.Content;

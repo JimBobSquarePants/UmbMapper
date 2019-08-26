@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using UmbMapper.Factories;
 using UmbMapper.Invocations;
 using Umbraco.Core.Models.PublishedContent;
 
@@ -9,10 +10,12 @@ namespace UmbMapper
     public class UmbMapperService : IUmbMapperService
     {
         private readonly IUmbMapperRegistry umbMapperRegistry;
+        private readonly IMappingProcessorFactory mappingProcessorFactory;
 
-        public UmbMapperService(IUmbMapperRegistry umbMapperRegistry)
+        public UmbMapperService(IUmbMapperRegistry umbMapperRegistry, IMappingProcessorFactory mappingProcessorFactory)
         {
             this.umbMapperRegistry = umbMapperRegistry;
+            this.mappingProcessorFactory = mappingProcessorFactory;
         }
 
         public IEnumerable<T> MapTo<T>(IEnumerable<IPublishedContent> content) where T : class
@@ -54,6 +57,8 @@ namespace UmbMapper
             // IUmbMapperConfig has the config and something like 
             // IUmbMapperProcessor.Map(IUmbMapperConfig mapperConfig, content)
             // performs the actual mapping 
+            //var mapper = this.mappingProcessorFactory.c
+            //var mappingFactory
             return mapper.Map(content);
         }
 

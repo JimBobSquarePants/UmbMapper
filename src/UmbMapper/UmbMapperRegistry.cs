@@ -76,7 +76,7 @@ namespace UmbMapper
                 return;
             }
 
-            config.Init(this.umbracoContextFactory);
+            config.Init();
             this.Mappers.TryAdd(config.MappedType, config);
         }
 
@@ -95,7 +95,7 @@ namespace UmbMapper
 
             var config = new UmbMapperConfig<T>();
             config.MapAllWritable().ForEach(x => x.AsAutoLazy());
-            ((IUmbMapperConfig)config).Init(this.umbracoContextFactory);
+            ((IUmbMapperConfig)config).Init();
 
             this.Mappers.TryAdd(config.MappedType, config);
         }
