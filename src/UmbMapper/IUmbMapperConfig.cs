@@ -30,6 +30,7 @@ namespace UmbMapper
         IPropertyMap[] LazyPredicateMaps { get; }
         List<string> LazyNames { get; }
         FastPropertyAccessor PropertyAccessor { get; }
+        IMappingProcessor CreateProcessor(IUmbMapperService umbMapperService);
 
         /// <summary>
         /// Gets the collection of mappings registered with the mapper
@@ -41,14 +42,14 @@ namespace UmbMapper
         /// </summary>
         /// <param name="content">The published content</param>
         /// <returns>The <see cref="object"/></returns>
-        object Map(IPublishedContent content);
+        //object Map(IPublishedContent content);
 
-        /// <summary>
-        /// Performs the mapping operation onto an existing destination object
-        /// </summary>
-        /// <param name="content">The published content</param>
-        /// <param name="destination">The destination object</param>
-        void Map(IPublishedContent content, object destination);
+        ///// <summary>
+        ///// Performs the mapping operation onto an existing destination object
+        ///// </summary>
+        ///// <param name="content">The published content</param>
+        ///// <param name="destination">The destination object</param>
+        //void Map(IPublishedContent content, object destination);
 
         /// <summary>
         /// Creates an empty instance of the mapped type.

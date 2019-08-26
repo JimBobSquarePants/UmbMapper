@@ -56,10 +56,13 @@ namespace UmbMapper
             // instead of getting a mapper and have it responsible for the mapping
             // IUmbMapperConfig has the config and something like 
             // IUmbMapperProcessor.Map(IUmbMapperConfig mapperConfig, content)
-            // performs the actual mapping 
-            //var mapper = this.mappingProcessorFactory.c
-            //var mappingFactory
-            return mapper.Map(content);
+            // performs the actual mapping
+            var mappingProcessor = mapper.CreateProcessor(this);
+
+            return mappingProcessor.Map(content);
+
+
+            //return mapper.Map(content);
         }
 
         public void MapTo<T>(IPublishedContent content, T destination)
@@ -82,7 +85,11 @@ namespace UmbMapper
                 throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
             }
 
-            mapper.Map(content, destination);
+            var mappingProcessor = mapper.CreateProcessor(this);
+
+            mappingProcessor.Map(content, destination);
+
+            //mapper.Map(content, destination);
         }
     }
 }

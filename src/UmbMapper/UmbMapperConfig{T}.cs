@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Web;
 using System.Web.Hosting;
+using System.Web.Mvc;
 using UmbMapper.Extensions;
 using UmbMapper.Invocations;
 using UmbMapper.PropertyMappers;
@@ -220,6 +221,13 @@ namespace UmbMapper
             }
         }
 
+        public IMappingProcessor CreateProcessor(IUmbMapperService umbMapperService)
+        {
+            //TODO
+            // Blerch
+            return new MappingProcessor<T>(this, umbMapperService);
+        }
+
         /// <inheritdoc/>
         object IUmbMapperConfig.CreateEmpty()
         {
@@ -246,63 +254,63 @@ namespace UmbMapper
             return this.MappedType.GetInstance(content);
         }
 
-        /// <inheritdoc/>
-        object IUmbMapperConfig.Map(IPublishedContent content)
-        {
-            object result;
-            if (this.createProxy)
-            {
-                // Create a proxy instance to replace our object.
-                result = this.hasIPublishedConstructor ? this.proxyType.GetInstance(content) : this.proxyType.GetInstance();
+        ///// <inheritdoc/>
+        //object IUmbMapperConfig.Map(IPublishedContent content)
+        //{
+        //    object result;
+        //    if (this.createProxy)
+        //    {
+        //        // Create a proxy instance to replace our object.
+        //        result = this.hasIPublishedConstructor ? this.proxyType.GetInstance(content) : this.proxyType.GetInstance();
 
-                // Map the lazy properties and predicate mappings
-                Dictionary<string, Lazy<object>> lazyProperties = this.MapLazyProperties(content, result);
+        //        // Map the lazy properties and predicate mappings
+        //        Dictionary<string, Lazy<object>> lazyProperties = this.MapLazyProperties(content, result);
 
-                // Set the interceptor and replace our result with the proxy
-                ((IProxy)result).Interceptor = new LazyInterceptor(lazyProperties);
-            }
-            else
-            {
-                result = this.hasIPublishedConstructor ? this.MappedType.GetInstance(content) : this.MappedType.GetInstance();
-            }
+        //        // Set the interceptor and replace our result with the proxy
+        //        ((IProxy)result).Interceptor = new LazyInterceptor(lazyProperties);
+        //    }
+        //    else
+        //    {
+        //        result = this.hasIPublishedConstructor ? this.MappedType.GetInstance(content) : this.MappedType.GetInstance();
+        //    }
 
-            // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
-            // Certain mappers like Archetype require the context so we want to ensure it exists.
-            EnsureUmbracoContext();
+        //    // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
+        //    // Certain mappers like Archetype require the context so we want to ensure it exists.
+        //    EnsureUmbracoContext();
 
-            // Now map the non-lazy properties and non-lazy predicate mappings
-            this.MapNonLazyProperties(content, result);
+        //    // Now map the non-lazy properties and non-lazy predicate mappings
+        //    this.MapNonLazyProperties(content, result);
 
-            return result;
-        }
+        //    return result;
+        //}
 
-        /// <inheritdoc/>
-        public void Map(IPublishedContent content, object destination)
-        {
-            // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
-            // Certain mappers like Archetype require the context so we want to ensure it exists.
-            EnsureUmbracoContext();
+        ///// <inheritdoc/>
+        //public void Map(IPublishedContent content, object destination)
+        //{
+        //    // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
+        //    // Certain mappers like Archetype require the context so we want to ensure it exists.
+        //    EnsureUmbracoContext();
 
-            // We don't know whether the destination was created by UmbMapper or by something else so we have to check to see if it
-            // is a proxy instance.
-            if (destination is IProxy proxy)
-            {
-                // Map the lazy properties and predicate mappings
-                Dictionary<string, Lazy<object>> lazyProperties = this.MapLazyProperties(content, destination);
+        //    // We don't know whether the destination was created by UmbMapper or by something else so we have to check to see if it
+        //    // is a proxy instance.
+        //    if (destination is IProxy proxy)
+        //    {
+        //        // Map the lazy properties and predicate mappings
+        //        Dictionary<string, Lazy<object>> lazyProperties = this.MapLazyProperties(content, destination);
 
-                // Replace the interceptor with our new one.
-                var interceptor = new LazyInterceptor(lazyProperties);
-                proxy.Interceptor = interceptor;
-            }
-            else
-            {
-                // Map our collated lazy properties as non-lazy instead.
-                this.MapLazyPropertiesAsNonLazy(content, destination);
-            }
+        //        // Replace the interceptor with our new one.
+        //        var interceptor = new LazyInterceptor(lazyProperties);
+        //        proxy.Interceptor = interceptor;
+        //    }
+        //    else
+        //    {
+        //        // Map our collated lazy properties as non-lazy instead.
+        //        this.MapLazyPropertiesAsNonLazy(content, destination);
+        //    }
 
-            // Map the non-lazy properties and non-lazy predicate mappings
-            this.MapNonLazyProperties(content, destination);
-        }
+        //    // Map the non-lazy properties and non-lazy predicate mappings
+        //    this.MapNonLazyProperties(content, destination);
+        //}
 
         /// <summary>
         /// Adds a map from each writable property in the class to an equivalent Umbraco property

@@ -77,6 +77,8 @@ namespace UmbMapper.Extensions
             // Done to get project compiling and initial tests running
             var mapperRegistry = DependencyResolver.Current.GetService<IUmbMapperRegistry>();
             mapperRegistry.Mappers.TryGetValue(type, out IUmbMapperConfig mapper);
+            IUmbMapperService mappingService = DependencyResolver.Current.GetService<IUmbMapperService>();
+
             //UmbMapperRegistry.Mappers.TryGetValue(type, out IUmbMapperConfig mapper);
 
             if (mapper is null)
@@ -84,7 +86,9 @@ namespace UmbMapper.Extensions
                 throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
             }
 
-            return mapper.Map(content);
+            var mappingProcessor = mapper.CreateProcessor(mappingService);
+
+            return mappingProcessor.Map(content);
         }
 
         /// <summary>
@@ -117,6 +121,7 @@ namespace UmbMapper.Extensions
             // Done to get project compiling and initial tests running
             var mapperRegistry = DependencyResolver.Current.GetService<IUmbMapperRegistry>();
             mapperRegistry.Mappers.TryGetValue(type, out IUmbMapperConfig mapper);
+            IUmbMapperService mappingService = DependencyResolver.Current.GetService<IUmbMapperService>();
             //UmbMapperRegistry.Mappers.TryGetValue(type, out IUmbMapperConfig mapper);
 
             if (mapper is null)
@@ -124,7 +129,11 @@ namespace UmbMapper.Extensions
                 throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
             }
 
-            mapper.Map(content, destination);
+            var mappingProcessor = mapper.CreateProcessor(mappingService);
+
+            mappingProcessor.Map(content, destination);
+
+            //mapper.Map(content, destination);
         }
     }
 }

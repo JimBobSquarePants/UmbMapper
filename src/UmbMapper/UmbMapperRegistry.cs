@@ -14,6 +14,9 @@ namespace UmbMapper
     public interface IUmbMapperRegistry
     {
         ConcurrentDictionary<Type, IUmbMapperConfig> Mappers { get; }
+        
+        // This is here until I figure out how to get the generics correct
+        //ConcurrentDictionary<Type, IMappingProcessor> MappingProcessors { get; }
         IEnumerable<Type> CurrentMappedTypes();
 
         void AddMapperFor<T>()
@@ -27,7 +30,7 @@ namespace UmbMapper
     /// </summary>
     public class UmbMapperRegistry : IUmbMapperRegistry, IDisposable
     {
-        private readonly IUmbracoContextFactory umbracoContextFactory;
+        //private readonly IUmbracoContextFactory umbracoContextFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbMapperRegistry"/> class.
@@ -35,7 +38,7 @@ namespace UmbMapper
         /// <param name="umbracoContextFactory">Umbraco Context factory</param>
         public UmbMapperRegistry(IUmbracoContextFactory umbracoContextFactory)
         {
-            this.umbracoContextFactory = umbracoContextFactory;
+            //this.umbracoContextFactory = umbracoContextFactory;
         }
 
         /// <summary>
@@ -49,6 +52,8 @@ namespace UmbMapper
         /// </summary>
         /// //TODO - why is this internal - do we need a separate class/interface for and internal and public members?
         public ConcurrentDictionary<Type, IUmbMapperConfig> Mappers { get; } = new ConcurrentDictionary<Type, IUmbMapperConfig>();
+
+        //ConcurrentDictionary<Type, IMappingProcessor> MappingProcessors { get; } = new ConcurrentDictionary<Type, IMappingProcessor>();
         //internal ConcurrentDictionary<Type, IUmbMapperConfig> Mappers { get; } = new ConcurrentDictionary<Type, IUmbMapperConfig>();
 
         /// <summary>
