@@ -1,17 +1,27 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using UmbMapper.Extensions;
+using UmbMapper.Invocations;
+using UmbMapper.PropertyMappers;
 using UmbMapper.Proxy;
 using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper
 {
-    class MappingProcessor : IMappingProcessor
+    class MappingProcessor<T> : IMappingProcessor
+        where T : class
     {
-        public object CreateEmpty(IUmbMapperConfig mappingConfig)
+        private readonly IUmbMapperConfig mappingConfig;
+
+        public MappingProcessor(IUmbMapperConfig mappingConfig)
+        {
+            this.mappingConfig = mappingConfig;
+        }
+        public object CreateEmpty()
         {
             if (mappingConfig.CreateProxy)
             {
@@ -23,7 +33,7 @@ namespace UmbMapper
             return mappingConfig.MappedType.GetInstance();
         }
 
-        public object CreateEmpty(IUmbMapperConfig mappingConfig, IPublishedContent content)
+        public object CreateEmpty(IPublishedContent content)
         {
             if (mappingConfig.CreateProxy)
             {
@@ -35,7 +45,7 @@ namespace UmbMapper
             return mappingConfig.MappedType.GetInstance(content);
         }
 
-        public object Map(IUmbMapperConfig mappingConfig, IPublishedContent content)
+        public object Map(IPublishedContent content)
         {
             object result;
             if (mappingConfig.CreateProxy)
@@ -64,7 +74,7 @@ namespace UmbMapper
             return result;
         }
 
-        public void Map(IUmbMapperConfig mappingConfig, IPublishedContent content, object destination)
+        public void Map(IPublishedContent content, object destination)
         {
             // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
             // Certain mappers like Archetype require the context so we want to ensure it exists.
@@ -90,6 +100,134 @@ namespace UmbMapper
 
             // Map the non-lazy properties and non-lazy predicate mappings
             mappingConfig.MapNonLazyProperties(content, destination);
+        }
+
+        private object RecursivelyMap(object value, PropertyMapInfo info)
+        {
+            if (!info.PropertyType.IsInstanceOfType(value))
+            {
+                // If the property value is an IPublishedContent, then we can map it to the target type.
+                if (value is IPublishedContent content && info.PropertyType.IsClass)
+                {
+                    //new UmbMapperService(new UmbMapperRegistry()).MapTo(content, info.PropertyType);
+                    //return this.MapTo(content, info.PropertyType);
+                    return null;
+                }
+
+                // If the property value is an IEnumerable<IPublishedContent>, then we can map it to the target type.
+                if (value.GetType().IsEnumerableOfType(typeof(IPublishedContent)) && info.IsEnumerableType)
+                {
+                    Type genericType = info.EnumerableParamType;
+                    if (genericType?.IsClass == true)
+                    {
+                        return ((IEnumerable<IPublishedContent>)value).MapTo(genericType);
+                    }
+                }
+            }
+
+            return value;
+        }
+
+        private static object SantizeValue(object value, PropertyMapInfo info)
+        {
+            bool propertyIsCastableEnumerable = info.IsCastableEnumerableType;
+            bool propertyIsConvertableEnumerable = info.IsConvertableEnumerableType;
+
+            if (value != null)
+            {
+                Type valueType = value.GetType();
+                if (valueType == info.PropertyType)
+                {
+                    return value;
+                }
+
+                bool valueIsConvertableEnumerable = valueType.IsConvertableEnumerableType();
+
+                // You cannot set an enumerable of type from an empty object array.
+                // This should allow the casting back of IEnumerable<T> to an empty List<T> Collection<T> etc.
+                // I cant think of any that don't have an empty constructor
+                if (value.Equals(UmbMapperConfigStatics.Empty) && propertyIsCastableEnumerable)
+                {
+                    Type typeArg = info.EnumerableParamType;
+                    return info.PropertyType.IsInterface ? EnumerableInvocations.Cast(typeArg, (IEnumerable)value) : info.PropertyType.GetInstance();
+                }
+
+                // Ensure only a single item is returned when requested.
+                if (valueIsConvertableEnumerable && !propertyIsConvertableEnumerable)
+                {
+                    // Property is not enumerable, but value is, so grab first item
+                    IEnumerator enumerator = ((IEnumerable)value).GetEnumerator();
+                    return enumerator.MoveNext() ? enumerator.Current : null;
+                }
+
+                // And now check for the reverse situation.
+                if (!valueIsConvertableEnumerable && propertyIsConvertableEnumerable)
+                {
+                    var array = Array.CreateInstance(value.GetType(), 1);
+                    array.SetValue(value, 0);
+                    return array;
+                }
+            }
+            else
+            {
+                if (propertyIsCastableEnumerable)
+                {
+                    if (info.PropertyType.IsInterface && !info.IsEnumerableOfKeyValueType)
+                    {
+                        // Value is null, but property is enumerable interface, so return empty enumerable
+                        return EnumerableInvocations.Empty(info.EnumerableParamType);
+                    }
+
+                    // Concrete enumerables cannot be cast from Array so we create an instance and return it
+                    // if we know it has an empty constructor.
+                    ParameterInfo[] constructorParams = info.ConstructorParams;
+                    if (constructorParams.Length == 0)
+                    {
+                        // Internally this uses Activator.CreateInstance which is heavily optimized.
+                        return info.PropertyType.GetInstance();
+                    }
+                }
+            }
+
+            return value;
+        }
+
+        private object MapProperty(PropertyMap<T> map, IPublishedContent content, object result)
+        {
+            object value = null;
+
+            // If we have a mapping function, use that and skip Umbraco.
+            if (map.Info.HasPredicate)
+            {
+                value = map.Predicate.Invoke((T)result, content);
+            }
+            else
+            {
+                // Get the raw value from the content.
+                value = map.PropertyMapper.GetRawValue(content);
+
+                // Now map using the given mappers.
+                value = map.PropertyMapper.Map(content, value);
+            }
+
+            PropertyMapInfo info = map.Info;
+
+            // Try to return if the value is correct.
+            if (!(value.IsNullOrEmptyString() || value.Equals(info.DefaultValue))
+                && info.PropertyType.IsInstanceOfType(value))
+            {
+                return value;
+            }
+
+            // Ensure everything is the correct return type.
+            value = SantizeValue(value, info);
+
+            if (value != null)
+            {
+                value = RecursivelyMap(value, info);
+            }
+
+            return value;
         }
     }
 }

@@ -4,9 +4,9 @@ namespace UmbMapper
 {
     public interface IMappingProcessor
     {
-        object Map(IUmbMapperConfig mappingConfig, IPublishedContent content);
-        void Map(IUmbMapperConfig mappingConfig, IPublishedContent content, object destination);
-        object CreateEmpty(IUmbMapperConfig mappingConfig);
-        object CreateEmpty(IUmbMapperConfig mappingConfig, IPublishedContent content);
+        object Map(IPublishedContent content);
+        void Map(IPublishedContent content, object destination);
+        object CreateEmpty();
+        object CreateEmpty(IPublishedContent content);
     }
 }
