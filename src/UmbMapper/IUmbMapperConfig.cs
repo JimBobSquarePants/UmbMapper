@@ -20,6 +20,9 @@ namespace UmbMapper
         /// </summary>
         Type MappedType { get; }
 
+        bool CreateProxy { get; }
+        Type ProxyType { get; }
+
         /// <summary>
         /// Gets the collection of mappings registered with the mapper
         /// </summary>

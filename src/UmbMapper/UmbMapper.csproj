@@ -272,6 +272,7 @@
     <Compile Include="Factories\IPropertyMapFactory.cs" />
     <Compile Include="Factories\PropertyMapFactory.cs" />
     <Compile Include="Helpers\XmlHelper.cs" />
+    <Compile Include="IMappingProcessor.cs" />
     <Compile Include="Invocations\CachedInvocations.cs" />
     <Compile Include="Invocations\MethodBaseCacheItem.cs" />
     <Compile Include="Invocations\EnumerableInvocations.cs" />
@@ -283,6 +284,7 @@
     <Compile Include="IUmbMapperConfig.cs" />
     <Compile Include="Converters\SimpleConverter{T}.cs" />
     <Compile Include="IUmbMapperService.cs" />
+    <Compile Include="MappingProcessor.cs" />
     <Compile Include="PropertyMappers\CsvPropertyMapper.cs" />
     <Compile Include="Converters\IntegralNumberConverter{T}.cs" />
     <Compile Include="UmbMapperConfigStatics.cs" />

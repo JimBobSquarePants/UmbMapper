@@ -88,6 +88,9 @@ namespace UmbMapper
 
         /// <inheritdoc/>
         public Type MappedType { get; }
+        public Type ProxyType => this.proxyType;
+
+        public bool CreateProxy => this.createProxy;
 
         /// <inheritdoc/>
         public IEnumerable<IPropertyMap> Mappings => this.maps;
