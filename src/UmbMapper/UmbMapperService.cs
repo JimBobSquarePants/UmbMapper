@@ -49,6 +49,11 @@ namespace UmbMapper
                 throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
             }
 
+            // TODO change this  type of structure
+            // instead of getting a mapper and have it responsible for the mapping
+            // IUmbMapperConfig has the config and something like 
+            // IUmbMapperProcessor.Map(IUmbMapperConfig mapperConfig, content)
+            // performs the actual mapping 
             return mapper.Map(content);
         }
 

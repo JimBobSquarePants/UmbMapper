@@ -12,12 +12,19 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
     public class EnumMappingTests : IClassFixture<UmbracoSupport>
     {
         private readonly UmbracoSupport support;
+        private readonly IUmbMapperRegistry umbMapperRegistry;
+        private readonly IUmbMapperService umbMapperService;
 
         public EnumMappingTests(UmbracoSupport support)
         {
             this.support = support;
             // This is needed to access the culture info
             this.support.SetupUmbracoContext();
+
+            this.umbMapperRegistry = new UmbMapperRegistry(Mock.Of<IUmbracoContextFactory>());
+            this.support.InitMappers(this.umbMapperRegistry);
+
+            this.umbMapperService = new UmbMapperService(this.umbMapperRegistry);
         }
 
         [Fact]
@@ -52,7 +59,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
                 Mocks.UmbMapperMockFactory.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), (int)placeOrder)
             };
 
-            PublishedItem result = content.MapTo<PublishedItem>();
+            PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
 
             Assert.Equal(placeOrder, result.PlaceOrder);
         }
@@ -68,7 +75,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
                 Mocks.UmbMapperMockFactory.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), placeOrder.ToString())
             };
 
-            PublishedItem result = content.MapTo<PublishedItem>();
+            PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
 
             Assert.Equal(placeOrder, result.PlaceOrder);
         }

@@ -44,9 +44,10 @@ namespace UmbMapper.PropertyMappers
             Type baseType = info.IsEnumerableType ? info.EnumerableParamType : propType;
             // TODO
             // Done to get project compiling and initial tests running
-            var mapperRegistry = DependencyResolver.Current.GetService<IUmbMapperRegistry>();
+            //var mapperRegistry = DependencyResolver.Current.GetService<IUmbMapperRegistry>();
+            //IEnumerable<Type> types = mapperRegistry.CurrentMappedTypes();
+            var mapperRegistry = GetMapperRegistry();
             IEnumerable<Type> types = mapperRegistry.CurrentMappedTypes();
-            //IEnumerable<Type> types = UmbMapperRegistry.CurrentMappedTypes();
 
             // Check for IEnumerable<IPublishedContent> value
             if (value is IEnumerable<IPublishedContent> enumerableContentValue)
@@ -101,5 +102,23 @@ namespace UmbMapper.PropertyMappers
                 yield return match != null ? item.MapTo(match) : null;
             }
         }
+
+        private IUmbMapperRegistry GetMapperRegistry()
+        {
+            var args = new MapperRegistryRequiredArgs();
+            EventHandler<MapperRegistryRequiredArgs> handler = OnRegistryRequired;
+            if (OnRegistryRequired != null)
+            {
+                OnRegistryRequired(this, args);
+            }
+            return args.Registry;
+        }
+
+        public event EventHandler<MapperRegistryRequiredArgs> OnRegistryRequired;
+    }
+
+    public class MapperRegistryRequiredArgs : EventArgs
+    {
+        public IUmbMapperRegistry Registry { get; set; }
     }
 }
