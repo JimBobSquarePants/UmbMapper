@@ -6,6 +6,10 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using UmbMapper.Extensions;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 
@@ -24,7 +28,7 @@ namespace UmbMapper
 
         void AddMapper(IUmbMapperConfig config);
 
-        void AppMapper<TMapper, TDestination>()
+        void AddMapper<TMapper, TDestination>()
             where TMapper : UmbMapperConfig<TDestination>
             where TDestination : class;
     }
@@ -89,20 +93,66 @@ namespace UmbMapper
             this.Mappers.TryAdd(config.MappedType, config);
         }
 
-        public void AppMapper<TMapper, TDestination>()
-            where TMapper : UmbMapperConfig<TDestination>
-            where TDestination : class
+        public void AddMapper<TMapper, T>()
+            where TMapper : UmbMapperConfig<T>
+            where T : class
         {
-            UmbMapperConfig<TDestination> mapper = Activator.CreateInstance(typeof(TMapper)) as UmbMapperConfig<TDestination>;
-            mapper.OnNewMapAdded += this.Mapper_OnNewMapAdded<TDestination>;
+            UmbMapperConfig<T> mapperConfig = Activator.CreateInstance(typeof(TMapper)) as UmbMapperConfig<T>;
+            mapperConfig.OnNewMapAdded += this.Mapper_OnNewMapAdded<T>;
+            mapperConfig.OnNewMapsAdded += this.Mapper_OnNewMapsAdded;
 
-            mapper.Init();
+            mapperConfig.Init();
+            this.Mappers.TryAdd(mapperConfig.MappedType, mapperConfig);
         }
 
-        private void Mapper_OnNewMapAdded<TDestination>(UmbMapperConfig<TDestination> mappingConfig, System.Linq.Expressions.Expression<Func<TDestination, object>> propertyExpression)
-            where TDestination : class
+        private void Mapper_OnNewMapAdded<T>(UmbMapperConfig<T> mappingConfig, Expression<Func<T, object>> propertyExpression, out PropertyMap<T> map)
+            where T : class
         {
-            throw new NotImplementedException();
+            if (!this.GetOrCreateMap<T>(mappingConfig, propertyExpression.ToPropertyInfo(), out map))
+            {
+                mappingConfig.Maps.Add(map);
+            }
+        }
+
+        private void Mapper_OnNewMapsAdded<T>(UmbMapperConfig<T> mappingConfig, out IEnumerable<PropertyMap<T>> maps, params Expression<Func<T, object>>[] propertyExpressions)
+            where T : class
+        {
+            if (propertyExpressions is null)
+            {
+                maps = Enumerable.Empty<PropertyMap<T>>();
+                return;
+            }
+
+            var mapsTemp = new List<PropertyMap<T>>();
+            foreach (Expression<Func<T, object>> property in propertyExpressions)
+            {
+                if (!this.GetOrCreateMap(mappingConfig, property.ToPropertyInfo(), out PropertyMap<T> map))
+                {
+                    mappingConfig.Maps.Add(map);
+                }
+
+                mapsTemp.Add(map);
+            }
+
+            // We only want to return the new maps for subsequent augmentation
+            maps = mappingConfig.Maps.Intersect(mapsTemp);
+        }
+
+
+
+        private bool GetOrCreateMap<T>(UmbMapperConfig<T> mapping, PropertyInfo property, out PropertyMap<T> map)
+            where T : class
+        {
+            bool exists = true;
+            map = mapping.Maps.Find(x => x.Info.Property.Name == property.Name);
+
+            if (map is null)
+            {
+                exists = false;
+                map = new PropertyMap<T>(property);
+            }
+
+            return exists;
         }
 
         /// <summary>

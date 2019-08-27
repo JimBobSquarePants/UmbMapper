@@ -14,7 +14,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         {
             var registry = new UmbMapperRegistry(Mock.Of<IUmbracoContextFactory>());
 
-            registry.AddMapper(new PublishedItemMap());
+            registry.AddMapper<PublishedItemMap, PublishedItem>();
             Assert.Contains(registry.CurrentMappers(), m => m.MappedType == typeof(PublishedItem));
         }
 

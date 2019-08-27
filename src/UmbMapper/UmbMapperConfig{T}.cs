@@ -101,6 +101,8 @@ namespace UmbMapper
         public IPropertyMap[] LazyPredicateMaps => this.lazyPredicateMaps;
         public List<string> LazyNames => this.lazyNames;
 
+        public List<PropertyMap<T>> Maps => this.maps;
+
         FastPropertyAccessor IUmbMapperConfig.PropertyAccessor => this.propertyAccessor;
 
         /// <inheritdoc/>
@@ -119,13 +121,13 @@ namespace UmbMapper
             //TODO the syntax / structure of this could change
             // perhaps have another type of factory to add maps to each 
             // config instead of having the config add the map to its self?
-            OnNewMapAdded?.Invoke(this, propertyExpression);
+            PropertyMap<T> map = null;
+            this.OnNewMapAdded?.Invoke(this, propertyExpression, out map);
 
-
-            if (!this.GetOrCreateMap(propertyExpression.ToPropertyInfo(), out PropertyMap<T> map))
-            {
-                this.maps.Add(map);
-            }
+            //if (!this.GetOrCreateMap(propertyExpression.ToPropertyInfo(), out PropertyMap<T> map))
+            //{
+            //    this.maps.Add(map);
+            //}
 
             return map;
         }
@@ -138,6 +140,9 @@ namespace UmbMapper
         /// <exception cref="ArgumentException">Thrown if the expression is not a property member expression.</exception>
         public IEnumerable<PropertyMap<T>> AddMappings(params Expression<Func<T, object>>[] propertyExpressions)
         {
+            IEnumerable<PropertyMap<T>> addedMaps = null;
+            this.OnNewMapsAdded?.Invoke(this, out addedMaps, propertyExpressions);
+
             if (propertyExpressions is null)
             {
                 return Enumerable.Empty<PropertyMap<T>>();
@@ -576,8 +581,12 @@ namespace UmbMapper
             return exists;
         }
 
-        public delegate void NewMapAdded<T>(UmbMapperConfig<T> mappingConfig, Expression<Func<T, object>> propertyExpression)
+        public delegate void NewMapAdded<T>(UmbMapperConfig<T> mappingConfig, Expression<Func<T, object>> propertyExpression, out PropertyMap<T> map)
             where T : class;
         public event NewMapAdded<T> OnNewMapAdded;
+
+        public delegate void NewMapsAdded<T>(UmbMapperConfig<T> mappingConfig, out IEnumerable<PropertyMap<T>> maps, params Expression<Func<T, object>>[] propertyExpressions)
+            where T : class;
+        public event NewMapsAdded<T> OnNewMapsAdded;
     }
 }
