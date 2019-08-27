@@ -112,22 +112,15 @@ namespace UmbMapper
 
         /// <summary>
         /// Adds the map from the property to an equivalent Umbraco property
+        /// //TODO - should these methods be protected so only inheriting classes can call them?
         /// </summary>
         /// <param name="propertyExpression">The property to map</param>
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
         /// <exception cref="ArgumentException">Thrown if the expression is not a property member expression.</exception>
         public PropertyMap<T> AddMap(Expression<Func<T, object>> propertyExpression)
         {
-            //TODO the syntax / structure of this could change
-            // perhaps have another type of factory to add maps to each 
-            // config instead of having the config add the map to its self?
             PropertyMap<T> map = null;
-            this.OnNewMapAdded?.Invoke(this, propertyExpression, out map);
-
-            //if (!this.GetOrCreateMap(propertyExpression.ToPropertyInfo(), out PropertyMap<T> map))
-            //{
-            //    this.maps.Add(map);
-            //}
+            this.OnMapAdded?.Invoke(this, propertyExpression, out map);
 
             return map;
         }
@@ -141,26 +134,9 @@ namespace UmbMapper
         public IEnumerable<PropertyMap<T>> AddMappings(params Expression<Func<T, object>>[] propertyExpressions)
         {
             IEnumerable<PropertyMap<T>> addedMaps = null;
-            this.OnNewMapsAdded?.Invoke(this, out addedMaps, propertyExpressions);
+            this.OnMapsAdded?.Invoke(this, out addedMaps, propertyExpressions);
 
-            if (propertyExpressions is null)
-            {
-                return Enumerable.Empty<PropertyMap<T>>();
-            }
-
-            var mapsTemp = new List<PropertyMap<T>>();
-            foreach (Expression<Func<T, object>> property in propertyExpressions)
-            {
-                if (!this.GetOrCreateMap(property.ToPropertyInfo(), out PropertyMap<T> map))
-                {
-                    this.maps.Add(map);
-                }
-
-                mapsTemp.Add(map);
-            }
-
-            // We only want to return the new maps for subsequent augmentation
-            return this.maps.Intersect(mapsTemp);
+            return addedMaps;
         }
 
         /// <summary>
@@ -169,15 +145,24 @@ namespace UmbMapper
         /// <returns>The <see cref="IEnumerable{T}"/></returns>
         public IEnumerable<PropertyMap<T>> MapAll()
         {
-            foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags))
-            {
-                if (!this.GetOrCreateMap(property, out PropertyMap<T> map))
-                {
-                    this.maps.Add(map);
-                }
-            }
+            IEnumerable<PropertyMap<T>> addedMaps = null;
+            this.OnAllMapsAdded?.Invoke(this, out addedMaps);
 
-            return this.maps;
+            return addedMaps;
+            // return this.maps ?? - same thing, which one is better
+        }
+
+        /// <summary>
+        /// Adds a map from each writable property in the class to an equivalent Umbraco property
+        /// </summary>
+        /// <returns>The <see cref="IEnumerable{T}"/></returns>
+        internal IEnumerable<PropertyMap<T>> MapAllWritable()
+        {
+            IEnumerable<PropertyMap<T>> addedMaps = null;
+            this.OnAllMapsWriteableAdded?.Invoke(this, out addedMaps);
+
+            return addedMaps;
+            // return this.maps ?? - same thing, which one is better
         }
 
         /// <summary>
@@ -187,10 +172,13 @@ namespace UmbMapper
         /// <returns>The <see cref="bool"/></returns>
         public bool Ignore(Expression<Func<T, object>> propertyExpression)
         {
-            var property = propertyExpression.ToPropertyInfo();
-            PropertyMap<T> map = this.maps.Find(m => m.Info.Property == property);
+            this.OnMapIgnored(this, propertyExpression, out bool removed);
 
-            return map != null && this.maps.Remove(map);
+            return removed;
+            //var property = propertyExpression.ToPropertyInfo();
+            //PropertyMap<T> map = this.maps.Find(m => m.Info.Property == property);
+
+            //return map != null && this.maps.Remove(map);
         }
 
         /// <inheritdoc/>
@@ -326,22 +314,7 @@ namespace UmbMapper
         //    this.MapNonLazyProperties(content, destination);
         //}
 
-        /// <summary>
-        /// Adds a map from each writable property in the class to an equivalent Umbraco property
-        /// </summary>
-        /// <returns>The <see cref="IEnumerable{T}"/></returns>
-        internal IEnumerable<PropertyMap<T>> MapAllWritable()
-        {
-            foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags).Where(p => p.CanWrite))
-            {
-                if (!this.GetOrCreateMap(property, out PropertyMap<T> map))
-                {
-                    this.maps.Add(map);
-                }
-            }
-
-            return this.maps;
-        }
+        
 
         //private static object MapProperty(PropertyMap<T> map, IPublishedContent content, object result)
         //{
@@ -567,26 +540,38 @@ namespace UmbMapper
         //    }
         //}
 
-        private bool GetOrCreateMap(PropertyInfo property, out PropertyMap<T> map)
-        {
-            bool exists = true;
-            map = this.maps.Find(x => x.Info.Property.Name == property.Name);
+        //private bool GetOrCreateMap(PropertyInfo property, out PropertyMap<T> map)
+        //{
+        //    bool exists = true;
+        //    map = this.maps.Find(x => x.Info.Property.Name == property.Name);
 
-            if (map is null)
-            {
-                exists = false;
-                map = new PropertyMap<T>(property);
-            }
+        //    if (map is null)
+        //    {
+        //        exists = false;
+        //        map = new PropertyMap<T>(property);
+        //    }
 
-            return exists;
-        }
+        //    return exists;
+        //}
 
-        public delegate void NewMapAdded<T>(UmbMapperConfig<T> mappingConfig, Expression<Func<T, object>> propertyExpression, out PropertyMap<T> map)
+        public delegate void MapAdded<T>(UmbMapperConfig<T> mappingConfig, Expression<Func<T, object>> propertyExpression, out PropertyMap<T> map)
             where T : class;
-        public event NewMapAdded<T> OnNewMapAdded;
+        public event MapAdded<T> OnMapAdded;
 
-        public delegate void NewMapsAdded<T>(UmbMapperConfig<T> mappingConfig, out IEnumerable<PropertyMap<T>> maps, params Expression<Func<T, object>>[] propertyExpressions)
+        public delegate void MapsAdded<T>(UmbMapperConfig<T> mappingConfig, out IEnumerable<PropertyMap<T>> maps, params Expression<Func<T, object>>[] propertyExpressions)
             where T : class;
-        public event NewMapsAdded<T> OnNewMapsAdded;
+        public event MapsAdded<T> OnMapsAdded;
+
+        public delegate void AllMapsAdded<T>(UmbMapperConfig<T> mappingConfig, out IEnumerable<PropertyMap<T>> maps)
+            where T : class;
+        public event AllMapsAdded<T> OnAllMapsAdded;
+
+        public delegate void AllMapsWriteableAdded<T>(UmbMapperConfig<T> mappingConfig, out IEnumerable<PropertyMap<T>> maps)
+            where T : class;
+        public event AllMapsWriteableAdded<T> OnAllMapsWriteableAdded;
+
+        public delegate void MapIgnored<T>(UmbMapperConfig<T> mappingConfig, Expression<Func<T, object>> propertyExpression, out bool removed)
+            where T : class;
+        public event MapIgnored<T> OnMapIgnored;
     }
 }

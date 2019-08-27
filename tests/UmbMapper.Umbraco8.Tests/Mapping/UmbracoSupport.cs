@@ -63,13 +63,14 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
 
         public void InitMappers(IUmbMapperRegistry umbMapperRegistry)
         {
-            //umbMapperRegistry.AddMapper(new PublishedItemMap());
-            umbMapperRegistry.AddMapper<PublishedItemMap, PublishedItem>();
+            umbMapperRegistry.AddMapper<PublishedItemMap, PublishedItem>();  //umbMapperRegistry.AddMapper(new PublishedItemMap());
             //umbMapperRegistry.AddMapper(new LazyPublishedItemMap());
-            //umbMapperRegistry.AddMapperFor<AutoMappedItem>();
-            //umbMapperRegistry.AddMapper(new BackedPublishedItemMap());
-            //umbMapperRegistry.AddMapper(new InheritedPublishedItemMap());
-            //umbMapperRegistry.AddMapper(new CsvPublishedItemMap());
+            umbMapperRegistry.AddMapperFor<AutoMappedItem>();
+            umbMapperRegistry.AddMapper<BackedPublishedItemMap, BackedPublishedItem>();  //umbMapperRegistry.AddMapper(new BackedPublishedItemMap());
+
+            umbMapperRegistry.AddMapper<InheritedPublishedItemMap, InheritedPublishedItem>(); // umbMapperRegistry.AddMapper(new InheritedPublishedItemMap());
+
+            umbMapperRegistry.AddMapper<CsvPublishedItemMap, CsvPublishedItem>();
             //umbMapperRegistry.AddMapperFor<PolymorphicItemOne>();
             //umbMapperRegistry.AddMapperFor<PolymorphicItemTwo>();
         }

@@ -98,14 +98,25 @@ namespace UmbMapper
             where T : class
         {
             UmbMapperConfig<T> mapperConfig = Activator.CreateInstance(typeof(TMapper)) as UmbMapperConfig<T>;
-            mapperConfig.OnNewMapAdded += this.Mapper_OnNewMapAdded<T>;
-            mapperConfig.OnNewMapsAdded += this.Mapper_OnNewMapsAdded;
+
+            this.AddMapper<TMapper, T>(mapperConfig);
+        }
+
+        public void AddMapper<TMapper, T>(UmbMapperConfig<T> mapperConfig)
+            where TMapper : UmbMapperConfig<T>
+            where T : class
+        {
+            mapperConfig.OnMapAdded += this.Mapper_OnMapAdded;
+            mapperConfig.OnMapsAdded += this.Mapper_OnMapsAdded;
+            mapperConfig.OnAllMapsAdded += this.MapperConfig_OnAllMapsAdded;
+            mapperConfig.OnAllMapsWriteableAdded += this.MapperConfig_OnAllMapsWriteableAdded;
+            mapperConfig.OnMapIgnored += this.MapperConfig_OnMapIgnored;
 
             mapperConfig.Init();
             this.Mappers.TryAdd(mapperConfig.MappedType, mapperConfig);
         }
 
-        private void Mapper_OnNewMapAdded<T>(UmbMapperConfig<T> mappingConfig, Expression<Func<T, object>> propertyExpression, out PropertyMap<T> map)
+        private void Mapper_OnMapAdded<T>(UmbMapperConfig<T> mappingConfig, Expression<Func<T, object>> propertyExpression, out PropertyMap<T> map)
             where T : class
         {
             if (!this.GetOrCreateMap<T>(mappingConfig, propertyExpression.ToPropertyInfo(), out map))
@@ -114,7 +125,7 @@ namespace UmbMapper
             }
         }
 
-        private void Mapper_OnNewMapsAdded<T>(UmbMapperConfig<T> mappingConfig, out IEnumerable<PropertyMap<T>> maps, params Expression<Func<T, object>>[] propertyExpressions)
+        private void Mapper_OnMapsAdded<T>(UmbMapperConfig<T> mappingConfig, out IEnumerable<PropertyMap<T>> maps, params Expression<Func<T, object>>[] propertyExpressions)
             where T : class
         {
             if (propertyExpressions is null)
@@ -138,7 +149,48 @@ namespace UmbMapper
             maps = mappingConfig.Maps.Intersect(mapsTemp);
         }
 
+        private void MapperConfig_OnAllMapsAdded<T>(UmbMapperConfig<T> mappingConfig, out IEnumerable<PropertyMap<T>> maps)
+            where T : class
+        {
+            foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags))
+            {
+                if (!this.GetOrCreateMap(mappingConfig, property, out PropertyMap<T> map))
+                {
+                    mappingConfig.Maps.Add(map);
+                }
+            }
 
+            maps = mappingConfig.Maps;
+
+
+            //throw new NotImplementedException();
+        }
+
+        private void MapperConfig_OnAllMapsWriteableAdded<T>(UmbMapperConfig<T> mappingConfig, out IEnumerable<PropertyMap<T>> maps)
+            where T : class
+        {
+            foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags).Where(p => p.CanWrite))
+            {
+                if (!this.GetOrCreateMap<T>(mappingConfig, property, out PropertyMap<T> map))
+                {
+                    mappingConfig.Maps.Add(map);
+                }
+            }
+
+            maps = mappingConfig.Maps;
+
+            //throw new NotImplementedException();
+        }
+
+        private void MapperConfig_OnMapIgnored<T>(UmbMapperConfig<T> mappingConfig, Expression<Func<T, object>> propertyExpression, out bool removed)
+            where T : class
+        {
+            var property = propertyExpression.ToPropertyInfo();
+            PropertyMap<T> map = mappingConfig.Maps.Find(m => m.Info.Property == property);
+
+            removed = map != null && mappingConfig.Maps.Remove(map);
+            //throw new NotImplementedException();
+        }
 
         private bool GetOrCreateMap<T>(UmbMapperConfig<T> mapping, PropertyInfo property, out PropertyMap<T> map)
             where T : class
@@ -168,11 +220,13 @@ namespace UmbMapper
                 return;
             }
 
-            var config = new UmbMapperConfig<T>();
-            config.MapAllWritable().ForEach(x => x.AsAutoLazy());
-            ((IUmbMapperConfig)config).Init();
+            var mapperConfig = new UmbMapperConfig<T>();
+            mapperConfig.OnAllMapsWriteableAdded += this.MapperConfig_OnAllMapsWriteableAdded;
 
-            this.Mappers.TryAdd(config.MappedType, config);
+            mapperConfig.MapAllWritable().ForEach(x => x.AsAutoLazy());
+
+            mapperConfig.Init();
+            this.Mappers.TryAdd(mapperConfig.MappedType, mapperConfig);
         }
 
         /// <summary>

@@ -21,14 +21,24 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         [Fact]
         public void UmbMapperCanMapAll()
         {
-            var mapper = new PublishedItemMapAll();
-            Assert.True(mapper.Mappings.Any());
+            var registry = new UmbMapperRegistry(Mock.Of<IUmbracoContextFactory>());
+
+            registry.AddMapper<PublishedItemMapMany, PublishedItem>();
+            registry.Mappers.TryGetValue(typeof(PublishedItem), out IUmbMapperConfig umbMapperConfig);
+
+            Assert.True(umbMapperConfig.Mappings.Any());
         }
 
         [Fact]
+        //TODO - how do we test this now?
         public void UmbMapperCanMapMany()
         {
             var mapper = new PublishedItemMapMany();
+
+            var registry = new UmbMapperRegistry(Mock.Of<IUmbracoContextFactory>());
+            registry.AddMapper<PublishedItemMapMany, PublishedItem>(mapper);
+            
+            //var mapper = new PublishedItemMapMany();
             IEnumerable<IPropertyMap> currentMaps = mapper.Mappings;
             int currentCount = currentMaps.Count();
 
