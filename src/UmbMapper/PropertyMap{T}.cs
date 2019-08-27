@@ -8,9 +8,11 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Web.Mvc;
 using UmbMapper.Extensions;
 using UmbMapper.PropertyMappers;
 using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 
 namespace UmbMapper
 {
@@ -102,6 +104,15 @@ namespace UmbMapper
         public PropertyMap<T> SetMapper<TMapper>()
             where TMapper : IPropertyMapper
         {
+            this.PropertyMapper = (TMapper)typeof(TMapper).GetInstance(this.Info);
+            return this;
+        }
+
+        public PropertyMap<T> SetFactoryMapper<TMapper>()
+            where TMapper : FactoryPropertyMapperBase
+        {
+            var umb = DependencyResolver.Current.GetService<IUmbracoContextFactory>();
+
             this.PropertyMapper = (TMapper)typeof(TMapper).GetInstance(this.Info);
             return this;
         }

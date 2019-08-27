@@ -19,13 +19,15 @@ namespace UmbMapper.PropertyMappers
     /// </summary>
     public abstract class FactoryPropertyMapperBase : PropertyMapperBase
     {
+        private readonly IUmbMapperRegistry umbMapperRegistry;
         /// <summary>
         /// Initializes a new instance of the <see cref="FactoryPropertyMapperBase"/> class.
         /// </summary>
         /// <param name="info">The property map information</param>
-        protected FactoryPropertyMapperBase(PropertyMapInfo info)
+        protected FactoryPropertyMapperBase(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry)
             : base(info)
         {
+            this.umbMapperRegistry = umbMapperRegistry;
         }
 
         /// <summary>
@@ -46,8 +48,8 @@ namespace UmbMapper.PropertyMappers
             // Done to get project compiling and initial tests running
             //var mapperRegistry = DependencyResolver.Current.GetService<IUmbMapperRegistry>();
             //IEnumerable<Type> types = mapperRegistry.CurrentMappedTypes();
-            var mapperRegistry = GetMapperRegistry();
-            IEnumerable<Type> types = mapperRegistry.CurrentMappedTypes();
+            
+            IEnumerable<Type> types = this.umbMapperRegistry.CurrentMappedTypes();
 
             // Check for IEnumerable<IPublishedContent> value
             if (value is IEnumerable<IPublishedContent> enumerableContentValue)
@@ -103,22 +105,22 @@ namespace UmbMapper.PropertyMappers
             }
         }
 
-        private IUmbMapperRegistry GetMapperRegistry()
-        {
-            var args = new MapperRegistryRequiredArgs();
-            EventHandler<MapperRegistryRequiredArgs> handler = OnRegistryRequired;
-            if (OnRegistryRequired != null)
-            {
-                OnRegistryRequired(this, args);
-            }
-            return args.Registry;
-        }
+        //private IUmbMapperRegistry GetMapperRegistry()
+        //{
+        //    var args = new MapperRegistryRequiredArgs();
+        //    EventHandler<MapperRegistryRequiredArgs> handler = OnRegistryRequired;
+        //    if (OnRegistryRequired != null)
+        //    {
+        //        OnRegistryRequired(this, args);
+        //    }
+        //    return args.Registry;
+        //}
 
-        public event EventHandler<MapperRegistryRequiredArgs> OnRegistryRequired;
+        //public event EventHandler<MapperRegistryRequiredArgs> OnRegistryRequired;
     }
 
-    public class MapperRegistryRequiredArgs : EventArgs
-    {
-        public IUmbMapperRegistry Registry { get; set; }
-    }
+    //public class MapperRegistryRequiredArgs : EventArgs
+    //{
+    //    public IUmbMapperRegistry Registry { get; set; }
+    //}
 }

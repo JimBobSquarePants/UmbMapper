@@ -114,6 +114,9 @@ namespace UmbMapper
         /// <exception cref="ArgumentException">Thrown if the expression is not a property member expression.</exception>
         public PropertyMap<T> AddMap(Expression<Func<T, object>> propertyExpression)
         {
+            //TODO the syntax / structure of this could change
+            // perhaps have another type of tool to add maps to each 
+            // config instead of having the config add the map to its self?
             if (!this.GetOrCreateMap(propertyExpression.ToPropertyInfo(), out PropertyMap<T> map))
             {
                 this.maps.Add(map);
