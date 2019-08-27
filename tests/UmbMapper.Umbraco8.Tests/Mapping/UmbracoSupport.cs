@@ -64,6 +64,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         public void InitMappers(IUmbMapperRegistry umbMapperRegistry)
         {
             umbMapperRegistry.AddMapper(new PublishedItemMap());
+            umbMapperRegistry.AppMapper<PublishedItemMap, PublishedItem>();
             //umbMapperRegistry.AddMapper(new LazyPublishedItemMap());
             umbMapperRegistry.AddMapperFor<AutoMappedItem>();
             umbMapperRegistry.AddMapper(new BackedPublishedItemMap());

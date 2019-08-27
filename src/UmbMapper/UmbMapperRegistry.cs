@@ -23,6 +23,10 @@ namespace UmbMapper
             where T : class;
 
         void AddMapper(IUmbMapperConfig config);
+
+        void AppMapper<TMapper, TDestination>()
+            where TMapper : UmbMapperConfig<TDestination>
+            where TDestination : class;
     }
 
     /// <summary>
@@ -83,6 +87,22 @@ namespace UmbMapper
 
             config.Init();
             this.Mappers.TryAdd(config.MappedType, config);
+        }
+
+        public void AppMapper<TMapper, TDestination>()
+            where TMapper : UmbMapperConfig<TDestination>
+            where TDestination : class
+        {
+            UmbMapperConfig<TDestination> mapper = Activator.CreateInstance(typeof(TMapper)) as UmbMapperConfig<TDestination>;
+            mapper.OnNewMapAdded += this.Mapper_OnNewMapAdded<TDestination>;
+
+            mapper.Init();
+        }
+
+        private void Mapper_OnNewMapAdded<TDestination>(UmbMapperConfig<TDestination> mappingConfig, System.Linq.Expressions.Expression<Func<TDestination, object>> propertyExpression)
+            where TDestination : class
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
