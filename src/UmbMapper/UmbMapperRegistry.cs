@@ -31,6 +31,12 @@ namespace UmbMapper
         void AddMapper<TMapper, TDestination>()
             where TMapper : UmbMapperConfig<TDestination>
             where TDestination : class;
+
+        T CreateEmpty<T>()
+            where T : class;
+
+        T CreateEmpty<T>(IPublishedContent content)
+           where T : class;
     }
 
     /// <summary>

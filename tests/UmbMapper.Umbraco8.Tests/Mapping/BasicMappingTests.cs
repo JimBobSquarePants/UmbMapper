@@ -203,7 +203,8 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             Assert.Equal(enumerableExpected, result.EnumerableItems);
         }
 
-        ////TODO MapperCanMapPolymorphicTypes
+        //TODO MapperCanMapPolymorphicTypes
+        // Need to get umbMapperRegistry in FactoryPropertyMapperBase
         //[Fact]
         //public void MapperCanMapPolymorphicTypes()
         //{
@@ -216,37 +217,37 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         //    Assert.Contains(result.Polymorphic, x => x.PolyMorphicText == "Bar");
         //}
 
-        //[Fact]
-        //public void MapperCanMapToExistingInstance()
-        //{
-        //    const int id = 999;
-        //    const string name = "Foo";
-        //    var created = new DateTime(2017, 1, 1);
-        //    const PlaceOrder placeOrder = PlaceOrder.Second;
+        [Fact]
+        public void MapperCanMapToExistingInstance()
+        {
+            const int id = 999;
+            const string name = "Foo";
+            var created = new DateTime(2017, 1, 1);
+            const PlaceOrder placeOrder = PlaceOrder.Second;
 
-        //    MockPublishedContent content = this.support.Content;
-        //    content.Id = id;
-        //    content.Name = name;
-        //    content.CreateDate = created;
-        //    content.Properties = new List<IPublishedProperty>
-        //    {
-        //        UmbMapperMockFactory.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), PlaceOrder.Fourth)
-        //    };
+            MockPublishedContent content = this.support.Content;
+            content.Id = id;
+            content.Name = name;
+            content.CreateDate = created;
+            content.Properties = new List<IPublishedProperty>
+            {
+                UmbMapperMockFactory.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), PlaceOrder.Fourth)
+            };
 
-        //    PublishedItem result = UmbMapperRegistry.CreateEmpty<PublishedItem>();
+            PublishedItem result = this.umbMapperRegistry.CreateEmpty<PublishedItem>();
 
-        //    // Set a value before mapping.
-        //    result.PlaceOrder = placeOrder;
+            // Set a value before mapping.
+            result.PlaceOrder = placeOrder;
 
-        //    content.MapTo(result);
+            this.umbMapperService.MapTo(content, result);
 
-        //    Assert.Equal(id, result.Id);
-        //    Assert.Equal(name, result.Name);
-        //    Assert.Equal(created, result.CreateDate);
+            Assert.Equal(id, result.Id);
+            Assert.Equal(name, result.Name);
+            Assert.Equal(created, result.CreateDate);
 
-        //    // We expect it to be overwritten
-        //    Assert.NotEqual(placeOrder, result.PlaceOrder);
-        //}
+            // We expect it to be overwritten
+            Assert.NotEqual(placeOrder, result.PlaceOrder);
+        }
 
         [Fact]
         public void MapperCanMapInheritedMixedItems()

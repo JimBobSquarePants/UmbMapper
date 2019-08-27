@@ -71,8 +71,8 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             umbMapperRegistry.AddMapper<InheritedPublishedItemMap, InheritedPublishedItem>(); // umbMapperRegistry.AddMapper(new InheritedPublishedItemMap());
 
             umbMapperRegistry.AddMapper<CsvPublishedItemMap, CsvPublishedItem>();
-            //umbMapperRegistry.AddMapperFor<PolymorphicItemOne>();
-            //umbMapperRegistry.AddMapperFor<PolymorphicItemTwo>();
+            umbMapperRegistry.AddMapperFor<PolymorphicItemOne>();
+            umbMapperRegistry.AddMapperFor<PolymorphicItemTwo>();
         }
 
         public void SetupUmbracoContext()

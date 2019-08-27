@@ -44,7 +44,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping.Models
             this.AddMap(p => p.Link);
             this.AddMap(p => p.Links);
             this.AddMap(p => p.NullLinks);
-            //this.AddMap(p => p.Polymorphic).SetFactoryMapper<DocTypeFactoryPropertyMapper>();
+            //this.AddMap(p => p.Polymorphic);.SetFactoryMapper<DocTypeFactoryPropertyMapper>();
             this.AddMap(p => p.PublishedContent);
             this.AddMap(p => p.PublishedInterfaceContent); //.SetMapper<UmbracoPickerPropertyMapper>();
             this.AddMap(p => p.Child); //.SetMapper<UmbracoPickerPropertyMapper>();
