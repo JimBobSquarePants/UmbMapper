@@ -17,6 +17,7 @@ namespace UmbMapper.Umbraco8.Tests.Factories
     public class BasicFactoryMappingTests : IClassFixture<UmbracoSupport>
     {
         private readonly UmbracoSupport support;
+        private readonly IUmbMapperInitialiser umbMapperInitialiser;
         private readonly IUmbMapperRegistry umbMapperRegistry;
         private readonly IUmbMapperService umbMapperService;
 
