@@ -28,7 +28,7 @@ namespace UmbMapper.Factories
                 bool mapExists =
                     this.GetOrCreateMap<T>(
                         mappingConfig,
-                        propertyMapDefinition.PropertyExpression,
+                        propertyMapDefinition,
                         out PropertyMap<T> map);
 
                 if (!mapExists)
@@ -40,10 +40,10 @@ namespace UmbMapper.Factories
             return mappingConfig;
         }
 
-        private bool GetOrCreateMap<T>(UmbMapperConfig<T> mappingConfig, Expression<Func<T, object>> expression, out PropertyMap<T> map)
+        private bool GetOrCreateMap<T>(UmbMapperConfig<T> mappingConfig, PropertyMapDefinition<T> propertyMapDefinition, out PropertyMap<T> map)
             where T : class
         {
-            PropertyInfo property = expression.ToPropertyInfo();
+            PropertyInfo property = propertyMapDefinition.PropertyExpression.ToPropertyInfo();
 
             bool exists = true;
             map = mappingConfig.Maps.Find(x => x.Info.Property.Name == property.Name);
@@ -51,8 +51,7 @@ namespace UmbMapper.Factories
             if (map is null)
             {
                 exists = false;
-                map = new PropertyMap<T>(property);
-                map = this.propertyMapFactory.Create<T>(new PropertyMapDefinition<T>(expression));
+                map = this.propertyMapFactory.Create<T>(propertyMapDefinition);
             }
 
             return exists;
