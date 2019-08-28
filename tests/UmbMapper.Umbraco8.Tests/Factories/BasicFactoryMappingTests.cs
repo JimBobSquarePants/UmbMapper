@@ -85,17 +85,17 @@ namespace UmbMapper.Umbraco8.Tests.Factories
             Assert.Equal(created, result.UpdateDate);
         }
 
-        //[Fact]
-        //public void MapperCanMapLinks()
-        //{
-        //    MockPublishedContent content = this.support.Content;
+        [Fact]
+        public void MapperCanMapLinks()
+        {
+            MockPublishedContent content = this.support.Content;
 
-        //    PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
+            PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
 
-        //    Assert.NotNull(result.Link);
-        //    Assert.NotNull(result.Links);
-        //    Assert.True(result.Links.GetType().IsEnumerableOfType(typeof(Link)));
-        //}
+            Assert.NotNull(result.Link);
+            Assert.NotNull(result.Links);
+            Assert.True(result.Links.GetType().IsEnumerableOfType(typeof(Link)));
+        }
 
         //[Fact]
         //public void MapperCanMapAutoMappedProperties()
