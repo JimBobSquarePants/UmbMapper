@@ -52,17 +52,9 @@ namespace UmbMapper
                 throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
             }
 
-            // TODO change this  type of structure
-            // instead of getting a mapper and have it responsible for the mapping
-            // IUmbMapperConfig has the config and something like 
-            // IUmbMapperProcessor.Map(IUmbMapperConfig mapperConfig, content)
-            // performs the actual mapping
-            var mappingProcessor = mapper.CreateProcessor(this);
+            IMappingProcessor mappingProcessor = this.GetMappingProcessor(mapper);
 
             return mappingProcessor.Map(content);
-
-
-            //return mapper.Map(content);
         }
 
         public void MapTo<T>(IPublishedContent content, T destination)
@@ -85,11 +77,28 @@ namespace UmbMapper
                 throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
             }
 
-            var mappingProcessor = mapper.CreateProcessor(this);
+            IMappingProcessor mappingProcessor = this.GetMappingProcessor(mapper);
 
             mappingProcessor.Map(content, destination);
+        }
 
-            //mapper.Map(content, destination);
+        private IMappingProcessor GetMappingProcessor(IUmbMapperConfig config)
+        {
+            IMappingProcessor mappingProcessor = this.mappingProcessorFactory.Create(config);
+            mappingProcessor.OnRecursivelyMapSingle += this.MappingProcessor_OnRecursivelyMapSingle;
+            mappingProcessor.OnRecursivelyMapMultiple += this.MappingProcessor_OnRecursivelyMapMultiple;
+
+            return mappingProcessor;
+        }
+
+        private void MappingProcessor_OnRecursivelyMapMultiple(IEnumerable<IPublishedContent> items, Type type, out IEnumerable<object> returnObjects)
+        {
+            returnObjects = this.MapTo(items, type);
+        }
+
+        private void MappingProcessor_OnRecursivelyMapSingle(IPublishedContent item, Type type, out object returnObject)
+        {
+            returnObject = this.MapTo(item, type);
         }
     }
 }

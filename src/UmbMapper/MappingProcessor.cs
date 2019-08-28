@@ -17,13 +17,12 @@ namespace UmbMapper
         where T : class
     {
         private readonly IUmbMapperConfig mappingConfig;
-        private readonly IUmbMapperService umbMapperService;
 
-        public MappingProcessor(IUmbMapperConfig mappingConfig, IUmbMapperService umbMapperService)
+        public MappingProcessor(IUmbMapperConfig mappingConfig)
         {
             this.mappingConfig = mappingConfig;
-            this.umbMapperService = umbMapperService;
         }
+
         public object CreateEmpty()
         {
             if (mappingConfig.CreateProxy)
@@ -112,7 +111,10 @@ namespace UmbMapper
                 // If the property value is an IPublishedContent, then we can map it to the target type.
                 if (value is IPublishedContent content && info.PropertyType.IsClass)
                 {
-                    return this.umbMapperService.MapTo(content, info.PropertyType);
+                    object returnObject = null;
+                    this.OnRecursivelyMapSingle?.Invoke(content, info.PropertyType, out returnObject);
+
+                    return returnObject;
                 }
 
                 // If the property value is an IEnumerable<IPublishedContent>, then we can map it to the target type.
@@ -121,9 +123,10 @@ namespace UmbMapper
                     Type genericType = info.EnumerableParamType;
                     if (genericType?.IsClass == true)
                     {
-                        return this.umbMapperService.MapTo((IEnumerable<IPublishedContent>)value, genericType);
+                        IEnumerable<object> returnObjects = null;
+                        this.OnRecursivelyMapMultiple?.Invoke((IEnumerable<IPublishedContent>)value, genericType, out returnObjects);
 
-                        //return ((IEnumerable<IPublishedContent>)value).MapTo(genericType);
+                        return returnObjects;
                     }
                 }
             }
@@ -319,5 +322,9 @@ namespace UmbMapper
 
             return value;
         }
+
+        public event RecursivelyMapSingle OnRecursivelyMapSingle;
+
+        public event RecursivelyMapMultiple OnRecursivelyMapMultiple;
     }
 }
