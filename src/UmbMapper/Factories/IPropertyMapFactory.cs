@@ -1,14 +1,10 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Reflection;
-//using System.Text;
-//using System.Threading.Tasks;
+﻿using UmbMapper.Models;
 
-//namespace UmbMapper.Factories
-//{
-//    internal interface IPropertyMapFactory
-//    {
-//        bool GetOrCreateMap(PropertyInfo property, out PropertyMap<T> map);
-//    }
-//}
+namespace UmbMapper.Factories
+{
+    public interface IPropertyMapFactory
+    {
+        PropertyMap<T> Create<T>(PropertyMapDefinition<T> mapDefinition)
+            where T : class;
+    }
+}
