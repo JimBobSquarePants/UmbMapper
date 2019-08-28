@@ -117,6 +117,34 @@ namespace UmbMapper
             return this;
         }
 
+        ////internal PropertyMap<T> SetMapper(Type mapperType)
+        //internal PropertyMap<T> SetMapper(IPropertyMap mapperType)
+        //{
+        //    if (!typeof(IPropertyMapper).IsAssignableFrom(mapperType))
+        //    {
+        //        throw new InvalidOperationException($"Attempt to set invalid type {mapperType.Name} as mapper Type");
+        //    }
+
+        //    this.PropertyMapper = (IPropertyMapper)mapperType.GetInstance(this.Info);
+        //    return this;
+        //}
+
+        //TODO - is it this or the above
+        internal PropertyMap<T> SetMapper(IPropertyMapper mapper)
+        {
+            this.PropertyMapper = mapper;
+
+            return this;
+        }
+
+        //TODO - as creating the maper is done elsewhere, this ShOULD be redundant
+        internal PropertyMap<T> SetMapperFactory(FactoryPropertyMapperBase mapper)
+        {
+            this.PropertyMapper = mapper;
+
+            return this;
+        }
+
         /// <summary>
         /// Sets the property mapping predicate. Used for mapping from known values in the current instance.
         /// </summary>

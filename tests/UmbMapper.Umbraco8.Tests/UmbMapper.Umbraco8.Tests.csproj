@@ -293,6 +293,7 @@
     <Compile Include="Mapping\Models\PlaceOrder.cs" />
     <Compile Include="Mapping\Models\PolymorphicItemOne.cs" />
     <Compile Include="Mapping\Models\PolymorphicItemTwo.cs" />
+    <Compile Include="Mapping\Models\PropertyMapDefinitions\PublishedItemMapDefinition.cs" />
     <Compile Include="Mapping\Models\PublishedItem.cs" />
     <Compile Include="Mapping\Models\PublishedItemMap.cs" />
     <Compile Include="Mapping\Models\PublishedItemMapAll.cs" />

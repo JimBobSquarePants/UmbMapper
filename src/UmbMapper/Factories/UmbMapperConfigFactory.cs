@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq.Expressions;
 using System.Reflection;
+using UmbMapper.Extensions;
 using UmbMapper.Models;
 
 namespace UmbMapper.Factories
@@ -15,37 +17,44 @@ namespace UmbMapper.Factories
         public UmbMapperConfig<T> GenerateConfig<T>(MappingDefinition<T> mappingDefinition)
             where T : class
         {
-            return GenerateConfig(new UmbMapperConfig<T>(), mappingDefinition);
-
-            
+            return this.GenerateConfig(new UmbMapperConfig<T>(), mappingDefinition);
         }
 
         public UmbMapperConfig<T> GenerateConfig<T>(UmbMapperConfig<T> mappingConfig, MappingDefinition<T> mappingDefinition)
             where T : class
         {
+            foreach (var propertyMapDefinition in mappingDefinition.MappingDefinitions)
+            {
+                bool mapExists =
+                    this.GetOrCreateMap<T>(
+                        mappingConfig,
+                        propertyMapDefinition.PropertyExpression,
+                        out PropertyMap<T> map);
 
-            //var map = this.GetOrCreateMap<T>(mapping)
+                if (!mapExists)
+                {
+                    mappingConfig.Maps.Add(map);
+                }
+            }
 
-
-                return mappingConfig;
+            return mappingConfig;
         }
 
-
-
-
-
-        private bool GetOrCreateMap<T>(UmbMapperConfig<T> mapping, PropertyInfo property, out PropertyMap<T> map)
+        private bool GetOrCreateMap<T>(UmbMapperConfig<T> mappingConfig, Expression<Func<T, object>> expression, out PropertyMap<T> map)
             where T : class
         {
+            PropertyInfo property = expression.ToPropertyInfo();
+
             bool exists = true;
-            map = mapping.Maps.Find(x => x.Info.Property.Name == property.Name);
+            map = mappingConfig.Maps.Find(x => x.Info.Property.Name == property.Name);
 
             if (map is null)
             {
                 exists = false;
                 map = new PropertyMap<T>(property);
-                //map = this.propertyMapFactory.Create<T>(new PropertyMapDefinition<T>()); //new PropertyMap<T>(property);
+                map = this.propertyMapFactory.Create<T>(new PropertyMapDefinition<T>(expression));
             }
+
             return exists;
         }
     }

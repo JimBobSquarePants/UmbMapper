@@ -13,12 +13,15 @@ namespace UmbMapper.Models
     {
         private List<PropertyMapDefinition<T>> mappingDefinitions;
 
+        public Type MappedType { get; }
         /// <summary>
         /// Initializes a new instance of the <see cref="MappingDefinition{T}"/> class.
         /// </summary>
         public MappingDefinition()
         {
             this.mappingDefinitions = new List<PropertyMapDefinition<T>>();
+
+            this.MappedType = typeof(T);
         }
 
         /// <summary>

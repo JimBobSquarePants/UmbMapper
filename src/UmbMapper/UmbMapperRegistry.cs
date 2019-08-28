@@ -10,6 +10,8 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using UmbMapper.Extensions;
+using UmbMapper.Factories;
+using UmbMapper.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 
@@ -28,6 +30,9 @@ namespace UmbMapper
 
         void AddMapper(IUmbMapperConfig config);
 
+        void AddMapper<T>(MappingDefinition<T> mappingDefinition)
+            where T : class;
+
         void AddMapper<TMapper, TDestination>()
             where TMapper : UmbMapperConfig<TDestination>
             where TDestination : class;
@@ -44,7 +49,11 @@ namespace UmbMapper
     /// </summary>
     public class UmbMapperRegistry : IUmbMapperRegistry, IDisposable
     {
-        //private readonly IUmbracoContextFactory umbracoContextFactory;
+        private readonly IUmbMapperConfigFactory umbMapperConfigFactory;
+        public UmbMapperRegistry(IUmbMapperConfigFactory umbMapperConfigFactory)
+        {
+            this.umbMapperConfigFactory = umbMapperConfigFactory;
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UmbMapperRegistry"/> class.
@@ -83,6 +92,21 @@ namespace UmbMapper
         /// <returns>The <see cref="IReadOnlyCollection{T}"/></returns>
         public IEnumerable<Type> CurrentMappedTypes()
             => this.Mappers.Keys;
+
+        public void AddMapper<T>(MappingDefinition<T> mappingDefinition)
+            where T : class
+        {
+            // Don't re-add a mapper for this type
+            if (this.Mappers.ContainsKey(mappingDefinition.MappedType))
+            {
+                return;
+            }
+
+            IUmbMapperConfig mappingConfig = this.umbMapperConfigFactory.GenerateConfig<T>(mappingDefinition);
+
+            mappingConfig.Init();
+            this.Mappers.TryAdd(mappingConfig.MappedType, mappingConfig);
+        }
 
         /// <summary>
         /// Adds the mapper configuration to the mapping registry
