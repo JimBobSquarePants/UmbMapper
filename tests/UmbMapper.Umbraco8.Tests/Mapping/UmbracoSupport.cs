@@ -6,6 +6,7 @@ using System.Reflection;
 using Moq;
 using Newtonsoft.Json;
 using UmbMapper.Umbraco8.Tests.Mapping.Models;
+using UmbMapper.Umbraco8.Tests.Mapping.Models.PropertyMapDefinitions;
 using UmbMapper.Umbraco8.Tests.Mocks;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Composing;
@@ -73,6 +74,11 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             umbMapperRegistry.AddMapper<CsvPublishedItemMap, CsvPublishedItem>();
             umbMapperRegistry.AddMapperFor<PolymorphicItemOne>();
             umbMapperRegistry.AddMapperFor<PolymorphicItemTwo>();
+        }
+
+        public void InitFactoryMappers(IUmbMapperRegistry umbMapperRegistry)
+        {
+            umbMapperRegistry.AddMapper(new PublishedItemMapDefinition());
         }
 
         public void SetupUmbracoContext()

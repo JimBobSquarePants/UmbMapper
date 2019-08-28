@@ -11,7 +11,7 @@ namespace UmbMapper.Factories
         {
             PropertyMap<T> newMap = new PropertyMap<T>(mapDefinition.PropertyExpression.ToPropertyInfo());
 
-            if (mapDefinition.Aliases.Any())
+            if (mapDefinition.Aliases != null && mapDefinition.Aliases.Any())
             {
                 newMap.SetAlias(mapDefinition.Aliases);
             }
@@ -31,19 +31,23 @@ namespace UmbMapper.Factories
             //}
             if (mapDefinition.Lazy)
             {
-                newMap.AsLazy();
+                newMap.SetLazy(true);
             }
 
             if (mapDefinition.Recursive)
             {
-                newMap.AsRecursive();
+                newMap.SetRecursive(true);
+            }
+
+            if (mapDefinition.MapFromInstancePredicate != null)
+            {
+                newMap.SetMapFromInstance(mapDefinition.MapFromInstancePredicate);
             }
 
             if (mapDefinition.DefaultValue != null)
             {
-                newMap.DefaultValue(mapDefinition.DefaultValue);
+                newMap.SetDefaultValue(mapDefinition.DefaultValue);
             }
-
 
             return newMap;
         }

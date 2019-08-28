@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using UmbMapper.PropertyMappers;
+using Umbraco.Core.Models.PublishedContent;
 
 namespace UmbMapper.Models
 {
@@ -60,6 +61,8 @@ namespace UmbMapper.Models
         /// Gets or sets the default value
         /// </summary>
         public object DefaultValue { get; set; }
+
+        public Func<T, IPublishedContent, object> MapFromInstancePredicate { get; private set;}
 
         /// <summary>
         /// Sets the aliases to check against when mapping the property
@@ -153,6 +156,13 @@ namespace UmbMapper.Models
         public PropertyMapDefinition<T> AsRecursive()
         {
             this.Recursive = true;
+
+            return this;
+        }
+
+        public PropertyMapDefinition<T> MapFromInstance(Func<T, IPublishedContent, object> predicate)
+        {
+            this.MapFromInstancePredicate = predicate;
 
             return this;
         }

@@ -130,19 +130,15 @@ namespace UmbMapper
         //}
 
         //TODO - is it this or the above
-        internal PropertyMap<T> SetMapper(IPropertyMapper mapper)
+        internal void SetMapper(IPropertyMapper mapper)
         {
             this.PropertyMapper = mapper;
-
-            return this;
         }
 
         //TODO - as creating the maper is done elsewhere, this ShOULD be redundant
-        internal PropertyMap<T> SetMapperFactory(FactoryPropertyMapperBase mapper)
+        internal void SetMapperFactory(FactoryPropertyMapperBase mapper)
         {
             this.PropertyMapper = mapper;
-
-            return this;
         }
 
         /// <summary>
@@ -155,6 +151,12 @@ namespace UmbMapper
             this.Info.HasPredicate = true;
             this.Predicate = predicate;
             return this;
+        }
+
+        public void SetMapFromInstance(Func<T, IPublishedContent, object> predicate)
+        {
+            this.Info.HasPredicate = true;
+            this.Predicate = predicate;
         }
 
         /// <summary>
@@ -178,6 +180,11 @@ namespace UmbMapper
             return this;
         }
 
+        internal void SetRecursive(bool recursive)
+        {
+            this.Info.Recursive = recursive;
+        }
+
         /// <summary>
         /// Instructs the mapper to lazily map the property
         /// </summary>
@@ -194,6 +201,16 @@ namespace UmbMapper
             return this;
         }
 
+        internal void SetLazy(bool lazy)
+        {
+            if (!this.Info.Property.ShouldAttemptLazyLoad())
+            {
+                throw new InvalidOperationException($"Property {this.Info.Property.Name} in class {typeof(T).Name} must be marked with the 'virtual' keyword to be lazily mapped.");
+            }
+
+            this.Info.Lazy = true;
+        }
+
         /// <summary>
         /// Sets the default value for the mapper
         /// </summary>
@@ -203,6 +220,14 @@ namespace UmbMapper
         {
             this.Info.DefaultValue = value;
             return this;
+        }
+
+        internal void SetDefaultValue(object value)
+        {
+            if (value != null)
+            {
+                this.Info.DefaultValue = value;
+            }
         }
 
         /// <inheritdoc/>
@@ -250,6 +275,14 @@ namespace UmbMapper
             }
 
             return this;
+        }
+
+        internal void SetAutoLazy()
+        {
+            if (this.Info.Property.ShouldAttemptLazyLoad())
+            {
+                this.Info.Lazy = true;
+            }
         }
 
         private static int GetHashCode(PropertyMap<T> map)
