@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using UmbMapper.PropertyMappers;
 using Umbraco.Core.Models.PublishedContent;
 
@@ -14,18 +15,17 @@ namespace UmbMapper.Models
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyMapDefinition{T}"/> class.
-        /// adfasdf
         /// </summary>
-        /// <param name="propertyExpression">The expression for this definition</param>
-        internal PropertyMapDefinition(Expression<Func<T, object>> propertyExpression)
+        /// <param name="propertyInfo">The PropertyInfo for this definition</param>
+        internal PropertyMapDefinition(PropertyInfo propertyInfo)
         {
-            this.PropertyExpression = propertyExpression;
+            this.PropertyInfo = propertyInfo;
         }
-
+        
         /// <summary>
-        /// Gets the expression that defines the property mapping
+        /// Gets the PropertyInfo that defines this property mapping
         /// </summary>
-        public Expression<Func<T, object>> PropertyExpression { get; private set; }
+        public PropertyInfo PropertyInfo { get; }
 
         /// <summary>
         /// Gets an array of aliases

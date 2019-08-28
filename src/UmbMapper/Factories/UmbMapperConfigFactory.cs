@@ -40,21 +40,21 @@ namespace UmbMapper.Factories
             return mappingConfig;
         }
 
-        private bool GetOrCreateMap<T>(UmbMapperConfig<T> mappingConfig, PropertyMapDefinition<T> propertyMapDefinition, out PropertyMap<T> map)
-            where T : class
-        {
-            PropertyInfo property = propertyMapDefinition.PropertyExpression.ToPropertyInfo();
+        //private bool GetOrCreateMap<T>(UmbMapperConfig<T> mappingConfig, PropertyMapDefinition<T> propertyMapDefinition, out PropertyMap<T> map)
+        //    where T : class
+        //{
+        //    PropertyInfo property = propertyMapDefinition.PropertyExpression.ToPropertyInfo();
 
-            bool exists = true;
-            map = mappingConfig.Maps.Find(x => x.Info.Property.Name == property.Name);
+        //    bool exists = true;
+        //    map = mappingConfig.Maps.Find(x => x.Info.Property.Name == property.Name);
 
-            if (map is null)
-            {
-                exists = false;
-                map = this.propertyMapFactory.Create<T>(propertyMapDefinition);
-            }
+        //    if (map is null)
+        //    {
+        //        exists = false;
+        //        map = this.propertyMapFactory.Create<T>(propertyMapDefinition);
+        //    }
 
-            return exists;
-        }
+        //    return exists;
+        //}
     }
 }

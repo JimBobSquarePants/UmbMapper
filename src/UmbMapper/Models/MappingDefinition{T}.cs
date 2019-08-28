@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using UmbMapper.Extensions;
 
 namespace UmbMapper.Models
 {
@@ -37,7 +38,15 @@ namespace UmbMapper.Models
         /// <returns>Newly created Property Map Definition</returns>
         public PropertyMapDefinition<T> AddMappingDefinition(Expression<Func<T, object>> propertyExpression)
         {
-            var definition = new PropertyMapDefinition<T>(propertyExpression);
+            var definition = new PropertyMapDefinition<T>(propertyExpression.ToPropertyInfo());
+            this.mappingDefinitions.Add(definition);
+
+            return definition;
+        }
+
+        public PropertyMapDefinition<T> MapAll(Expression<Func<T, object>> propertyExpression)
+        {
+            var definition = new PropertyMapDefinition<T>(propertyExpression.ToPropertyInfo());
             this.mappingDefinitions.Add(definition);
 
             return definition;
