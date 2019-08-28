@@ -223,12 +223,12 @@ namespace UmbMapper
             }
         }
 
-        public IMappingProcessor CreateProcessor(IUmbMapperService umbMapperService)
-        {
-            //TODO
-            // Blerch
-            return new MappingProcessor<T>(this, umbMapperService);
-        }
+        //public IMappingProcessor CreateProcessor(IUmbMapperService umbMapperService)
+        //{
+        //    //TODO
+        //    // Blerch
+        //    return new MappingProcessor<T>(this);
+        //}
 
         /// <inheritdoc/>
         object IUmbMapperConfig.CreateEmpty()

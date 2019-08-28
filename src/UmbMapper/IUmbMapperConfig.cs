@@ -30,7 +30,7 @@ namespace UmbMapper
         IPropertyMap[] LazyPredicateMaps { get; }
         List<string> LazyNames { get; }
         FastPropertyAccessor PropertyAccessor { get; }
-        IMappingProcessor CreateProcessor(IUmbMapperService umbMapperService);
+        //IMappingProcessor CreateProcessor(IUmbMapperService umbMapperService);
 
         /// <summary>
         /// Gets the collection of mappings registered with the mapper

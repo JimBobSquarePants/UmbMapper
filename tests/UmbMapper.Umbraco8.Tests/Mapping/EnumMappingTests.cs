@@ -25,7 +25,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             this.umbMapperRegistry = new UmbMapperRegistry(Mock.Of<IUmbracoContextFactory>());
             this.support.InitMappers(this.umbMapperRegistry);
 
-            this.umbMapperService = new UmbMapperService(this.umbMapperRegistry, Mock.Of<IMappingProcessorFactory>());
+            this.umbMapperService = new UmbMapperService(this.umbMapperRegistry, new MappingProcessorFactory());
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             var registry = new UmbMapperRegistry(Mock.Of<IUmbracoContextFactory>());
             this.support.InitMappers(registry);
 
-            var mapperService = new UmbMapperService(registry, Mock.Of<IMappingProcessorFactory>());
+            var mapperService = new UmbMapperService(registry, new MappingProcessorFactory());
             const PlaceOrder placeOrder = PlaceOrder.Fourth;
 
             MockPublishedContent content = this.support.Content;
