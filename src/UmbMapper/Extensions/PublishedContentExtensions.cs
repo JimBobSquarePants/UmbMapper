@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using UmbMapper.Factories;
 using UmbMapper.Invocations;
 using Umbraco.Core.Models.PublishedContent;
 
@@ -17,6 +18,8 @@ namespace UmbMapper.Extensions
     /// </summary>
     public static class PublishedContentExtensions
     {
+        public static IMappingProcessorFactory mappingProcessorFactory = new MappingProcessorFactory();
+
         /// <summary>
         /// Performs a mapping operation from the <see cref="IEnumerable{IPublishedContent}"/> to a new <see cref="IEnumerable{T}"/> instance
         /// </summary>
@@ -86,7 +89,7 @@ namespace UmbMapper.Extensions
                 throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
             }
 
-            var mappingProcessor = mapper.CreateProcessor(mappingService);
+            var mappingProcessor = mappingProcessorFactory.Create(mapper);
 
             return mappingProcessor.Map(content);
         }
@@ -129,7 +132,7 @@ namespace UmbMapper.Extensions
                 throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
             }
 
-            var mappingProcessor = mapper.CreateProcessor(mappingService);
+            var mappingProcessor = mappingProcessorFactory.Create(mapper);
 
             mappingProcessor.Map(content, destination);
 

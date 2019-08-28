@@ -1,23 +1,19 @@
 ﻿
+using System;
+
 namespace UmbMapper.Factories
 {
     public class MappingProcessorFactory : IMappingProcessorFactory
     {
-        private readonly IUmbMapperService umbMapperService;
-        public MappingProcessorFactory(IUmbMapperService umbMapperService)
+        public IMappingProcessor Create(IUmbMapperConfig config)
         {
-            this.umbMapperService = umbMapperService;
-        }
-        public MappingProcessor<T> Create<T>(IUmbMapperConfig mappingConfig)
-            where T : class
-        {
-            return new MappingProcessor<T>(mappingConfig, this.umbMapperService);
-        }
+            Type genericType = typeof(MappingProcessor<>);
+            Type[] typeArgs = { config.MappedType };
 
-        public MappingProcessor<T> Create<T>(UmbMapperConfig<T> mappingConfig)
-            where T : class
-        {
-            return new MappingProcessor<T>(mappingConfig, this.umbMapperService);
+            Type constructedGenericType = genericType.MakeGenericType(typeArgs);
+            object[] constructorArgs = new object[] { config };
+
+            return Activator.CreateInstance(constructedGenericType, constructorArgs) as IMappingProcessor;
         }
     }
 }
