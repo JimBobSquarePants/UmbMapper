@@ -46,6 +46,11 @@ namespace UmbMapper
 
     /// <summary>
     /// The registry for mapper configurations
+    /// Flatten out the nesting and put registry + factofies ins some 
+    /// type of initializer?  Registry only requires these factories
+    /// for creating maps - once maps are all there, we are just getting
+    /// maps out of the registry, which we don't need all the factories for.
+    /// Is this true for lazy maps?? 
     /// </summary>
     public class UmbMapperRegistry : IUmbMapperRegistry, IDisposable
     {

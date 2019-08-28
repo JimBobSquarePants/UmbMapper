@@ -1,11 +1,19 @@
 ﻿using System.Linq;
 using UmbMapper.Extensions;
 using UmbMapper.Models;
+using UmbMapper.PropertyMappers;
 
 namespace UmbMapper.Factories
 {
     public class PropertyMapFactory : IPropertyMapFactory
     {
+        private readonly IFactoryPropertyMapperFactory factoryPropertyMapperFactory;
+
+        public PropertyMapFactory(IFactoryPropertyMapperFactory factoryPropertyMapperFactory)
+        {
+            this.factoryPropertyMapperFactory = factoryPropertyMapperFactory;
+        }
+
         public PropertyMap<T> Create<T>(PropertyMapDefinition<T> mapDefinition)
             where T : class
         {
@@ -21,14 +29,16 @@ namespace UmbMapper.Factories
                 newMap.SetCulture(mapDefinition.Culture);
             }
 
-            //if (mapDefinition.MapperType != null)
-            //{
-            //    newMap.PropertyMapper = propertyMapperFactory.Create(something)??? mapDefinition.MapperType.GetInstance(newMap.Info);
-            //}
-            //if (mapDefinition.FactoryMapperType != null)
-            //{
-            //    newMap.PropertyMapper = propertyMapperFactory.Create(something)??? mapDefinition.MapperType.GetInstance(newMap.Info);
-            //}
+            if (mapDefinition.MapperType != null)
+            {
+                newMap.PropertyMapper = mapDefinition.MapperType.GetInstance(newMap.Info) as IPropertyMapper;
+            }
+
+            if (mapDefinition.FactoryMapperType != null)
+            {
+                newMap.PropertyMapper = this.factoryPropertyMapperFactory.Create(newMap.Info, mapDefinition.FactoryMapperType);
+            }
+
             if (mapDefinition.Lazy)
             {
                 newMap.SetLazy(true);

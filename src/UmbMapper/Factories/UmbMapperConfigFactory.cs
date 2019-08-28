@@ -23,19 +23,19 @@ namespace UmbMapper.Factories
         public UmbMapperConfig<T> GenerateConfig<T>(UmbMapperConfig<T> mappingConfig, MappingDefinition<T> mappingDefinition)
             where T : class
         {
-            foreach (var propertyMapDefinition in mappingDefinition.MappingDefinitions)
-            {
-                bool mapExists =
-                    this.GetOrCreateMap<T>(
-                        mappingConfig,
-                        propertyMapDefinition,
-                        out PropertyMap<T> map);
+            //foreach (var propertyMapDefinition in mappingDefinition.MappingDefinitions)
+            //{
+            //    bool mapExists =
+            //        this.GetOrCreateMap<T>(
+            //            mappingConfig,
+            //            propertyMapDefinition,
+            //            out PropertyMap<T> map);
 
-                if (!mapExists)
-                {
-                    mappingConfig.Maps.Add(map);
-                }
-            }
+            //    if (!mapExists)
+            //    {
+            //        mappingConfig.Maps.Add(map);
+            //    }
+            //}
 
             return mappingConfig;
         }
