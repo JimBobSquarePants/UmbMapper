@@ -41,11 +41,21 @@ namespace UmbMapper
                     mappingConfig.Maps.Add(map);
                 }
             }
+
+            this.umbMapperRegistry.AddMapper(mappingConfig);
         }
 
         public void AddMapperFor<T>()
             where T : class
         {
+            if (this.umbMapperRegistry.Mappers.ContainsKey(typeof(T)))
+            {
+                return;
+            }
+
+            var mappingDefinition = new MappingDefinition<T>();
+            //mappingDefinition.m
+
             throw new NotImplementedException();
         }
 
