@@ -71,19 +71,19 @@ namespace UmbMapper.Umbraco8.Tests.Factories
             Assert.Equal(updated, result.UpdateDate);
         }
 
-        //[Fact]
-        //public void MapperCanMapBaseAlternativeProperties()
-        //{
-        //    var created = new DateTime(2017, 1, 1);
+        [Fact]
+        public void MapperCanMapBaseAlternativeProperties()
+        {
+            var created = new DateTime(2017, 1, 1);
 
-        //    MockPublishedContent content = this.support.Content;
-        //    content.CreateDate = created;
+            MockPublishedContent content = this.support.Content;
+            content.CreateDate = created;
 
-        //    PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
+            PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
 
-        //    Assert.Equal(created, result.CreateDate);
-        //    Assert.Equal(created, result.UpdateDate);
-        //}
+            Assert.Equal(created, result.CreateDate);
+            Assert.Equal(created, result.UpdateDate);
+        }
 
         //[Fact]
         //public void MapperCanMapLinks()
