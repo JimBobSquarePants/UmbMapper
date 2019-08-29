@@ -5,13 +5,13 @@ namespace UmbMapper.Factories
 {
     public class MappingProcessorFactory : IMappingProcessorFactory
     {
-        public IMappingProcessor Create(IUmbMapperConfig config)
+        public IMappingProcessor Create(IUmbMapperConfig config, IUmbMapperService umbMapperService)
         {
             Type genericType = typeof(MappingProcessor<>);
             Type[] typeArgs = { config.MappedType };
 
             Type constructedGenericType = genericType.MakeGenericType(typeArgs);
-            object[] constructorArgs = new object[] { config };
+            object[] constructorArgs = new object[] { config, umbMapperService };
 
             return Activator.CreateInstance(constructedGenericType, constructorArgs) as IMappingProcessor;
         }

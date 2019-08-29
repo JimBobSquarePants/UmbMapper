@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using UmbMapper.Extensions;
@@ -16,6 +17,7 @@ namespace UmbMapper.Models
         private List<PropertyMapDefinition<T>> mappingDefinitions;
 
         public Type MappedType { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="MappingDefinition{T}"/> class.
         /// </summary>
@@ -36,33 +38,64 @@ namespace UmbMapper.Models
         /// Adds a property mapping definition to the list based on an expression
         /// </summary>
         /// <param name="propertyExpression">Mapping rule to add</param>
-        /// <returns>Newly created Property Map Definition</returns>
+        /// <returns>The new/existing <see cref="PropertyMapDefinition{T}"/> for the property expressions</returns>
         public PropertyMapDefinition<T> AddMappingDefinition(Expression<Func<T, object>> propertyExpression)
         {
-            var definition = new PropertyMapDefinition<T>(propertyExpression.ToPropertyInfo());
-            this.mappingDefinitions.Add(definition);
+            if (!this.GetOrCreateMap(propertyExpression.ToPropertyInfo(), out PropertyMapDefinition<T> map))
+            {
+                this.mappingDefinitions.Add(map);
+            }
 
-            return definition;
+            return map;
         }
 
-        public PropertyMapDefinition<T> MapAll(Expression<Func<T, object>> propertyExpression)
+        public IEnumerable<PropertyMapDefinition<T>> AddMappingDefinitions(params Expression<Func<T, object>>[] propertyExpressions)
         {
-            var definition = new PropertyMapDefinition<T>(propertyExpression.ToPropertyInfo());
-            this.mappingDefinitions.Add(definition);
+            if (propertyExpressions is null)
+            {
+                return Enumerable.Empty<PropertyMapDefinition<T>>();
+            }
 
-            return definition;
+            var mapsTemp = new List<PropertyMapDefinition<T>>();
+
+            foreach (Expression<Func<T, object>> property in propertyExpressions)
+            {
+                if (!this.GetOrCreateMap(property.ToPropertyInfo(), out PropertyMapDefinition<T> map))
+                {
+                    this.mappingDefinitions.Add(map);
+                }
+
+                mapsTemp.Add(map);
+            }
+
+            return this.mappingDefinitions.Intersect(mapsTemp);
         }
 
         public IEnumerable<PropertyMapDefinition<T>> MapAll()
         {
-            List<PropertyMapDefinition<T>> mappingDefinitions = new List<PropertyMapDefinition<T>>();
-
             foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags))
             {
-                mappingDefinitions.Add(PropertyMapDefinition<T>());
+                if (!this.GetOrCreateMap(property, out PropertyMapDefinition<T> map))
+                {
+                    this.mappingDefinitions.Add(map);
+                }
             }
 
-            return mappingDefinitions;
+            return this.mappingDefinitions;
+        }
+
+        private bool GetOrCreateMap(PropertyInfo property, out PropertyMapDefinition<T> map)
+        {
+            bool exists = true;
+            map = this.mappingDefinitions.Find(x => x.PropertyInfo.Name == property.Name);
+
+            if (map is null)
+            {
+                exists = false;
+                map = new PropertyMapDefinition<T>(property);
+            }
+
+            return exists;
         }
     }
 }

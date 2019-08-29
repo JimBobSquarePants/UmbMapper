@@ -89,7 +89,7 @@ namespace UmbMapper.Extensions
                 throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
             }
 
-            var mappingProcessor = mappingProcessorFactory.Create(mapper);
+            var mappingProcessor = mappingProcessorFactory.Create(mapper, mappingService);
 
             return mappingProcessor.Map(content);
         }
@@ -132,7 +132,7 @@ namespace UmbMapper.Extensions
                 throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
             }
 
-            var mappingProcessor = mappingProcessorFactory.Create(mapper);
+            var mappingProcessor = mappingProcessorFactory.Create(mapper, mappingService);
 
             mappingProcessor.Map(content, destination);
 

@@ -25,17 +25,17 @@ namespace UmbMapper
         //ConcurrentDictionary<Type, IMappingProcessor> MappingProcessors { get; }
         IEnumerable<Type> CurrentMappedTypes();
 
-        void AddMapperFor<T>()
-            where T : class;
+        //void AddMapperFor<T>()
+        //    where T : class;
 
         void AddMapper(IUmbMapperConfig config);
 
-        void AddMapper<T>(MappingDefinition<T> mappingDefinition)
-            where T : class;
+        //void AddMapper<T>(MappingDefinition<T> mappingDefinition)
+        //    where T : class;
 
-        void AddMapper<TMapper, TDestination>()
-            where TMapper : UmbMapperConfig<TDestination>
-            where TDestination : class;
+        //void AddMapper<TMapper, TDestination>()
+        //    where TMapper : UmbMapperConfig<TDestination>
+        //    where TDestination : class;
 
         T CreateEmpty<T>()
             where T : class;
@@ -54,10 +54,10 @@ namespace UmbMapper
     /// </summary>
     public class UmbMapperRegistry : IUmbMapperRegistry, IDisposable
     {
-        private readonly IUmbMapperConfigFactory umbMapperConfigFactory;
-        public UmbMapperRegistry(IUmbMapperConfigFactory umbMapperConfigFactory)
+        //private readonly IUmbMapperConfigFactory umbMapperConfigFactory;
+        public UmbMapperRegistry()
         {
-            this.umbMapperConfigFactory = umbMapperConfigFactory;
+            //this.umbMapperConfigFactory = umbMapperConfigFactory;
         }
 
         /// <summary>
@@ -98,20 +98,20 @@ namespace UmbMapper
         public IEnumerable<Type> CurrentMappedTypes()
             => this.Mappers.Keys;
 
-        public void AddMapper<T>(MappingDefinition<T> mappingDefinition)
-            where T : class
-        {
-            // Don't re-add a mapper for this type
-            if (this.Mappers.ContainsKey(mappingDefinition.MappedType))
-            {
-                return;
-            }
+        //public void AddMapper<T>(MappingDefinition<T> mappingDefinition)
+        //    where T : class
+        //{
+        //    // Don't re-add a mapper for this type
+        //    if (this.Mappers.ContainsKey(mappingDefinition.MappedType))
+        //    {
+        //        return;
+        //    }
 
-            IUmbMapperConfig mappingConfig = this.umbMapperConfigFactory.GenerateConfig<T>(mappingDefinition);
+        //    IUmbMapperConfig mappingConfig = this.umbMapperConfigFactory.GenerateConfig<T>(mappingDefinition);
 
-            mappingConfig.Init();
-            this.Mappers.TryAdd(mappingConfig.MappedType, mappingConfig);
-        }
+        //    mappingConfig.Init();
+        //    this.Mappers.TryAdd(mappingConfig.MappedType, mappingConfig);
+        //}
 
         /// <summary>
         /// Adds the mapper configuration to the mapping registry
@@ -128,28 +128,28 @@ namespace UmbMapper
             this.Mappers.TryAdd(config.MappedType, config);
         }
 
-        public void AddMapper<TMapper, T>()
-            where TMapper : UmbMapperConfig<T>
-            where T : class
-        {
-            UmbMapperConfig<T> mapperConfig = Activator.CreateInstance(typeof(TMapper)) as UmbMapperConfig<T>;
+        //public void AddMapper<TMapper, T>()
+        //    where TMapper : UmbMapperConfig<T>
+        //    where T : class
+        //{
+        //    UmbMapperConfig<T> mapperConfig = Activator.CreateInstance(typeof(TMapper)) as UmbMapperConfig<T>;
 
-            this.AddMapper<TMapper, T>(mapperConfig);
-        }
+        //    this.AddMapper<TMapper, T>(mapperConfig);
+        //}
 
-        public void AddMapper<TMapper, T>(UmbMapperConfig<T> mapperConfig)
-            where TMapper : UmbMapperConfig<T>
-            where T : class
-        {
-            mapperConfig.OnMapAdded += this.Mapper_OnMapAdded;
-            mapperConfig.OnMapsAdded += this.Mapper_OnMapsAdded;
-            mapperConfig.OnAllMapsAdded += this.MapperConfig_OnAllMapsAdded;
-            mapperConfig.OnAllMapsWriteableAdded += this.MapperConfig_OnAllMapsWriteableAdded;
-            mapperConfig.OnMapIgnored += this.MapperConfig_OnMapIgnored;
+        //public void AddMapper<TMapper, T>(UmbMapperConfig<T> mapperConfig)
+        //    where TMapper : UmbMapperConfig<T>
+        //    where T : class
+        //{
+        //    mapperConfig.OnMapAdded += this.Mapper_OnMapAdded;
+        //    mapperConfig.OnMapsAdded += this.Mapper_OnMapsAdded;
+        //    mapperConfig.OnAllMapsAdded += this.MapperConfig_OnAllMapsAdded;
+        //    mapperConfig.OnAllMapsWriteableAdded += this.MapperConfig_OnAllMapsWriteableAdded;
+        //    mapperConfig.OnMapIgnored += this.MapperConfig_OnMapIgnored;
 
-            mapperConfig.Init();
-            this.Mappers.TryAdd(mapperConfig.MappedType, mapperConfig);
-        }
+        //    mapperConfig.Init();
+        //    this.Mappers.TryAdd(mapperConfig.MappedType, mapperConfig);
+        //}
 
         private void Mapper_OnMapAdded<T>(UmbMapperConfig<T> mappingConfig, Expression<Func<T, object>> propertyExpression, out PropertyMap<T> map)
             where T : class

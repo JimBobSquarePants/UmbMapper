@@ -64,21 +64,30 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
 
         public void InitMappers(IUmbMapperRegistry umbMapperRegistry)
         {
-            umbMapperRegistry.AddMapper<PublishedItemMap, PublishedItem>();  //umbMapperRegistry.AddMapper(new PublishedItemMap());
-            //umbMapperRegistry.AddMapper(new LazyPublishedItemMap());
-            umbMapperRegistry.AddMapperFor<AutoMappedItem>();
-            umbMapperRegistry.AddMapper<BackedPublishedItemMap, BackedPublishedItem>();  //umbMapperRegistry.AddMapper(new BackedPublishedItemMap());
+            //umbMapperRegistry.AddMapper<PublishedItemMap, PublishedItem>();  //umbMapperRegistry.AddMapper(new PublishedItemMap());
+            ////umbMapperRegistry.AddMapper(new LazyPublishedItemMap());
+            //umbMapperRegistry.AddMapperFor<AutoMappedItem>();
+            //umbMapperRegistry.AddMapper<BackedPublishedItemMap, BackedPublishedItem>();  //umbMapperRegistry.AddMapper(new BackedPublishedItemMap());
 
-            umbMapperRegistry.AddMapper<InheritedPublishedItemMap, InheritedPublishedItem>(); // umbMapperRegistry.AddMapper(new InheritedPublishedItemMap());
+            //umbMapperRegistry.AddMapper<InheritedPublishedItemMap, InheritedPublishedItem>(); // umbMapperRegistry.AddMapper(new InheritedPublishedItemMap());
 
-            umbMapperRegistry.AddMapper<CsvPublishedItemMap, CsvPublishedItem>();
-            umbMapperRegistry.AddMapperFor<PolymorphicItemOne>();
-            umbMapperRegistry.AddMapperFor<PolymorphicItemTwo>();
+            //umbMapperRegistry.AddMapper<CsvPublishedItemMap, CsvPublishedItem>();
+            //umbMapperRegistry.AddMapperFor<PolymorphicItemOne>();
+            //umbMapperRegistry.AddMapperFor<PolymorphicItemTwo>();
         }
 
-        public void InitFactoryMappers(IUmbMapperRegistry umbMapperRegistry)
+        //public void InitFactoryMappers(IUmbMapperRegistry umbMapperRegistry)
+        //{
+        //    //umbMapperRegistry.AddMapper(new PublishedItemMapDefinition());
+        //}
+
+        public void InitFactoryMappers(IUmbMapperInitialiser umbMapperInitialiser)
         {
-            umbMapperRegistry.AddMapper(new PublishedItemMapDefinition());
+            umbMapperInitialiser.AddMapper(new PublishedItemMapDefinition());
+            umbMapperInitialiser.AddMapper(new BackedPublishedItemMapDefinition());
+            umbMapperInitialiser.AddMapper(new CsvPublishedItemMapDefinition());
+            umbMapperInitialiser.AddMapper(new InheritedPublishedItemMapDefinition());
+            umbMapperInitialiser.AddMapperFor<AutoMappedItem>();
         }
 
         public void SetupUmbracoContext()

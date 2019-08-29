@@ -14,89 +14,89 @@ using UmbMapper.Umbraco8.Tests.Mapping;
 
 namespace UmbMapper.Umbraco8.Tests.Factories
 {
-    public class BasicFactoryMappingTests : IClassFixture<UmbracoSupport>
-    {
-        private readonly UmbracoSupport support;
-        private readonly IUmbMapperInitialiser umbMapperInitialiser;
-        private readonly IUmbMapperRegistry umbMapperRegistry;
-        private readonly IUmbMapperService umbMapperService;
+    //public class BasicFactoryMappingTests : IClassFixture<UmbracoSupport>
+    //{
+    //    private readonly UmbracoSupport support;
+    //    private readonly IUmbMapperInitialiser umbMapperInitialiser;
+    //    private readonly IUmbMapperRegistry umbMapperRegistry;
+    //    private readonly IUmbMapperService umbMapperService;
 
-        public BasicFactoryMappingTests(UmbracoSupport support)
-        {
-            this.support = support;
-            this.support.SetupUmbracoContext();
+    //    public BasicFactoryMappingTests(UmbracoSupport support)
+    //    {
+    //        this.support = support;
+    //        this.support.SetupUmbracoContext();
 
-            this.umbMapperRegistry = new UmbMapperRegistry(new UmbMapperConfigFactory(new PropertyMapFactory(new FactoryPropertyMapperFactory(this.umbMapperRegistry))));
-            this.support.InitFactoryMappers(this.umbMapperRegistry);
+    //        this.umbMapperRegistry = new UmbMapperRegistry(new UmbMapperConfigFactory(new PropertyMapFactory(new FactoryPropertyMapperFactory(this.umbMapperRegistry))));
+    //        this.support.InitFactoryMappers(this.umbMapperRegistry);
 
-            this.umbMapperService = new UmbMapperService(this.umbMapperRegistry, new MappingProcessorFactory());
-        }
+    //        this.umbMapperService = new UmbMapperService(this.umbMapperRegistry, new MappingProcessorFactory());
+    //    }
 
-        [Fact]
-        public void MapperCanMapBaseProperties()
-        {
-            const int id = 999;
-            const string name = "Foo";
-            var created = new DateTime(2017, 1, 1);
+    //    [Fact]
+    //    public void MapperCanMapBaseProperties()
+    //    {
+    //        const int id = 999;
+    //        const string name = "Foo";
+    //        var created = new DateTime(2017, 1, 1);
 
-            MockPublishedContent content = this.support.Content;
-            content.Id = id;
-            content.Name = name;
-            content.CreateDate = created;
+    //        MockPublishedContent content = this.support.Content;
+    //        content.Id = id;
+    //        content.Name = name;
+    //        content.CreateDate = created;
 
-            PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
+    //        PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
 
-            Assert.Equal(id, result.Id);
-            Assert.Equal(name, result.Name);
-            Assert.Equal(created, result.CreateDate);
-        }
+    //        Assert.Equal(id, result.Id);
+    //        Assert.Equal(name, result.Name);
+    //        Assert.Equal(created, result.CreateDate);
+    //    }
 
-        [Fact]
-        public void MapperReturnsDefaultProperties()
-        {
-            const int id = default(int);
-            const string name = default(string);
-            var created = default(DateTime);
-            var updated = default(DateTime);
+    //    [Fact]
+    //    public void MapperReturnsDefaultProperties()
+    //    {
+    //        const int id = default(int);
+    //        const string name = default(string);
+    //        var created = default(DateTime);
+    //        var updated = default(DateTime);
 
-            MockPublishedContent content = this.support.Content;
-            content.Id = id;
-            content.Name = name;
-            content.CreateDate = created;
+    //        MockPublishedContent content = this.support.Content;
+    //        content.Id = id;
+    //        content.Name = name;
+    //        content.CreateDate = created;
 
-            PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
+    //        PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
 
-            Assert.Equal(id, result.Id);
-            Assert.Equal(name, result.Name);
-            Assert.Equal(created, result.CreateDate);
-            Assert.Equal(updated, result.UpdateDate);
-        }
+    //        Assert.Equal(id, result.Id);
+    //        Assert.Equal(name, result.Name);
+    //        Assert.Equal(created, result.CreateDate);
+    //        Assert.Equal(updated, result.UpdateDate);
+    //    }
 
-        [Fact]
-        public void MapperCanMapBaseAlternativeProperties()
-        {
-            var created = new DateTime(2017, 1, 1);
+    //    [Fact]
+    //    public void MapperCanMapBaseAlternativeProperties()
+    //    {
+    //        var created = new DateTime(2017, 1, 1);
 
-            MockPublishedContent content = this.support.Content;
-            content.CreateDate = created;
+    //        MockPublishedContent content = this.support.Content;
+    //        content.CreateDate = created;
 
-            PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
+    //        PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
 
-            Assert.Equal(created, result.CreateDate);
-            Assert.Equal(created, result.UpdateDate);
-        }
+    //        Assert.Equal(created, result.CreateDate);
+    //        Assert.Equal(created, result.UpdateDate);
+    //    }
 
-        [Fact]
-        public void MapperCanMapLinks()
-        {
-            MockPublishedContent content = this.support.Content;
+    //    [Fact]
+    //    public void MapperCanMapLinks()
+    //    {
+    //        MockPublishedContent content = this.support.Content;
 
-            PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
+    //        PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
 
-            Assert.NotNull(result.Link);
-            Assert.NotNull(result.Links);
-            Assert.True(result.Links.GetType().IsEnumerableOfType(typeof(Link)));
-        }
+    //        Assert.NotNull(result.Link);
+    //        Assert.NotNull(result.Links);
+    //        Assert.True(result.Links.GetType().IsEnumerableOfType(typeof(Link)));
+    //    }
 
         //[Fact]
         //public void MapperCanMapAutoMappedProperties()
@@ -294,5 +294,5 @@ namespace UmbMapper.Umbraco8.Tests.Factories
 
         //    Assert.True(mapping.Info.Recursive);
         //}
-    }
+    //}
 }

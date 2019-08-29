@@ -13,6 +13,7 @@ namespace UmbMapper
     {
         private readonly IUmbMapperRegistry umbMapperRegistry;
         private readonly IPropertyMapFactory propertyMapFactory;
+
         public UmbMapperInitialiser(IUmbMapperRegistry umbMapperRegistry, IPropertyMapFactory propertyMapFactory)
         {
             this.umbMapperRegistry = umbMapperRegistry;
@@ -22,73 +23,15 @@ namespace UmbMapper
         public void AddMapper<T>(MappingDefinition<T> mappingDefinition)
             where T : class
         {
-            //if (this.umbMapperRegistry.Mappers.ContainsKey(mappingDefinition.MappedType))
-            //{
-            //    return;
-            //}
-
-            //UmbMapperConfig<T> mappingConfig = new UmbMapperConfig<T>();
-
-            //foreach (var propertyMapDefinition in mappingDefinition.MappingDefinitions)
-            //{
-            //    if (!this.GetOrCreateMap<T>(mappingConfig, propertyMapDefinition, out PropertyMap<T> map))
-            //    {
-            //        mappingConfig.Maps.Add(map);
-            //    }
-            //}
-
-            //this.umbMapperRegistry.AddMapper(mappingConfig);
-
             this.MapWithProperties<T>(mappingDefinition.MappingDefinitions);
         }
 
         public void AddMapperFor<T>()
             where T : class
         {
-            //if (this.umbMapperRegistry.Mappers.ContainsKey(typeof(T)))
-            //{
-            //    return;
-            //}
-            //// all maps writable
-            //UmbMapperConfig<T> mappingConfig = new UmbMapperConfig<T>();
-
-            //foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags).Where(p => p.CanWrite))
-            //{
-            //    if (!this.GetOrCreateMap(mappingConfig, new PropertyMapDefinition<T>(property), out PropertyMap<T> map))
-            //    {
-            //        mappingConfig.Maps.Add(map);
-            //    }
-            //}
-
-            //this.umbMapperRegistry.AddMapper(mappingConfig);
-
             this.MapWithProperties<T>(
                 typeof(T).GetProperties(UmbMapperConstants.MappableFlags)
                     .Where(p => p.CanWrite)
-                    .Select(x => new PropertyMapDefinition<T>(x)));
-        }
-
-        public void MapAll<T>()
-            where T : class
-        {
-            //if (this.umbMapperRegistry.Mappers.ContainsKey(typeof(T)))
-            //{
-            //    return;
-            //}
-
-            //UmbMapperConfig<T> mappingConfig = new UmbMapperConfig<T>();
-
-            //foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags))
-            //{
-            //    if (!this.GetOrCreateMap(mappingConfig, new PropertyMapDefinition<T>(property), out PropertyMap<T> map))
-            //    {
-            //        mappingConfig.Maps.Add(map);
-            //    }
-            //}
-
-            //this.umbMapperRegistry.AddMapper(mappingConfig);
-            this.MapWithProperties<T>(
-                typeof(T).GetProperties(UmbMapperConstants.MappableFlags)
                     .Select(x => new PropertyMapDefinition<T>(x)));
         }
 

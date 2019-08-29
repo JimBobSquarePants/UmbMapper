@@ -13,21 +13,17 @@ using UmbMapper.Factories;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
-    public class BasicMappingTests : IClassFixture<UmbracoSupport>
+    public class BasicMappingTests : BaseMappingTest, IClassFixture<UmbracoSupport>
     {
-        private readonly UmbracoSupport support;
-        private readonly IUmbMapperRegistry umbMapperRegistry;
-        private readonly IUmbMapperService umbMapperService;
+        //private readonly UmbracoSupport support;
+        //private readonly IUmbMapperRegistry umbMapperRegistry;
+        //private readonly IUmbMapperService umbMapperService;
 
-        public BasicMappingTests(UmbracoSupport support)
+        public BasicMappingTests(UmbracoSupport support) : base (support)
         {
-            this.support = support;
             this.support.SetupUmbracoContext();
 
-            this.umbMapperRegistry = new UmbMapperRegistry(Mock.Of<IUmbracoContextFactory>());
-            this.support.InitMappers(this.umbMapperRegistry);
-
-            this.umbMapperService = new UmbMapperService(this.umbMapperRegistry, new MappingProcessorFactory());
+            this.support.InitFactoryMappers(this.umbMapperInitialiser);
         }
 
         [Fact]

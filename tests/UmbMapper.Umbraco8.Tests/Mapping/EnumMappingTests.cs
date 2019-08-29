@@ -10,31 +10,21 @@ using UmbMapper.Factories;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
-    public class EnumMappingTests : IClassFixture<UmbracoSupport>
+    public class EnumMappingTests : BaseMappingTest, IClassFixture<UmbracoSupport>
     {
-        private readonly UmbracoSupport support;
-        private readonly IUmbMapperRegistry umbMapperRegistry;
-        private readonly IUmbMapperService umbMapperService;
-
-        public EnumMappingTests(UmbracoSupport support)
+        public EnumMappingTests(UmbracoSupport support) : base (support)
         {
-            this.support = support;
+            //this.support = support;
             // This is needed to access the culture info
             this.support.SetupUmbracoContext();
 
-            this.umbMapperRegistry = new UmbMapperRegistry(Mock.Of<IUmbracoContextFactory>());
-            this.support.InitMappers(this.umbMapperRegistry);
-
-            this.umbMapperService = new UmbMapperService(this.umbMapperRegistry, new MappingProcessorFactory());
+            this.support.InitFactoryMappers(this.umbMapperInitialiser);
+            
         }
 
         [Fact]
         public void MapperReturnsDefaultEnum()
         {
-            var registry = new UmbMapperRegistry(Mock.Of<IUmbracoContextFactory>());
-            this.support.InitMappers(registry);
-
-            var mapperService = new UmbMapperService(registry, new MappingProcessorFactory());
             const PlaceOrder placeOrder = PlaceOrder.Fourth;
 
             MockPublishedContent content = this.support.Content;
@@ -43,7 +33,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
                 Mocks.UmbMapperMockFactory.CreateMockPublishedProperty(nameof(PublishedItem.PlaceOrder), null)
             };
 
-            PublishedItem result = mapperService.MapTo<PublishedItem>(content);
+            PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
 
             Assert.NotEqual(placeOrder, result.PlaceOrder);
             Assert.Equal(default(PlaceOrder), result.PlaceOrder);

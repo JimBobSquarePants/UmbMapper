@@ -275,6 +275,7 @@
     <Compile Include="ExpressionExtensionsTests.cs" />
     <Compile Include="Factories\BasicFactoryMappingTests.cs" />
     <Compile Include="FastPropertyAccessorTests.cs" />
+    <Compile Include="Mapping\BaseMappingTest.cs" />
     <Compile Include="Mapping\BasicMappingTests.cs" />
     <Compile Include="Mapping\EnumMappingTests.cs" />
     <Compile Include="Mapping\ImageCropDataSetMappingTests.cs" />
@@ -295,7 +296,11 @@
     <Compile Include="Mapping\Models\PolymorphicItemOne.cs" />
     <Compile Include="Mapping\Models\PolymorphicItemTwo.cs" />
     <Compile Include="Mapping\Models\PropertyMapDefinitions\BackedPublishedItemMapDefinition.cs" />
+    <Compile Include="Mapping\Models\PropertyMapDefinitions\BasePublishedItemMapDefinition.cs" />
+    <Compile Include="Mapping\Models\PropertyMapDefinitions\InheritedPublishedItemMapDefinition.cs" />
+    <Compile Include="Mapping\Models\PropertyMapDefinitions\CsvPublishedItemMap.cs" />
     <Compile Include="Mapping\Models\PropertyMapDefinitions\PublishedItemMapDefinition.cs" />
+    <Compile Include="Mapping\Models\PropertyMapDefinitions\PublishedItemMapManyDefinition.cs" />
     <Compile Include="Mapping\Models\PublishedItem.cs" />
     <Compile Include="Mapping\Models\PublishedItemMap.cs" />
     <Compile Include="Mapping\Models\PublishedItemMapAll.cs" />
