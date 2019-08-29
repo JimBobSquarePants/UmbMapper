@@ -42,5 +42,10 @@ namespace UmbMapper.Models
 
             return definition;
         }
+
+        public PropertyMapDefinition<T> MapAll()
+        {
+
+        }
     }
 }
