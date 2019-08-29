@@ -26,7 +26,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             this.umbMapperInitialiser = new UmbMapperInitialiser(this.umbMapperRegistry, this.propertyMapFactory);
             this.mappingProcessorFactory = new MappingProcessorFactory();
 
-            this.support.InitFactoryMappers(this.umbMapperInitialiser);
+            //this.support.InitFactoryMappers(this.umbMapperInitialiser);
 
             
         }

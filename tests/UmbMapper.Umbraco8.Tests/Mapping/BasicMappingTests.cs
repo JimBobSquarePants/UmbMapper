@@ -21,6 +21,8 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
 
         public BasicMappingTests(UmbracoSupport support) : base (support)
         {
+            this.support.InitFactoryMappers(this.umbMapperInitialiser);
+
             this.support.SetupUmbracoContext();
 
             this.support.InitFactoryMappers(this.umbMapperInitialiser);
@@ -199,8 +201,6 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             Assert.Equal(enumerableExpected, result.EnumerableItems);
         }
 
-        //TODO MapperCanMapPolymorphicTypes
-        // Need to get umbMapperRegistry in FactoryPropertyMapperBase
         [Fact]
         public void MapperCanMapPolymorphicTypes()
         {
@@ -267,26 +267,28 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             Assert.Equal(content.Value(nameof(BackedPublishedItem.Image)), result.Image);
         }
 
-        //[Fact]
-        //public void MapperCanRemoveMap()
-        //{
-        //    var map = new LazyPublishedItemMap();
-        //    int mapCount = map.Mappings.Count();
+        [Fact]
+        public void MapperCanRemoveMap()
+        {
+            var map = new LazyPublishedItemMapDefinition();
+            int mapCount = map.MappingDefinitions.Count();
 
-        //    bool result = map.Ignore(x => x.CreateDate);
+            bool result = map.Ignore(x => x.CreateDate);
 
-        //    Assert.True(result);
-        //    Assert.Equal(mapCount - 1, map.Mappings.Count());
-        //}
+            Assert.True(result);
+            Assert.Equal(mapCount - 1, map.MappingDefinitions.Count());
+        }
 
-        //[Fact]
-        //public void RecursivePropertiesCanBeInherited()
-        //{
-        //    IUmbMapperConfig mapper = UmbMapperRegistry.CurrentMappers().First(x => x.MappedType == typeof(InheritedPublishedItem));
-        //    IPropertyMap mapping = mapper.Mappings
-        //        .First(x => x.Info.Aliases.Contains(nameof(InheritedPublishedItem.Name), StringComparer.InvariantCultureIgnoreCase));
+        [Fact]
+        public void RecursivePropertiesCanBeInherited()
+        {
+            IUmbMapperConfig mapper =
+                this.umbMapperRegistry.CurrentMappers().First(x => x.MappedType == typeof(InheritedPublishedItem));
+            
+            IPropertyMap mapping = mapper.Mappings
+                .First(x => x.Info.Aliases.Contains(nameof(InheritedPublishedItem.Name), StringComparer.InvariantCultureIgnoreCase));
 
-        //    Assert.True(mapping.Info.Recursive);
-        //}
+            Assert.True(mapping.Info.Recursive);
+        }
     }
 }

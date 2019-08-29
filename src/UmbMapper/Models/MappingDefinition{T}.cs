@@ -84,6 +84,14 @@ namespace UmbMapper.Models
             return this.mappingDefinitions;
         }
 
+        public bool Ignore(Expression<Func<T, object>> propertyExpression)
+        {
+            var property = propertyExpression.ToPropertyInfo();
+            PropertyMapDefinition<T> map = this.mappingDefinitions.Find(m => m.PropertyInfo == property);
+
+            return map != null && this.mappingDefinitions.Remove(map);
+        }
+
         private bool GetOrCreateMap(PropertyInfo property, out PropertyMapDefinition<T> map)
         {
             bool exists = true;

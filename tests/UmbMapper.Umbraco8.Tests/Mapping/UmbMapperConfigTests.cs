@@ -1,61 +1,80 @@
-﻿//using System;
-//using UmbMapper.PropertyMappers;
-//using UmbMapper.Umbraco8.Tests.Mapping.Models;
-//using Xunit;
+﻿using System;
+using UmbMapper.Models;
+using UmbMapper.PropertyMappers;
+using UmbMapper.Umbraco8.Tests.Mapping.Models;
+using Xunit;
 
-//namespace UmbMapper.Umbraco8.Tests.Mapping
-//{
-//    public class UmbMapperConfigTests
-//    {
-//        [Fact]
-//        public void MapperConfigCapturesValues()
-//        {
-//            var config = new UmbMapperConfig<PublishedItem>();
+namespace UmbMapper.Umbraco8.Tests.Mapping
+{
+    public class UmbMapperConfigTests : BaseMappingTest, IClassFixture<UmbracoSupport>
+    {
+        public UmbMapperConfigTests(UmbracoSupport support) : base(support)
+        {
 
-//            PropertyMap<PublishedItem> idMapper = config.AddMap(p => p.Id);
-//            PropertyMap<PublishedItem> nameMapper = config.AddMap(p => p.Name);
-//            PropertyMap<PublishedItem> createdMapper = config.AddMap(p => p.CreateDate);
+        }
+        [Fact]
+        public void MapperConfigCapturesValues()
+        {
+            var config = new MappingDefinition<PublishedItem>();
 
-//            Assert.NotNull(idMapper);
-//            Assert.NotNull(nameMapper);
-//            Assert.NotNull(createdMapper);
+            PropertyMapDefinition<PublishedItem> idMapper = config.AddMappingDefinition(p => p.Id);
+            PropertyMapDefinition<PublishedItem> nameMapper = config.AddMappingDefinition(p => p.Name);
+            PropertyMapDefinition<PublishedItem> createdMapper = config.AddMappingDefinition(p => p.CreateDate);
 
-//            Assert.True(typeof(int) == idMapper.Info.PropertyType);
-//            Assert.True(typeof(string) == nameMapper.Info.PropertyType);
-//            Assert.True(typeof(DateTime) == createdMapper.Info.PropertyType);
-//        }
+            Assert.NotNull(idMapper);
+            Assert.NotNull(nameMapper);
+            Assert.NotNull(createdMapper);
 
-//        [Fact]
-//        public void MapperThrowsWhenLazyIsNotVirtual()
-//        {
-//            var config = new UmbMapperConfig<PublishedItem>();
+            Assert.True(typeof(int) == idMapper.PropertyInfo.PropertyType);
+            Assert.True(typeof(string) == nameMapper.PropertyInfo.PropertyType);
+            Assert.True(typeof(DateTime) == createdMapper.PropertyInfo.PropertyType);
 
-//            Assert.Throws<InvalidOperationException>(() => config.AddMap(p => p.Id).AsLazy());
-//        }
+            // Mapping Factory tests here too
+        }
 
-//        [Fact]
-//        public void MapperAllowsLazyVirtual()
-//        {
-//            var config = new UmbMapperConfig<LazyPublishedItem>();
-//            config.AddMap(p => p.Id).AsLazy();
-//        }
+        [Fact]
+        public void MapperThrowsWhenLazyIsNotVirtual()
+        {
+            var configDefinition = new MappingDefinition<PublishedItem>();
+            var nonVirtualLazyMap = configDefinition.AddMappingDefinition(p => p.Id).AsLazy();
 
-//        [Fact]
-//        public void MapperConfigSetsPropertyMappers()
-//        {
-//            var config = new UmbMapperConfig<PublishedItem>();
+            PropertyMap<PublishedItem> map = null;
 
-//            PropertyMap<PublishedItem> idMapper = config.AddMap(p => p.Id).SetMapper<UmbracoPropertyMapper>();
-//            PropertyMap<PublishedItem> nameMapper = config.AddMap(p => p.Name).SetMapper<UmbracoPropertyMapper>();
-//            PropertyMap<PublishedItem> createdMapper = config.AddMap(p => p.CreateDate).SetMapper<UmbracoPropertyMapper>();
+            Assert.Throws<InvalidOperationException>(
+                () =>
+                    map = this.propertyMapFactory.Create<PublishedItem>(nonVirtualLazyMap)
+            );
+        }
 
-//            Assert.NotNull(idMapper);
-//            Assert.NotNull(nameMapper);
-//            Assert.NotNull(createdMapper);
+        [Fact]
+        public void MapperAllowsLazyVirtual()
+        {
+            var configDefinition = new MappingDefinition<LazyPublishedItem>();
+            var nonVirtualLazyMap = configDefinition.AddMappingDefinition(p => p.Id).AsLazy();
 
-//            Assert.True(typeof(int) == idMapper.Info.PropertyType);
-//            Assert.True(typeof(string) == nameMapper.Info.PropertyType);
-//            Assert.True(typeof(DateTime) == createdMapper.Info.PropertyType);
-//        }
-//    }
-//}
+            PropertyMap<LazyPublishedItem> map = this.propertyMapFactory.Create<LazyPublishedItem>(nonVirtualLazyMap);
+
+            Assert.NotNull(map);
+        }
+
+        [Fact]
+        public void MapperConfigSetsPropertyMappers()
+        {
+            var config = new MappingDefinition<PublishedItem>();
+
+            PropertyMapDefinition<PublishedItem> idMapper = config.AddMappingDefinition(p => p.Id).SetMapper<UmbracoPropertyMapper>();
+            PropertyMapDefinition<PublishedItem> nameMapper = config.AddMappingDefinition(p => p.Name).SetMapper<UmbracoPropertyMapper>();
+            PropertyMapDefinition<PublishedItem> createdMapper = config.AddMappingDefinition(p => p.CreateDate).SetMapper<UmbracoPropertyMapper>();
+
+            Assert.NotNull(idMapper);
+            Assert.NotNull(nameMapper);
+            Assert.NotNull(createdMapper);
+
+            Assert.True(typeof(int) == idMapper.PropertyInfo.PropertyType);
+            Assert.True(typeof(string) == nameMapper.PropertyInfo.PropertyType);
+            Assert.True(typeof(DateTime) == createdMapper.PropertyInfo.PropertyType);
+        }
+
+        //TODO - add tests so that stuff created as MappingDefinition and PropertyMapDefinition come through correctly using IPropertyMapFactory
+    }
+}

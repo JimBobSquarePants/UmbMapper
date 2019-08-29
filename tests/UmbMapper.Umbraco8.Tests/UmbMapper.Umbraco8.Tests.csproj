@@ -299,6 +299,7 @@
     <Compile Include="Mapping\Models\PropertyMapDefinitions\BasePublishedItemMapDefinition.cs" />
     <Compile Include="Mapping\Models\PropertyMapDefinitions\InheritedPublishedItemMapDefinition.cs" />
     <Compile Include="Mapping\Models\PropertyMapDefinitions\CsvPublishedItemMap.cs" />
+    <Compile Include="Mapping\Models\PropertyMapDefinitions\LazyPublishedItemMapDefinition.cs" />
     <Compile Include="Mapping\Models\PropertyMapDefinitions\PublishedItemMapDefinition.cs" />
     <Compile Include="Mapping\Models\PropertyMapDefinitions\PublishedItemMapManyDefinition.cs" />
     <Compile Include="Mapping\Models\PublishedItem.cs" />

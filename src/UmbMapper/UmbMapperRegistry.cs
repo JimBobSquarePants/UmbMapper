@@ -37,6 +37,8 @@ namespace UmbMapper
         //    where TMapper : UmbMapperConfig<TDestination>
         //    where TDestination : class;
 
+        IEnumerable<IUmbMapperConfig> CurrentMappers();
+
         T CreateEmpty<T>()
             where T : class;
 
