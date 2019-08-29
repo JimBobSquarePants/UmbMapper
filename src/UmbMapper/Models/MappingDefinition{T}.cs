@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using System.Reflection;
 
 namespace UmbMapper.Models
 {
@@ -43,9 +44,16 @@ namespace UmbMapper.Models
             return definition;
         }
 
-        public PropertyMapDefinition<T> MapAll()
+        public IEnumerable<PropertyMapDefinition<T>> MapAll()
         {
+            List<PropertyMapDefinition<T>> mappingDefinitions = new List<PropertyMapDefinition<T>>();
 
+            foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags))
+            {
+                mappingDefinitions.Add(PropertyMapDefinition<T>());
+            }
+
+            return mappingDefinitions;
         }
     }
 }
