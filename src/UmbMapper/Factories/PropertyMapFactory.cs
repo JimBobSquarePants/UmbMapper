@@ -17,7 +17,7 @@ namespace UmbMapper.Factories
         public PropertyMap<T> Create<T>(PropertyMapDefinition<T> mapDefinition)
             where T : class
         {
-            PropertyMap<T> newMap = new PropertyMap<T>(mapDefinition.PropertyExpression.ToPropertyInfo());
+            PropertyMap<T> newMap = new PropertyMap<T>(mapDefinition.PropertyInfo);
 
             if (mapDefinition.Aliases != null && mapDefinition.Aliases.Any())
             {
