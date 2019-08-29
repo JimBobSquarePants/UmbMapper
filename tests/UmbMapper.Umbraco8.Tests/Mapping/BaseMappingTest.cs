@@ -19,14 +19,16 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             this.support.SetupUmbracoContext();
 
             this.umbMapperRegistry = new UmbMapperRegistry();
-            this.factoryPropertyMapperFactory = new FactoryPropertyMapperFactory(this.umbMapperRegistry);
+            this.umbMapperService = new UmbMapperService(this.umbMapperRegistry, new MappingProcessorFactory());
+
+            this.factoryPropertyMapperFactory = new FactoryPropertyMapperFactory(this.umbMapperRegistry, this.umbMapperService);
             this.propertyMapFactory = new PropertyMapFactory(this.factoryPropertyMapperFactory);
             this.umbMapperInitialiser = new UmbMapperInitialiser(this.umbMapperRegistry, this.propertyMapFactory);
             this.mappingProcessorFactory = new MappingProcessorFactory();
 
             this.support.InitFactoryMappers(this.umbMapperInitialiser);
 
-            this.umbMapperService = new UmbMapperService(this.umbMapperRegistry, new MappingProcessorFactory());
+            
         }
     }
 }

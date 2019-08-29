@@ -201,17 +201,17 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
 
         //TODO MapperCanMapPolymorphicTypes
         // Need to get umbMapperRegistry in FactoryPropertyMapperBase
-        //[Fact]
-        //public void MapperCanMapPolymorphicTypes()
-        //{
-        //    MockPublishedContent content = this.support.Content;
+        [Fact]
+        public void MapperCanMapPolymorphicTypes()
+        {
+            MockPublishedContent content = this.support.Content;
 
-        //    PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
+            PublishedItem result = this.umbMapperService.MapTo<PublishedItem>(content);
 
-        //    Assert.True(result.Polymorphic.Any());
-        //    Assert.Contains(result.Polymorphic, x => x.PolyMorphicText == "Foo");
-        //    Assert.Contains(result.Polymorphic, x => x.PolyMorphicText == "Bar");
-        //}
+            Assert.True(result.Polymorphic.Any());
+            Assert.Contains(result.Polymorphic, x => x.PolyMorphicText == "Foo");
+            Assert.Contains(result.Polymorphic, x => x.PolyMorphicText == "Bar");
+        }
 
         [Fact]
         public void MapperCanMapToExistingInstance()

@@ -20,14 +20,22 @@ namespace UmbMapper.PropertyMappers
     public abstract class FactoryPropertyMapperBase : PropertyMapperBase
     {
         private readonly IUmbMapperRegistry umbMapperRegistry;
+        private readonly IUmbMapperService umbMapperService;
         /// <summary>
         /// Initializes a new instance of the <see cref="FactoryPropertyMapperBase"/> class.
         /// </summary>
         /// <param name="info">The property map information</param>
-        protected FactoryPropertyMapperBase(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry)
-            : base(info)
+        //protected FactoryPropertyMapperBase(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry)
+        //    : base(info)
+        //{
+        //    this.umbMapperRegistry = umbMapperRegistry;
+        //}
+
+        protected FactoryPropertyMapperBase(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService)
+           : base(info)
         {
             this.umbMapperRegistry = umbMapperRegistry;
+            this.umbMapperService = umbMapperService;
         }
 
         /// <summary>
@@ -84,7 +92,7 @@ namespace UmbMapper.PropertyMappers
             return null;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
         private IEnumerable<object> Select(IEnumerable<IPublishedContent> content, IEnumerable<Type> types)
         {
             foreach (IPublishedContent item in content)
@@ -101,7 +109,9 @@ namespace UmbMapper.PropertyMappers
                     }
                 }
 
-                yield return match != null ? item.MapTo(match) : null;
+                yield return match != null ? this.umbMapperService.MapTo(item, match) : null;
+                //umbMapperService.MapTo
+                //yield return match != null ? item.MapTo(match) : null;
             }
         }
 
