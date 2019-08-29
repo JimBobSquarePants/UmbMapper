@@ -87,6 +87,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             umbMapperInitialiser.AddMapper(new BackedPublishedItemMapDefinition());
             umbMapperInitialiser.AddMapper(new CsvPublishedItemMapDefinition());
             umbMapperInitialiser.AddMapper(new InheritedPublishedItemMapDefinition());
+            umbMapperInitialiser.AddMapper(new LazyPublishedItemMap());
             umbMapperInitialiser.AddMapperFor<AutoMappedItem>();
             umbMapperInitialiser.AddMapperFor<PolymorphicItemOne>();
             umbMapperInitialiser.AddMapperFor<PolymorphicItemTwo>();

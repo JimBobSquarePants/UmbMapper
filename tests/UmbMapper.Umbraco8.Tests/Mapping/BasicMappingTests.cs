@@ -8,21 +8,13 @@ using UmbMapper.Umbraco8.Tests.Mapping.Models;
 using System.Linq;
 using System.Collections.Generic;
 using Umbraco.Core.Models.PublishedContent;
-using Moq;
-using UmbMapper.Factories;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
     public class BasicMappingTests : BaseMappingTest, IClassFixture<UmbracoSupport>
     {
-        //private readonly UmbracoSupport support;
-        //private readonly IUmbMapperRegistry umbMapperRegistry;
-        //private readonly IUmbMapperService umbMapperService;
-
         public BasicMappingTests(UmbracoSupport support) : base (support)
         {
-            this.support.InitFactoryMappers(this.umbMapperInitialiser);
-
             this.support.SetupUmbracoContext();
 
             this.support.InitFactoryMappers(this.umbMapperInitialiser);

@@ -1,12 +1,8 @@
 ﻿using System.Collections.Generic;
 using UmbMapper.Umbraco8.Tests.Mapping.Models;
 using UmbMapper.Umbraco8.Tests.Mocks;
-using UmbMapper.Extensions;
 using Xunit;
 using Umbraco.Core.Models.PublishedContent;
-using Moq;
-using Umbraco.Web;
-using UmbMapper.Factories;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
 {
@@ -14,7 +10,6 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
     {
         public EnumMappingTests(UmbracoSupport support) : base (support)
         {
-            //this.support = support;
             // This is needed to access the culture info
             this.support.SetupUmbracoContext();
 

@@ -15,6 +15,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         public BaseMappingTest(UmbracoSupport support)
         {
             this.support = support;
+
             // This is needed to access the culture info
             this.support.SetupUmbracoContext();
 
@@ -25,10 +26,6 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             this.propertyMapFactory = new PropertyMapFactory(this.factoryPropertyMapperFactory);
             this.umbMapperInitialiser = new UmbMapperInitialiser(this.umbMapperRegistry, this.propertyMapFactory);
             this.mappingProcessorFactory = new MappingProcessorFactory();
-
-            //this.support.InitFactoryMappers(this.umbMapperInitialiser);
-
-            
         }
     }
 }

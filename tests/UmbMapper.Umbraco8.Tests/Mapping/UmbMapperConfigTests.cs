@@ -12,6 +12,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         {
 
         }
+
         [Fact]
         public void MapperConfigCapturesValues()
         {
