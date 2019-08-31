@@ -45,6 +45,11 @@ namespace UmbMapper.Umbraco8.Tests.Mocks
 
         public object GetValue(string culture = null, string segment = null)
         {
+            if (this.Value == null)
+            {
+                return null;
+            }
+
             int nodeId;
             if (int.TryParse(this.Value.ToString(), out nodeId))
             {

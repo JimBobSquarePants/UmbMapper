@@ -55,8 +55,24 @@ namespace UmbMapper
             if (mappingConfig.CreateProxy)
             {
                 // Create a proxy instance to replace our object.
-                result = mappingConfig.HasIPublishedConstructor ? mappingConfig.ProxyType.GetInstance(content) : mappingConfig.ProxyType.GetInstance();
-
+                if (mappingConfig.HasIPublishedConstructor)
+                {
+                    // Get the content Type to see if it is IPublishedContent or IPublishedElement
+                    Type contentType = content.GetType();
+                    if (typeof(IPublishedContent).IsAssignableFrom(contentType))
+                    {
+                        result = mappingConfig.ProxyType.GetInstance((IPublishedContent)content);
+                    }
+                    else
+                    {
+                        result = mappingConfig.ProxyType.GetInstance(content);
+                    }
+                }
+                else
+                {
+                    result = mappingConfig.ProxyType.GetInstance();
+                }
+                
                 // Map the lazy properties and predicate mappings
                 Dictionary<string, Lazy<object>> lazyProperties = this.MapLazyProperties(content, result);
 

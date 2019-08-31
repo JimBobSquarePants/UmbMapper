@@ -66,7 +66,10 @@ namespace UmbMapper
             if (constructorParams != null)
             {
                 // Is it PublishedContentModel or similar?
-                if (constructorParams.Length == 1 && constructorParams[0].ParameterType == typeof(IPublishedElement))
+                if (constructorParams.Length == 1
+                    &&
+                        (constructorParams[0].ParameterType == typeof(IPublishedElement)
+                            || constructorParams[0].ParameterType == typeof(IPublishedContent)))
                 {
                     this.hasIPublishedConstructor = true;
                 }

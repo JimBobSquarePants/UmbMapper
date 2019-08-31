@@ -92,7 +92,8 @@ namespace UmbMapper.PropertyMappers
                     ? Fallback.ToAncestors
                     : Fallback.ToDefaultValue;
 
-                value = content.Value(alias, null, null, fallback, null);
+                //value = content.Value(alias, null, null, fallback, null);
+                value = content.Value(alias);
                 if (!this.IsNullOrDefault(value))
                 {
                     this.Alias = alias;
