@@ -48,7 +48,7 @@ namespace UmbMapper
         /// <summary>
         /// Gets the mapping predicate. Used for mapping from known values in the current instance.
         /// </summary>
-        public Func<T, IPublishedContent, object> Predicate { get; internal set; }
+        public Func<T, IPublishedElement, object> Predicate { get; internal set; }
 
         /// <summary>
         /// Sets the aliases to check against when mapping the property
@@ -146,14 +146,14 @@ namespace UmbMapper
         /// </summary>
         /// <param name="predicate">The mapping predicate</param>
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
-        public PropertyMap<T> MapFromInstance(Func<T, IPublishedContent, object> predicate)
+        public PropertyMap<T> MapFromInstance(Func<T, IPublishedElement, object> predicate)
         {
             this.Info.HasPredicate = true;
             this.Predicate = predicate;
             return this;
         }
 
-        public void SetMapFromInstance(Func<T, IPublishedContent, object> predicate)
+        public void SetMapFromInstance(Func<T, IPublishedElement, object> predicate)
         {
             this.Info.HasPredicate = true;
             this.Predicate = predicate;

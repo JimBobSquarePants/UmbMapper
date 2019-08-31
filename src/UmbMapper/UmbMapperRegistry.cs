@@ -42,7 +42,7 @@ namespace UmbMapper
         T CreateEmpty<T>()
             where T : class;
 
-        T CreateEmpty<T>(IPublishedContent content)
+        T CreateEmpty<T>(IPublishedElement content)
            where T : class;
     }
 
@@ -292,7 +292,7 @@ namespace UmbMapper
         /// <typeparam name="T">The type of object to create</typeparam>
         /// <param name="content">The content that this instance will map from.</param>
         /// <returns>The <typeparamref name="T"/></returns>
-        public T CreateEmpty<T>(IPublishedContent content)
+        public T CreateEmpty<T>(IPublishedElement content)
             where T : class
         {
             this.Mappers.TryGetValue(typeof(T), out IUmbMapperConfig mapper);

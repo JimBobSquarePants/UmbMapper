@@ -42,14 +42,14 @@ namespace UmbMapper
         /// </summary>
         /// <param name="content">The published content</param>
         /// <returns>The <see cref="object"/></returns>
-        //object Map(IPublishedContent content);
+        //object Map(IPublishedElement content);
 
         ///// <summary>
         ///// Performs the mapping operation onto an existing destination object
         ///// </summary>
         ///// <param name="content">The published content</param>
         ///// <param name="destination">The destination object</param>
-        //void Map(IPublishedContent content, object destination);
+        //void Map(IPublishedElement content, object destination);
 
         /// <summary>
         /// Creates an empty instance of the mapped type.
@@ -62,7 +62,7 @@ namespace UmbMapper
         /// </summary>
         /// <param name="content">The published content</param>
         /// <returns>The <see cref="object"/></returns>
-        object CreateEmpty(IPublishedContent content);
+        object CreateEmpty(IPublishedElement content);
 
         /// <summary>
         /// Runs any additional code required to setup the configuration

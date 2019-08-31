@@ -14,7 +14,7 @@ using Umbraco.Core.Models.PublishedContent;
 namespace UmbMapper.PropertyMappers
 {
     /// <summary>
-    /// Maps from the <see cref="IPublishedContent"/> to an enum.
+    /// Maps from the <see cref="IPublishedElement"/> to an enum.
     /// </summary>
     public class EnumPropertyMapper : PropertyMapperBase
     {
@@ -28,7 +28,7 @@ namespace UmbMapper.PropertyMappers
         }
 
         /// <inheritdoc />
-        public override object Map(IPublishedContent content, object value)
+        public override object Map(IPublishedElement content, object value)
         {
             PropertyMapInfo info = this.Info;
 

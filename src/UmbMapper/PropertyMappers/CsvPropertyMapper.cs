@@ -15,7 +15,7 @@ using Umbraco.Core.Models.PublishedContent;
 namespace UmbMapper.PropertyMappers
 {
     /// <summary>
-    /// Maps from the <see cref="IPublishedContent"/> containing to a collection of items.
+    /// Maps from the <see cref="IPublishedElement"/> containing to a collection of items.
     /// </summary>
     public sealed class CsvPropertyMapper : PropertyMapperBase
     {
@@ -29,7 +29,7 @@ namespace UmbMapper.PropertyMappers
         }
 
         /// <inheritdoc/>
-        public override object Map(IPublishedContent content, object value)
+        public override object Map(IPublishedElement content, object value)
         {
             if (value.IsNullOrWhiteSpaceString())
             {

@@ -30,7 +30,7 @@ namespace UmbMapper.PropertyMappers
         /// </summary>
         /// <param name="content">The published content</param>
         /// <returns>The <see cref="object"/></returns>
-        object GetRawValue(IPublishedContent content);
+        object GetRawValue(IPublishedElement content);
 
         /// <summary>
         /// Maps the property from the given content.
@@ -38,7 +38,7 @@ namespace UmbMapper.PropertyMappers
         /// <param name="content">The published content</param>
         /// <param name="value">The current value</param>
         /// <returns>The <see cref="object"/></returns>
-        object Map(IPublishedContent content, object value);
+        object Map(IPublishedElement content, object value);
 
         /// <summary>
         /// Gets the culture for the current request. This can be either the set culture or the request culture.

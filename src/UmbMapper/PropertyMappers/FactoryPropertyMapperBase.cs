@@ -34,10 +34,10 @@ namespace UmbMapper.PropertyMappers
         /// </summary>
         /// <param name="content">The current published content.</param>
         /// <returns>The <see cref="string"/>.</returns>
-        public abstract string ResolveTypeName(IPublishedContent content);
+        public abstract string ResolveTypeName(IPublishedElement content);
 
         /// <inheritdoc/>
-        public override object Map(IPublishedContent content, object value)
+        public override object Map(IPublishedElement content, object value)
         {
             PropertyMapInfo info = this.Info;
             Type propType = info.PropertyType;
@@ -46,15 +46,15 @@ namespace UmbMapper.PropertyMappers
 
             IEnumerable<Type> types = this.umbMapperRegistry.CurrentMappedTypes();
 
-            // Check for IEnumerable<IPublishedContent> value
-            if (value is IEnumerable<IPublishedContent> enumerableContentValue)
+            // Check for IEnumerable<IPublishedElement> value
+            if (value is IEnumerable<IPublishedElement> enumerableContentValue)
             {
                 IEnumerable<object> items = this.Select(enumerableContentValue, types);
                 return EnumerableInvocations.Cast(baseType, items);
             }
 
-            // Check for IPublishedContent value
-            if (value is IPublishedContent contentValue)
+            // Check for IPublishedElement value
+            if (value is IPublishedElement contentValue)
             {
                 string typeName = this.ResolveTypeName(contentValue);
                 Type type = FirstOrDefault(types, typeName);
@@ -80,9 +80,9 @@ namespace UmbMapper.PropertyMappers
         }
 
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private IEnumerable<object> Select(IEnumerable<IPublishedContent> content, IEnumerable<Type> types)
+        private IEnumerable<object> Select(IEnumerable<IPublishedElement> content, IEnumerable<Type> types)
         {
-            foreach (IPublishedContent item in content)
+            foreach (IPublishedElement item in content)
             {
                 string typeName = this.ResolveTypeName(item);
                 Type match = null;

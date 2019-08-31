@@ -22,7 +22,7 @@ namespace UmbMapper.PropertyMappers
         }
 
         /// <inheritdoc/>
-        public override object Map(IPublishedContent content, object value)
+        public override object Map(IPublishedElement content, object value)
         {
             object convertedValue = this.CheckConvertType(value);
 

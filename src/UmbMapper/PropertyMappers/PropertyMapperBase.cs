@@ -44,13 +44,13 @@ namespace UmbMapper.PropertyMappers
         protected string Alias { get; private set; }
 
         /// <inheritdoc/>
-        public object GetRawValue(IPublishedContent content)
+        public object GetRawValue(IPublishedElement content)
         {
             return this.GetRawValue(content, this.Info.Aliases);
         }
 
         /// <inheritdoc/>
-        public abstract object Map(IPublishedContent content, object value);
+        public abstract object Map(IPublishedElement content, object value);
 
         /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -76,7 +76,7 @@ namespace UmbMapper.PropertyMappers
         /// <param name="content">The published content</param>
         /// <param name="aliases">The collection of alias to check against.</param>
         /// <returns>The <see cref="object"/></returns>
-        protected object GetRawValue(IPublishedContent content, string[] aliases)
+        protected object GetRawValue(IPublishedElement content, string[] aliases)
         {
             PropertyMapInfo info = this.Info;
             object value = info.DefaultValue;

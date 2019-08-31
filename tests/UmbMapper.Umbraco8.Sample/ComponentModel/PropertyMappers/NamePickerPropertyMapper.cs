@@ -26,7 +26,7 @@ namespace UmbMapper.Umbraco8.Sample.ComponentModel.PropertyMappers
         }
 
         /// <inheritdoc/>
-        public override object Map(IPublishedContent content, object value)
+        public override object Map(IPublishedElement content, object value)
         {
             // Make sure you have Microsoft.Net.Compilers installed and up-to-date to use pattern matching
             switch (value)

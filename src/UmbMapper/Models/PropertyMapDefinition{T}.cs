@@ -62,7 +62,7 @@ namespace UmbMapper.Models
         /// </summary>
         public object DefaultValue { get; set; }
 
-        public Func<T, IPublishedContent, object> MapFromInstancePredicate { get; private set;}
+        public Func<T, IPublishedElement, object> MapFromInstancePredicate { get; private set;}
 
         /// <summary>
         /// Sets the aliases to check against when mapping the property
@@ -160,7 +160,7 @@ namespace UmbMapper.Models
             return this;
         }
 
-        public PropertyMapDefinition<T> MapFromInstance(Func<T, IPublishedContent, object> predicate)
+        public PropertyMapDefinition<T> MapFromInstance(Func<T, IPublishedElement, object> predicate)
         {
             this.MapFromInstancePredicate = predicate;
 

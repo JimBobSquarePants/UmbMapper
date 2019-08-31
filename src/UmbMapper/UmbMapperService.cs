@@ -18,12 +18,12 @@ namespace UmbMapper
             this.mappingProcessorFactory = mappingProcessorFactory;
         }
 
-        public IEnumerable<T> MapTo<T>(IEnumerable<IPublishedContent> content) where T : class
+        public IEnumerable<T> MapTo<T>(IEnumerable<IPublishedElement> content) where T : class
         {
             return this.MapTo(content, typeof(T)).Select(x => x as T);
         }
 
-        public IEnumerable<object> MapTo(IEnumerable<IPublishedContent> content, Type type)
+        public IEnumerable<object> MapTo(IEnumerable<IPublishedElement> content, Type type)
         {
             IEnumerable<object> typedItems = content.Select(x => this.MapTo(x, type));
 
@@ -31,14 +31,14 @@ namespace UmbMapper
             return (IEnumerable<object>)EnumerableInvocations.Cast(type, typedItems);
         }
 
-        public T MapTo<T>(IPublishedContent content)
+        public T MapTo<T>(IPublishedElement content)
             where T : class
         {
             Type type = typeof(T);
             return (T)this.MapTo(content, type);
         }
 
-        public object MapTo(IPublishedContent content, Type type)
+        public object MapTo(IPublishedElement content, Type type)
         {
             if (content is null)
             {
@@ -57,13 +57,13 @@ namespace UmbMapper
             return mappingProcessor.Map(content);
         }
 
-        public void MapTo<T>(IPublishedContent content, T destination)
+        public void MapTo<T>(IPublishedElement content, T destination)
         {
             Type type = typeof(T);
             this.MapTo(content, type, destination);
         }
 
-        public void MapTo(IPublishedContent content, Type type, object destination)
+        public void MapTo(IPublishedElement content, Type type, object destination)
         {
             if (content is null)
             {
@@ -91,12 +91,12 @@ namespace UmbMapper
             return mappingProcessor;
         }
 
-        private void MappingProcessor_OnRecursivelyMapMultiple(IEnumerable<IPublishedContent> items, Type type, out IEnumerable<object> returnObjects)
+        private void MappingProcessor_OnRecursivelyMapMultiple(IEnumerable<IPublishedElement> items, Type type, out IEnumerable<object> returnObjects)
         {
             returnObjects = this.MapTo(items, type);
         }
 
-        private void MappingProcessor_OnRecursivelyMapSingle(IPublishedContent item, Type type, out object returnObject)
+        private void MappingProcessor_OnRecursivelyMapSingle(IPublishedElement item, Type type, out object returnObject)
         {
             returnObject = this.MapTo(item, type);
         }

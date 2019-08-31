@@ -12,18 +12,18 @@ namespace UmbMapper
     /// </summary>
     public interface IUmbMapperService
     {
-        IEnumerable<T> MapTo<T>(IEnumerable<IPublishedContent> content)
+        IEnumerable<T> MapTo<T>(IEnumerable<IPublishedElement> content)
             where T : class;
 
-        IEnumerable<object> MapTo(IEnumerable<IPublishedContent> content, Type type);
+        IEnumerable<object> MapTo(IEnumerable<IPublishedElement> content, Type type);
 
-        T MapTo<T>(IPublishedContent content)
+        T MapTo<T>(IPublishedElement content)
             where T : class;
 
-        object MapTo(IPublishedContent content, Type type);
+        object MapTo(IPublishedElement content, Type type);
 
-        void MapTo<T>(IPublishedContent content, T destination);
+        void MapTo<T>(IPublishedElement content, T destination);
 
-        void MapTo(IPublishedContent content, Type type, object destination);
+        void MapTo(IPublishedElement content, Type type, object destination);
     }
 }

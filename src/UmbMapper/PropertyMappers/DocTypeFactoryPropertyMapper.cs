@@ -21,6 +21,6 @@ namespace UmbMapper.PropertyMappers
         }
 
         /// <inheritdoc/>
-        public override string ResolveTypeName(IPublishedContent content) => content.ContentType.Alias;
+        public override string ResolveTypeName(IPublishedElement content) => content.ContentType.Alias;
     }
 }

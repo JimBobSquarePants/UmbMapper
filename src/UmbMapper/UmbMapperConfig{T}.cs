@@ -66,7 +66,7 @@ namespace UmbMapper
             if (constructorParams != null)
             {
                 // Is it PublishedContentModel or similar?
-                if (constructorParams.Length == 1 && constructorParams[0].ParameterType == typeof(IPublishedContent))
+                if (constructorParams.Length == 1 && constructorParams[0].ParameterType == typeof(IPublishedElement))
                 {
                     this.hasIPublishedConstructor = true;
                 }
@@ -80,8 +80,8 @@ namespace UmbMapper
             if (!validConstructor)
             {
                 throw new InvalidOperationException(
-                    $"Cannot convert IPublishedContent to {this.MappedType} as it has no valid constructor. " +
-                    "A valid constructor is either an empty one, or one accepting a single IPublishedContent parameter.");
+                    $"Cannot convert IPublishedElement to {this.MappedType} as it has no valid constructor. " +
+                    "A valid constructor is either an empty one, or one accepting a single IPublishedElement parameter.");
             }
 
             this.maps = new List<PropertyMap<T>>();
@@ -244,7 +244,7 @@ namespace UmbMapper
         }
 
         /// <inheritdoc/>
-        object IUmbMapperConfig.CreateEmpty(IPublishedContent content)
+        object IUmbMapperConfig.CreateEmpty(IPublishedElement content)
         {
             if (this.createProxy)
             {
@@ -257,7 +257,7 @@ namespace UmbMapper
         }
 
         ///// <inheritdoc/>
-        //object IUmbMapperConfig.Map(IPublishedContent content)
+        //object IUmbMapperConfig.Map(IPublishedElement content)
         //{
         //    object result;
         //    if (this.createProxy)
@@ -287,7 +287,7 @@ namespace UmbMapper
         //}
 
         ///// <inheritdoc/>
-        //public void Map(IPublishedContent content, object destination)
+        //public void Map(IPublishedElement content, object destination)
         //{
         //    // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
         //    // Certain mappers like Archetype require the context so we want to ensure it exists.
@@ -316,7 +316,7 @@ namespace UmbMapper
 
         
 
-        //private static object MapProperty(PropertyMap<T> map, IPublishedContent content, object result)
+        //private static object MapProperty(PropertyMap<T> map, IPublishedElement content, object result)
         //{
         //    object value = null;
 
@@ -358,19 +358,19 @@ namespace UmbMapper
         //{
         //    if (!info.PropertyType.IsInstanceOfType(value))
         //    {
-        //        // If the property value is an IPublishedContent, then we can map it to the target type.
-        //        if (value is IPublishedContent content && info.PropertyType.IsClass)
+        //        // If the property value is an IPublishedElement, then we can map it to the target type.
+        //        if (value is IPublishedElement content && info.PropertyType.IsClass)
         //        {
         //            return content.MapTo(info.PropertyType);
         //        }
 
-        //        // If the property value is an IEnumerable<IPublishedContent>, then we can map it to the target type.
-        //        if (value.GetType().IsEnumerableOfType(typeof(IPublishedContent)) && info.IsEnumerableType)
+        //        // If the property value is an IEnumerable<IPublishedElement>, then we can map it to the target type.
+        //        if (value.GetType().IsEnumerableOfType(typeof(IPublishedElement)) && info.IsEnumerableType)
         //        {
         //            Type genericType = info.EnumerableParamType;
         //            if (genericType?.IsClass == true)
         //            {
-        //                return ((IEnumerable<IPublishedContent>)value).MapTo(genericType);
+        //                return ((IEnumerable<IPublishedElement>)value).MapTo(genericType);
         //            }
         //        }
         //    }
@@ -460,7 +460,7 @@ namespace UmbMapper
         //    //    false);
         //}
 
-        //private Dictionary<string, Lazy<object>> MapLazyProperties(IPublishedContent content, object result)
+        //private Dictionary<string, Lazy<object>> MapLazyProperties(IPublishedElement content, object result)
         //{
         //    // First add any lazy mappings, use count to prevent allocations
         //    var lazyProperties = new Dictionary<string, Lazy<object>>(this.lazyNames.Count);
@@ -490,7 +490,7 @@ namespace UmbMapper
         //    return lazyProperties;
         //}
 
-        //private void MapNonLazyProperties(IPublishedContent content, object destination)
+        //private void MapNonLazyProperties(IPublishedElement content, object destination)
         //{
         //    // First map the non-lazy properties
         //    for (int i = 0; i < this.nonLazyMaps.Length; i++)
@@ -515,7 +515,7 @@ namespace UmbMapper
         //    }
         //}
 
-        //private void MapLazyPropertiesAsNonLazy(IPublishedContent content, object destination)
+        //private void MapLazyPropertiesAsNonLazy(IPublishedElement content, object destination)
         //{
         //    // First map the lazy properties
         //    for (int i = 0; i < this.lazyMaps.Length; i++)

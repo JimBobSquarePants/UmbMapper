@@ -37,7 +37,7 @@ namespace UmbMapper
             return mappingConfig.MappedType.GetInstance();
         }
 
-        public object CreateEmpty(IPublishedContent content)
+        public object CreateEmpty(IPublishedElement content)
         {
             if (mappingConfig.CreateProxy)
             {
@@ -49,7 +49,7 @@ namespace UmbMapper
             return mappingConfig.MappedType.GetInstance(content);
         }
 
-        public object Map(IPublishedContent content)
+        public object Map(IPublishedElement content)
         {
             object result;
             if (mappingConfig.CreateProxy)
@@ -78,7 +78,7 @@ namespace UmbMapper
             return result;
         }
 
-        public void Map(IPublishedContent content, object destination)
+        public void Map(IPublishedElement content, object destination)
         {
             // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.
             // Certain mappers like Archetype require the context so we want to ensure it exists.
@@ -106,7 +106,7 @@ namespace UmbMapper
             this.MapNonLazyProperties(content, destination);
         }
 
-        private Dictionary<string, Lazy<object>> MapLazyProperties(IPublishedContent content, object result)
+        private Dictionary<string, Lazy<object>> MapLazyProperties(IPublishedElement content, object result)
         {
             // First add any lazy mappings, use count to prevent allocations
             var lazyProperties = new Dictionary<string, Lazy<object>>(this.mappingConfig.LazyNames.Count);
@@ -136,7 +136,7 @@ namespace UmbMapper
             return lazyProperties;
         }
 
-        private void MapNonLazyProperties(IPublishedContent content, object destination)
+        private void MapNonLazyProperties(IPublishedElement content, object destination)
         {
             // First map the non-lazy properties
             for (int i = 0; i < this.mappingConfig.NonLazyMaps.Length; i++)
@@ -161,7 +161,7 @@ namespace UmbMapper
             }
         }
 
-        private void MapLazyPropertiesAsNonLazy(IPublishedContent content, object destination)
+        private void MapLazyPropertiesAsNonLazy(IPublishedElement content, object destination)
         {
             // First map the lazy properties
             for (int i = 0; i < this.mappingConfig.LazyMaps.Length; i++)
@@ -186,7 +186,7 @@ namespace UmbMapper
             }
         }
 
-        private object MapProperty(IPropertyMap map, IPublishedContent content, object result)
+        private object MapProperty(IPropertyMap map, IPublishedElement content, object result)
         {
             var propertyMap = map as PropertyMap<T>;
 
@@ -258,9 +258,9 @@ namespace UmbMapper
             return value;
         }
 
-        //private static object MapProperty(PropertyMap<T> map, IPublishedContent content, object result)
-        //private static object MapProperty(PropertyMap<T> map, IPublishedContent content, object result, IUmbMapperService umbMapperService)
-        private object MapProperty(PropertyMap<T> map, IPublishedContent content, object result, IUmbMapperService umbMapperService)
+        //private static object MapProperty(PropertyMap<T> map, IPublishedElement content, object result)
+        //private static object MapProperty(PropertyMap<T> map, IPublishedElement content, object result, IUmbMapperService umbMapperService)
+        private object MapProperty(PropertyMap<T> map, IPublishedElement content, object result, IUmbMapperService umbMapperService)
         {
             object value = null;
 
@@ -304,8 +304,8 @@ namespace UmbMapper
         {
             if (!info.PropertyType.IsInstanceOfType(value))
             {
-                // If the property value is an IPublishedContent, then we can map it to the target type.
-                if (value is IPublishedContent content && info.PropertyType.IsClass)
+                // If the property value is an IPublishedElement, then we can map it to the target type.
+                if (value is IPublishedElement content && info.PropertyType.IsClass)
                 {
                     //object returnObject = null;
                     //this.OnRecursivelyMapSingle?.Invoke(content, info.PropertyType, out returnObject);
@@ -315,18 +315,18 @@ namespace UmbMapper
                     return umbMapperService.MapTo(content, info.PropertyType);
                 }
 
-                // If the property value is an IEnumerable<IPublishedContent>, then we can map it to the target type.
-                if (value.GetType().IsEnumerableOfType(typeof(IPublishedContent)) && info.IsEnumerableType)
+                // If the property value is an IEnumerable<IPublishedElement>, then we can map it to the target type.
+                if (value.GetType().IsEnumerableOfType(typeof(IPublishedElement)) && info.IsEnumerableType)
                 {
                     Type genericType = info.EnumerableParamType;
                     if (genericType?.IsClass == true)
                     {
                         //IEnumerable<object> returnObjects = null;
-                        //this.umbMapperService.MapTo((IEnumerable<IPublishedContent>)value, genericType, returnObjects);
+                        //this.umbMapperService.MapTo((IEnumerable<IPublishedElement>)value, genericType, returnObjects);
 
                         //return returnObjects;
 
-                        return umbMapperService.MapTo((IEnumerable<IPublishedContent>)value, genericType);
+                        return umbMapperService.MapTo((IEnumerable<IPublishedElement>)value, genericType);
                     }
                 }
             }
