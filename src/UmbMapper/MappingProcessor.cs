@@ -106,41 +106,6 @@ namespace UmbMapper
             this.MapNonLazyProperties(content, destination);
         }
 
-        //private static object RecursivelyMap(object value, PropertyMapInfo info)
-        private static object RecursivelyMap(object value, PropertyMapInfo info, IUmbMapperService umbMapperService)
-        {
-            if (!info.PropertyType.IsInstanceOfType(value))
-            {
-                // If the property value is an IPublishedContent, then we can map it to the target type.
-                if (value is IPublishedContent content && info.PropertyType.IsClass)
-                {
-                    //object returnObject = null;
-                    //this.OnRecursivelyMapSingle?.Invoke(content, info.PropertyType, out returnObject);
-
-                    //return returnObject;
-
-                    return umbMapperService.MapTo(content, info.PropertyType);
-                }
-
-                // If the property value is an IEnumerable<IPublishedContent>, then we can map it to the target type.
-                if (value.GetType().IsEnumerableOfType(typeof(IPublishedContent)) && info.IsEnumerableType)
-                {
-                    Type genericType = info.EnumerableParamType;
-                    if (genericType?.IsClass == true)
-                    {
-                        //IEnumerable<object> returnObjects = null;
-                        //this.umbMapperService.MapTo((IEnumerable<IPublishedContent>)value, genericType, returnObjects);
-
-                        //return returnObjects;
-
-                        return umbMapperService.MapTo((IEnumerable<IPublishedContent>)value, genericType);
-                    }
-                }
-            }
-
-            return value;
-        }
-
         private Dictionary<string, Lazy<object>> MapLazyProperties(IPublishedContent content, object result)
         {
             // First add any lazy mappings, use count to prevent allocations
@@ -221,7 +186,15 @@ namespace UmbMapper
             }
         }
 
-        private static object SantizeValue(object value, PropertyMapInfo info)
+        private object MapProperty(IPropertyMap map, IPublishedContent content, object result)
+        {
+            var propertyMap = map as PropertyMap<T>;
+
+            return MapProperty(propertyMap, content, result, this.umbMapperService);
+        }
+
+        //private static object SantizeValue(object value, PropertyMapInfo info)
+        private object SantizeValue(object value, PropertyMapInfo info)
         {
             bool propertyIsCastableEnumerable = info.IsCastableEnumerableType;
             bool propertyIsConvertableEnumerable = info.IsConvertableEnumerableType;
@@ -285,15 +258,9 @@ namespace UmbMapper
             return value;
         }
 
-        private object MapProperty(IPropertyMap map, IPublishedContent content, object result)
-        {
-            var propertyMap = map as PropertyMap<T>;
-
-            return MapProperty(propertyMap, content, result, this.umbMapperService);
-        }
-
         //private static object MapProperty(PropertyMap<T> map, IPublishedContent content, object result)
-        private static object MapProperty(PropertyMap<T> map, IPublishedContent content, object result, IUmbMapperService umbMapperService)
+        //private static object MapProperty(PropertyMap<T> map, IPublishedContent content, object result, IUmbMapperService umbMapperService)
+        private object MapProperty(PropertyMap<T> map, IPublishedContent content, object result, IUmbMapperService umbMapperService)
         {
             object value = null;
 
@@ -331,8 +298,40 @@ namespace UmbMapper
             return value;
         }
 
-        public event RecursivelyMapSingle OnRecursivelyMapSingle;
+        //private static object RecursivelyMap(object value, PropertyMapInfo info)
+        //private static object RecursivelyMap(object value, PropertyMapInfo info, IUmbMapperService umbMapperService)
+        private object RecursivelyMap(object value, PropertyMapInfo info, IUmbMapperService umbMapperService)
+        {
+            if (!info.PropertyType.IsInstanceOfType(value))
+            {
+                // If the property value is an IPublishedContent, then we can map it to the target type.
+                if (value is IPublishedContent content && info.PropertyType.IsClass)
+                {
+                    //object returnObject = null;
+                    //this.OnRecursivelyMapSingle?.Invoke(content, info.PropertyType, out returnObject);
 
-        public event RecursivelyMapMultiple OnRecursivelyMapMultiple;
+                    //return returnObject;
+
+                    return umbMapperService.MapTo(content, info.PropertyType);
+                }
+
+                // If the property value is an IEnumerable<IPublishedContent>, then we can map it to the target type.
+                if (value.GetType().IsEnumerableOfType(typeof(IPublishedContent)) && info.IsEnumerableType)
+                {
+                    Type genericType = info.EnumerableParamType;
+                    if (genericType?.IsClass == true)
+                    {
+                        //IEnumerable<object> returnObjects = null;
+                        //this.umbMapperService.MapTo((IEnumerable<IPublishedContent>)value, genericType, returnObjects);
+
+                        //return returnObjects;
+
+                        return umbMapperService.MapTo((IEnumerable<IPublishedContent>)value, genericType);
+                    }
+                }
+            }
+
+            return value;
+        }
     }
 }

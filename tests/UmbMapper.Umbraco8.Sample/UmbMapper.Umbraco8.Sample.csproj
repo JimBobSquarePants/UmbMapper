@@ -397,6 +397,11 @@
     <Compile Include="ComponentModel\Mappers\PostMap.cs" />
     <Compile Include="ComponentModel\Mappers\PublishedImageMap.cs" />
     <Compile Include="ComponentModel\Mappers\PublishedPageMap.cs" />
+    <Compile Include="ComponentModel\MappingDefinitions\BlogMappingDefinition.cs" />
+    <Compile Include="ComponentModel\MappingDefinitions\HomeMappingDefinition.cs" />
+    <Compile Include="ComponentModel\MappingDefinitions\PostMappingDefinition.cs" />
+    <Compile Include="ComponentModel\MappingDefinitions\PublishedImageMappingDefinition.cs" />
+    <Compile Include="ComponentModel\MappingDefinitions\PublishedPageMappingDefinition.cs" />
     <Compile Include="ComponentModel\PropertyMappers\NamePickerPropertyMapper.cs" />
     <Compile Include="Composing\UmbMapperRegistryComponent.cs" />
     <Compile Include="Composing\UmbMapperTestSiteComposer.cs" />

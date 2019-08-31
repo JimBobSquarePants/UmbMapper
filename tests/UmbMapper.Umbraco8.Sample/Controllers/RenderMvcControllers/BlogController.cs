@@ -17,10 +17,15 @@ namespace UmbMapper.Umbraco8.Sample.Controllers.RenderMvcControllers
     /// </summary>
     public class BlogController : RenderMvcController
     {
+        private readonly IUmbMapperService umbMapperService;
+        public BlogController(IUmbMapperService umbMapperService)
+        {
+            this.umbMapperService = umbMapperService;
+        }
         /// <inheritdoc/>
         public override ActionResult Index(ContentModel model)
         {
-            Blog blog = model.Content.MapTo<Blog>();
+            Blog blog = this.umbMapperService.MapTo<Blog>(model.Content); // model.Content.MapTo<Blog>();
             var viewModel = new RenderPage<Blog>(blog);
 
             return this.CurrentTemplate(viewModel);

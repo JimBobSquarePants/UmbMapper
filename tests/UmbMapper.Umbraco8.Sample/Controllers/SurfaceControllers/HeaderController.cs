@@ -15,10 +15,15 @@ namespace UmbMapper.Umbraco8.Sample.Controllers.SurfaceControllers
 {
     public class HeaderController : SurfaceController
     {
+        private readonly IUmbMapperService umbMapperService;
+        public HeaderController(IUmbMapperService umbMapperService)
+        {
+            this.umbMapperService = umbMapperService;
+        }
         [ChildActionOnly]
         public ActionResult BasicHeader()
         {
-            var header = this.CurrentPage.MapTo<BasicHeaderComposition>();
+            var header = this.umbMapperService.MapTo<BasicHeaderComposition>(this.CurrentPage); //this.CurrentPage.MapTo<BasicHeaderComposition>();
 
             BasicHeaderViewModel vm = new BasicHeaderViewModel
             {

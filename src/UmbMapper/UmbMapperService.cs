@@ -85,8 +85,8 @@ namespace UmbMapper
         private IMappingProcessor GetMappingProcessor(IUmbMapperConfig config)
         {
             IMappingProcessor mappingProcessor = this.mappingProcessorFactory.Create(config, this);
-            mappingProcessor.OnRecursivelyMapSingle += this.MappingProcessor_OnRecursivelyMapSingle;
-            mappingProcessor.OnRecursivelyMapMultiple += this.MappingProcessor_OnRecursivelyMapMultiple;
+            //mappingProcessor.OnRecursivelyMapSingle += this.MappingProcessor_OnRecursivelyMapSingle;
+            //mappingProcessor.OnRecursivelyMapMultiple += this.MappingProcessor_OnRecursivelyMapMultiple;
 
             return mappingProcessor;
         }

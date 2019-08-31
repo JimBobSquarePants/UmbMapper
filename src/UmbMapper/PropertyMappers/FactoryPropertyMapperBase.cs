@@ -21,15 +21,6 @@ namespace UmbMapper.PropertyMappers
     {
         private readonly IUmbMapperRegistry umbMapperRegistry;
         private readonly IUmbMapperService umbMapperService;
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FactoryPropertyMapperBase"/> class.
-        /// </summary>
-        /// <param name="info">The property map information</param>
-        //protected FactoryPropertyMapperBase(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry)
-        //    : base(info)
-        //{
-        //    this.umbMapperRegistry = umbMapperRegistry;
-        //}
 
         protected FactoryPropertyMapperBase(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService)
            : base(info)
@@ -52,11 +43,7 @@ namespace UmbMapper.PropertyMappers
             Type propType = info.PropertyType;
             bool propTypeIsEnumerable = info.IsEnumerableType;
             Type baseType = info.IsEnumerableType ? info.EnumerableParamType : propType;
-            // TODO
-            // Done to get project compiling and initial tests running
-            //var mapperRegistry = DependencyResolver.Current.GetService<IUmbMapperRegistry>();
-            //IEnumerable<Type> types = mapperRegistry.CurrentMappedTypes();
-            
+
             IEnumerable<Type> types = this.umbMapperRegistry.CurrentMappedTypes();
 
             // Check for IEnumerable<IPublishedContent> value

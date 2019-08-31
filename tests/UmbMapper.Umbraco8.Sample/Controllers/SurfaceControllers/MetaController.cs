@@ -13,12 +13,18 @@ namespace UmbMapper.Umbraco8.Sample.Controllers.SurfaceControllers
 {
     public class MetaController : SurfaceController
     {
+        private readonly IUmbMapperService umbMapperService;
+        public MetaController(IUmbMapperService umbMapperService)
+        {
+            this.umbMapperService = umbMapperService;
+        }
+
         [ChildActionOnly]
         //public PartialViewResult PageMeta()
         public ActionResult PageMeta()
         {
             var siteRoot = this.GetSiteRoot();
-            var pageMeta = this.CurrentPage.MapTo<MetaDataComposition>();
+            var pageMeta = this.umbMapperService.MapTo<MetaDataComposition>(this.CurrentPage); //this.CurrentPage.MapTo<MetaDataComposition>();
 
             string metaTitle =
                 (string.IsNullOrWhiteSpace(siteRoot?.SiteName) == false)

@@ -17,10 +17,15 @@ namespace UmbMapper.Umbraco8.Sample.Controllers.RenderMvcControllers
     /// </summary>
     public class PostController : RenderMvcController
     {
+        private readonly IUmbMapperService umbMapperService;
+        public PostController(IUmbMapperService umbMapperService)
+        {
+            this.umbMapperService = umbMapperService;
+        }
         /// <inheritdoc/>
         public override ActionResult Index(ContentModel model)
         {
-            Post post = model.Content.MapTo<Post>();
+            Post post = this.umbMapperService.MapTo<Post>(model.Content); //model.Content.MapTo<Post>();
             var viewModel = new RenderPage<Post>(post);
 
             return this.CurrentTemplate(viewModel);

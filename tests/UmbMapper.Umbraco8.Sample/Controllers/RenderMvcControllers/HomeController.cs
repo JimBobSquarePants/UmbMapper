@@ -13,10 +13,15 @@ namespace UmbMapper.Umbraco8.Sample.Controllers.RenderMvcControllers
 {
     public class HomeController : RenderMvcController
     {
+        private readonly IUmbMapperService umbMapperService;
+        public HomeController(IUmbMapperService umbMapperService)
+        {
+            this.umbMapperService = umbMapperService;
+        }
         /// <inheritdoc/>
         public override ActionResult Index(ContentModel model)
         {
-            Home home = model.Content.MapTo<Home>();
+            Home home = this.umbMapperService.MapTo<Home>(model.Content); //model.Content.MapTo<Home>();
             var viewModel = new RenderPage<Home>(home);
 
             return this.CurrentTemplate(viewModel);
