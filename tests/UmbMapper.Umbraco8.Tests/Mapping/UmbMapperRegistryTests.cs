@@ -14,14 +14,18 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         private readonly IUmbMapperRegistry umbMapperRegistry;
         private readonly IUmbMapperService umbMapperService;
         private readonly IFactoryPropertyMapperFactory factoryPropertyMapperFactory;
+        protected readonly IPropertyMapperFactory propertyMapperFactory;
         private readonly IPropertyMapFactory propertyMapFactory;
         private readonly IUmbMapperInitialiser umbMapperInitialiser;
 
         public UmbMapperRegistryTests()
         {
             this.umbMapperRegistry = new UmbMapperRegistry();
+            this.umbMapperService = new UmbMapperService(this.umbMapperRegistry, new MappingProcessorFactory());
             this.factoryPropertyMapperFactory = new FactoryPropertyMapperFactory(this.umbMapperRegistry);
-            this.propertyMapFactory = new PropertyMapFactory(this.factoryPropertyMapperFactory);
+            this.propertyMapperFactory = new PropertyMapperFactory(this.umbMapperRegistry, this.umbMapperService, Mock.Of<IUmbracoContextFactory>());
+            var propertyMapFactory = new PropertyMapFactory(factoryPropertyMapperFactory, this.propertyMapperFactory);
+            //var propertyMapFactory = new PropertyMapFactory(this.factoryPropertyMapperFactory, Mock.Of<IUmbracoContextFactory>());
             this.umbMapperInitialiser = new UmbMapperInitialiser(this.umbMapperRegistry, this.propertyMapFactory);
         }
 
@@ -30,7 +34,9 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         {
             var registry = new UmbMapperRegistry();
             var factoryPropertyMapperFactory = new FactoryPropertyMapperFactory(registry);
-            var propertyMapFactory = new PropertyMapFactory(factoryPropertyMapperFactory);
+            var propertyMapperFactory = new PropertyMapperFactory(this.umbMapperRegistry, this.umbMapperService, Mock.Of<IUmbracoContextFactory>());
+            var propertyMapFactory = new PropertyMapFactory(factoryPropertyMapperFactory, propertyMapperFactory);
+            //var propertyMapFactory = new PropertyMapFactory(this.factoryPropertyMapperFactory, Mock.Of<IUmbracoContextFactory>());
             var initialiser = new UmbMapperInitialiser(registry, propertyMapFactory);
 
             initialiser.AddMapper<PublishedItem>(new PublishedItemMapDefinition());
@@ -43,7 +49,9 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         {
             var registry = new UmbMapperRegistry();
             var factoryPropertyMapperFactory = new FactoryPropertyMapperFactory(registry);
-            var propertyMapFactory = new PropertyMapFactory(factoryPropertyMapperFactory);
+            var propertyMapperFactory = new PropertyMapperFactory(this.umbMapperRegistry, this.umbMapperService, Mock.Of<IUmbracoContextFactory>());
+            var propertyMapFactory = new PropertyMapFactory(factoryPropertyMapperFactory, propertyMapperFactory);
+            //var propertyMapFactory = new PropertyMapFactory(this.factoryPropertyMapperFactory, Mock.Of<IUmbracoContextFactory>());
             var initialiser = new UmbMapperInitialiser(registry, propertyMapFactory);
 
             initialiser.AddMapperFor<PublishedItem>();

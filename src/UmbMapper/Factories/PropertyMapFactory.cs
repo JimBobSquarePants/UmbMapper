@@ -2,16 +2,22 @@
 using UmbMapper.Extensions;
 using UmbMapper.Models;
 using UmbMapper.PropertyMappers;
+using Umbraco.Web;
 
 namespace UmbMapper.Factories
 {
     public class PropertyMapFactory : IPropertyMapFactory
     {
         private readonly IFactoryPropertyMapperFactory factoryPropertyMapperFactory;
+        private readonly IPropertyMapperFactory propertyMapperFactory;
+        //private readonly IUmbracoContextFactory umbracoContextFactory;
 
-        public PropertyMapFactory(IFactoryPropertyMapperFactory factoryPropertyMapperFactory)
+        //public PropertyMapFactory(IFactoryPropertyMapperFactory factoryPropertyMapperFactory, IUmbracoContextFactory umbracoContextFactory)
+        public PropertyMapFactory(IFactoryPropertyMapperFactory factoryPropertyMapperFactory, IPropertyMapperFactory propertyMapperFactory)
+
         {
             this.factoryPropertyMapperFactory = factoryPropertyMapperFactory;
+            this.propertyMapperFactory = propertyMapperFactory;
         }
 
         public PropertyMap<T> Create<T>(PropertyMapDefinition<T> mapDefinition)
@@ -31,12 +37,12 @@ namespace UmbMapper.Factories
 
             if (mapDefinition.MapperType != null)
             {
-                newMap.PropertyMapper = mapDefinition.MapperType.GetInstance(newMap.Info) as IPropertyMapper;
+                newMap.PropertyMapper = this.propertyMapperFactory.CreateMapper(newMap.Info, mapDefinition.MapperType);// mapDefinition.MapperType.GetInstance(newMap.Info) as IPropertyMapper;
             }
 
             if (mapDefinition.FactoryMapperType != null)
             {
-                newMap.PropertyMapper = this.factoryPropertyMapperFactory.Create(newMap.Info, mapDefinition.FactoryMapperType);
+                newMap.PropertyMapper = this.propertyMapperFactory.CreateFactoryMapper(newMap.Info, mapDefinition.FactoryMapperType);// this.factoryPropertyMapperFactory.Create(newMap.Info, mapDefinition.FactoryMapperType);
             }
 
             if (mapDefinition.Lazy)

@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using UmbMapper.Converters;
 using UmbMapper.Extensions;
 using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 
 namespace UmbMapper.PropertyMappers
 {
@@ -27,6 +28,10 @@ namespace UmbMapper.PropertyMappers
             : base(info)
         {
         }
+
+        public CsvPropertyMapper(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService, IUmbracoContextFactory umbracoContextFactory)
+            : base(info, umbMapperRegistry, umbMapperService, umbracoContextFactory)
+        { }
 
         /// <inheritdoc/>
         public override object Map(IPublishedElement content, object value)

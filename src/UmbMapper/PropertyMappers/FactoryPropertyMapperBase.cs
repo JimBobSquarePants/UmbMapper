@@ -11,6 +11,7 @@ using UmbMapper.Extensions;
 using UmbMapper.Invocations;
 using Umbraco.Core;
 using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 
 namespace UmbMapper.PropertyMappers
 {
@@ -19,14 +20,22 @@ namespace UmbMapper.PropertyMappers
     /// </summary>
     public abstract class FactoryPropertyMapperBase : PropertyMapperBase
     {
-        private readonly IUmbMapperRegistry umbMapperRegistry;
-        private readonly IUmbMapperService umbMapperService;
+        //private readonly IUmbMapperRegistry umbMapperRegistry;
+        //private readonly IUmbMapperService umbMapperService;
+        //private readonly IUmbracoContextFactory umbracoContextFactory;
 
         protected FactoryPropertyMapperBase(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService)
-           : base(info)
+       : base(info)
         {
-            this.umbMapperRegistry = umbMapperRegistry;
-            this.umbMapperService = umbMapperService;
+            //this.umbMapperRegistry = umbMapperRegistry;
+            //this.umbMapperService = umbMapperService;
+        }
+
+        protected FactoryPropertyMapperBase(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService, IUmbracoContextFactory umbracoContextFactory)
+           : base(info, umbMapperRegistry, umbMapperService, umbracoContextFactory)
+        {
+            //this.umbMapperRegistry = umbMapperRegistry;
+            //this.umbMapperService = umbMapperService;
         }
 
         /// <summary>

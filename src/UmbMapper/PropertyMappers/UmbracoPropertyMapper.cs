@@ -4,6 +4,7 @@
 // </copyright>
 
 using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 
 namespace UmbMapper.PropertyMappers
 {
@@ -20,6 +21,10 @@ namespace UmbMapper.PropertyMappers
             : base(info)
         {
         }
+
+        public UmbracoPropertyMapper(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService, IUmbracoContextFactory umbracoContextFactory)
+            : base(info, umbMapperRegistry, umbMapperService, umbracoContextFactory)
+        { }
 
         /// <inheritdoc/>
         public override object Map(IPublishedElement content, object value)

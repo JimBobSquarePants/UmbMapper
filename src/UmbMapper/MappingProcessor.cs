@@ -206,7 +206,8 @@ namespace UmbMapper
         {
             var propertyMap = map as PropertyMap<T>;
 
-            return MapProperty(propertyMap, content, result, this.umbMapperService);
+            return MapProperty(propertyMap, content, result);
+            //return MapProperty(propertyMap, content, result, this.umbMapperService);
         }
 
         //private static object SantizeValue(object value, PropertyMapInfo info)
@@ -276,7 +277,8 @@ namespace UmbMapper
 
         //private static object MapProperty(PropertyMap<T> map, IPublishedElement content, object result)
         //private static object MapProperty(PropertyMap<T> map, IPublishedElement content, object result, IUmbMapperService umbMapperService)
-        private object MapProperty(PropertyMap<T> map, IPublishedElement content, object result, IUmbMapperService umbMapperService)
+        //private object MapProperty(PropertyMap<T> map, IPublishedElement content, object result, IUmbMapperService umbMapperService)
+        private object MapProperty(PropertyMap<T> map, IPublishedElement content, object result)
         {
             object value = null;
 
@@ -308,7 +310,8 @@ namespace UmbMapper
 
             if (value != null)
             {
-                value = RecursivelyMap(value, info, umbMapperService);
+                //value = RecursivelyMap(value, info, umbMapperService);
+                value = RecursivelyMap(value, info);
             }
 
             return value;
@@ -316,7 +319,8 @@ namespace UmbMapper
 
         //private static object RecursivelyMap(object value, PropertyMapInfo info)
         //private static object RecursivelyMap(object value, PropertyMapInfo info, IUmbMapperService umbMapperService)
-        private object RecursivelyMap(object value, PropertyMapInfo info, IUmbMapperService umbMapperService)
+        //
+        private object RecursivelyMap(object value, PropertyMapInfo info)
         {
             if (!info.PropertyType.IsInstanceOfType(value))
             {
@@ -328,7 +332,7 @@ namespace UmbMapper
 
                     //return returnObject;
 
-                    return umbMapperService.MapTo(content, info.PropertyType);
+                    return this.umbMapperService.MapTo(content, info.PropertyType);
                 }
 
                 // If the property value is an IEnumerable<IPublishedElement>, then we can map it to the target type.
@@ -342,7 +346,7 @@ namespace UmbMapper
 
                         //return returnObjects;
 
-                        return umbMapperService.MapTo((IEnumerable<IPublishedElement>)value, genericType);
+                        return this.umbMapperService.MapTo((IEnumerable<IPublishedElement>)value, genericType);
                     }
                 }
             }

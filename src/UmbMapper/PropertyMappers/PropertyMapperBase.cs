@@ -22,6 +22,13 @@ namespace UmbMapper.PropertyMappers
     /// </summary>
     public abstract class PropertyMapperBase : IPropertyMapper
     {
+        protected readonly IUmbMapperRegistry umbMapperRegistry;
+        protected readonly IUmbMapperService umbMapperService;
+        protected readonly IUmbracoContextFactory umbracoContextFactory;
+
+        //private readonly IUmbMapperRegistry umbMapperRegistry;
+        //private readonly IUmbMapperService umbMapperService;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyMapperBase"/> class.
         /// </summary>
@@ -30,6 +37,16 @@ namespace UmbMapper.PropertyMappers
         {
             this.Info = info;
             this.Alias = info.Aliases[0];
+        }
+
+        protected PropertyMapperBase(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService, IUmbracoContextFactory umbracoContextFactory)
+        {
+            this.Info = info;
+            this.Alias = info.Aliases[0];
+
+            this.umbMapperRegistry = umbMapperRegistry;
+            this.umbMapperService = umbMapperService;
+            this.umbracoContextFactory = umbracoContextFactory;
         }
 
         /// <inheritdoc/>
@@ -173,7 +190,9 @@ namespace UmbMapper.PropertyMappers
         [MethodImpl(MethodImplOptions.NoInlining)]
         private UmbracoContext GetUmbracoContext()
         {
-            return Umbraco.Web.Composing.Current.UmbracoContext ?? throw new InvalidOperationException("UmbracoContext.Current is null."); ;
+            return this.umbracoContextFactory.EnsureUmbracoContext().UmbracoContext;
+
+            //return Umbraco.Web.Composing.Current.UmbracoContext ?? throw new InvalidOperationException("UmbracoContext.Current is null."); ;
         }
     }
 }

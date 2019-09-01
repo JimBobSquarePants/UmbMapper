@@ -39,6 +39,17 @@ namespace UmbMapper
             this.PropertyMapper = new UmbracoPropertyMapper(this.Info);
         }
 
+        public PropertyMap(PropertyInfo property, IPropertyMapper propertyMapper)
+        {
+            if (!property.CanWrite)
+            {
+                throw new InvalidOperationException($"Property {property} in class {typeof(T).Name} must be writable in order to be mapped");
+            }
+
+            this.Info = new PropertyMapInfo(property);
+            this.PropertyMapper = propertyMapper;
+        }
+
         /// <inheritdoc/>
         public PropertyMapInfo Info { get; }
 

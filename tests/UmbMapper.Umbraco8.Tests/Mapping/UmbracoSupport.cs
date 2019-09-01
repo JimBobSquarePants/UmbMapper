@@ -96,6 +96,72 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         public void SetupUmbracoContext()
         {
             // Get the internal constructor
+            //ConstructorInfo umbracoContextCtor = typeof(UmbracoContext)
+            //    .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).First();
+
+            //// build required parameters to invoke UmbracoContext
+            //var _httpContextFactory = new FakeHttpContextFactory("~/Home");
+            //var umbracoSettings = UmbMapperMockFactory.GetUmbracoSettings();
+            //var globalSettings = Mock.Of<IGlobalSettings>();
+            //var publishedSnapshotService = new Mock<IPublishedSnapshotService>();
+            //publishedSnapshotService.Setup(x => x.CreatePublishedSnapshot(It.IsAny<string>())).Returns(Mock.Of<IPublishedSnapshot>());
+            //var ctxMock = new Mock<UmbracoContext>();
+
+            //// This has been copied from Umbraco source code Umbraco.Tests.Cache.PublishedCache.PublishContentCacheTests.Initialize
+            //// This is where you could start setting up more Umbraco stuff to test against, e.g. content xml
+            ////_xml = new XmlDocument();
+            ////_xml.LoadXml(GetXml());
+            ////var xmlStore = new XmlStore(() => _xml, null, null, null);
+            ////var appCache = new DictionaryAppCache();
+            ////var domainCache = new DomainCache(ServiceContext.DomainService, DefaultCultureAccessor);
+            ////var publishedShapshot = new PublishedSnapshot(
+            ////    new PublishedContentCache(xmlStore, domainCache, appCache, globalSettings, new SiteDomainHelper(), umbracoContextAccessor, ContentTypesCache, null, null),
+            ////    new PublishedMediaCache(xmlStore, ServiceContext.MediaService, ServiceContext.UserService, appCache, ContentTypesCache, Factory.GetInstance<IEntityXmlSerializer>(), umbracoContextAccessor),
+            ////    new PublishedMemberCache(null, appCache, Current.Services.MemberService, ContentTypesCache, umbracoContextAccessor),
+            ////    domainCache);
+            ////var publishedSnapshotService = new Mock<IPublishedSnapshotService>();
+            ////publishedSnapshotService.Setup(x => x.CreatePublishedSnapshot(It.IsAny<string>())).Returns(publishedShapshot);
+            /////// END
+
+            //object umbracoContextObject =
+            //    umbracoContextCtor.Invoke(
+            //        new object[] {
+            //            _httpContextFactory.HttpContext,
+            //            publishedSnapshotService.Object,
+            //            new WebSecurity(_httpContextFactory.HttpContext, Mock.Of<IUserService>(), globalSettings),
+            //            umbracoSettings,
+            //            Enumerable.Empty<IUrlProvider>(),
+            //            globalSettings,
+            //            new TestVariationContextAccessor()
+            //        }
+            //    );
+
+            UmbracoContext umbracoContext = this.GetUmbracoContext();
+
+            ConstructorInfo publishedRequestCtor = typeof(PublishedRequest)
+                .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).First();
+
+            object publishedRequestObject =
+                publishedRequestCtor.Invoke(
+                    new object[] {
+                        Mock.Of<IPublishedRouter>(),
+                        umbracoContext,
+                        null
+                    });
+
+            umbracoContext.PublishedRequest = publishedRequestObject as PublishedRequest;
+            umbracoContext.PublishedRequest.Culture = new CultureInfo("en-US");
+
+            var contextAccessor = new Mock<IUmbracoContextAccessor>();
+            contextAccessor.Setup(x => x.UmbracoContext).Returns(umbracoContext);
+
+            Umbraco.Web.Composing.Current.UmbracoContextAccessor = contextAccessor.Object;
+        }
+
+        // TODO - Update to create an UmbracoContext Factory that we can inject into our own factories, etc to get 
+        // tests working 
+        public UmbracoContext GetUmbracoContext()
+        {
             ConstructorInfo umbracoContextCtor = typeof(UmbracoContext)
                 .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).First();
 
@@ -138,25 +204,15 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
 
             UmbracoContext umbracoContext = umbracoContextObject as UmbracoContext;
 
-            ConstructorInfo publishedRequestCtor = typeof(PublishedRequest)
-                .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).First();
-
-            object publishedRequestObject =
-                publishedRequestCtor.Invoke(
-                    new object[] {
-                        Mock.Of<IPublishedRouter>(),
-                        umbracoContext,
-                        null
-                    });
-
-            umbracoContext.PublishedRequest = publishedRequestObject as PublishedRequest;
-            umbracoContext.PublishedRequest.Culture = new CultureInfo("en-US");
-
-            var contextAccessor = new Mock<IUmbracoContextAccessor>();
-            contextAccessor.Setup(x => x.UmbracoContext).Returns(umbracoContext);
-
-            Umbraco.Web.Composing.Current.UmbracoContextAccessor = contextAccessor.Object;
+            return umbracoContext;
         }
+        //public IUmbracoContextFactory GetUmbracoContextFactory()
+        //{
+        //    var mockContextFactory = new Mock<IUmbracoContextFactory>();
+        //    mockContextFactory.Setup(f => f.EnsureUmbracoContext()).Returns(new UmbracoContextReference());
+
+        //    return mockContextFactory.Object;
+        //}
 
         private void InitPublishedProperties()
         {

@@ -270,7 +270,9 @@
     <Compile Include="Extensions\PropertyInfoExtensions.cs" />
     <Compile Include="Extensions\PropertyMapDefinitionExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
+    <Compile Include="Factories\PropertyMapperFactory.cs" />
     <Compile Include="Factories\FactoryPropertyMapperFactory.cs" />
+    <Compile Include="Factories\IPropertyMapperFactory.cs" />
     <Compile Include="Factories\IFactoryPropertyMapperFactory.cs" />
     <Compile Include="Factories\IMappingProcessorFactory.cs" />
     <Compile Include="Factories\IPropertyMapFactory.cs" />

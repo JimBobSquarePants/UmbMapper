@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 
 namespace UmbMapper.PropertyMappers
 {
@@ -17,6 +18,11 @@ namespace UmbMapper.PropertyMappers
         /// <param name="info">The property map information</param>
         public DocTypeFactoryPropertyMapper(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService)
             : base(info, umbMapperRegistry, umbMapperService)
+        {
+        }
+
+        public DocTypeFactoryPropertyMapper(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService, IUmbracoContextFactory umbracoContextFactory)
+            : base(info, umbMapperRegistry, umbMapperService, umbracoContextFactory)
         {
         }
 
