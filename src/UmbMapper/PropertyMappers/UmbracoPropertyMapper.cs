@@ -3,6 +3,7 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
+using UmbMapper.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 
@@ -27,7 +28,19 @@ namespace UmbMapper.PropertyMappers
         { }
 
         /// <inheritdoc/>
-        public override object Map(IPublishedElement content, object value)
+        //public override object Map(IPublishedElement content, object value)
+        //{
+        //    object convertedValue = this.CheckConvertType(value);
+
+        //    if (this.Info.PropertyType.IsInstanceOfType(convertedValue))
+        //    {
+        //        return convertedValue;
+        //    }
+
+        //    return value ?? this.Info.DefaultValue;
+        //}
+
+        public override object Map(IPublishedElement content, object value, MappingContext mappingContext)
         {
             object convertedValue = this.CheckConvertType(value);
 

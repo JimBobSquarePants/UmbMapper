@@ -295,6 +295,7 @@
     <Compile Include="IUmbMapperInitialiser.cs" />
     <Compile Include="IUmbMapperService.cs" />
     <Compile Include="MappingProcessor.cs" />
+    <Compile Include="Models\MappingContext.cs" />
     <Compile Include="Models\MappingDefinition{T}.cs" />
     <Compile Include="Models\PropertyMapDefinition{T}.cs" />
     <Compile Include="PropertyMappers\CsvPropertyMapper.cs" />

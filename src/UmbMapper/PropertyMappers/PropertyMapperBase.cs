@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Web;
 using UmbMapper.Extensions;
+using UmbMapper.Models;
 using Umbraco.Core;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.Services;
@@ -67,11 +68,30 @@ namespace UmbMapper.PropertyMappers
         }
 
         /// <inheritdoc/>
-        public abstract object Map(IPublishedElement content, object value);
+        ///public abstract object Map(IPublishedElement content, object value);
+
+        public abstract object Map(IPublishedElement content, object value, MappingContext mappingContext);
 
         /// <inheritdoc/>
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        //public CultureInfo GetRequestCulture()
+        //{
+        //    CultureInfo culture = this.Info.Culture;
+        //    if (culture != null)
+        //    {
+        //        return culture;
+        //    }
+
+        //    if (this.UmbracoContext?.PublishedRequest != null)
+        //    {
+        //        return this.UmbracoContext.PublishedRequest.Culture;
+        //    }
+
+        //    return CultureInfo.CurrentCulture;
+        //}
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public CultureInfo GetRequestCulture()
+        public CultureInfo GetRequestCulture(MappingContext mappingContext)
         {
             CultureInfo culture = this.Info.Culture;
             if (culture != null)
@@ -79,9 +99,10 @@ namespace UmbMapper.PropertyMappers
                 return culture;
             }
 
-            if (this.UmbracoContext?.PublishedRequest != null)
+            culture = mappingContext.GetRequestCultureInfo();
+            if (culture != null)
             {
-                return this.UmbracoContext.PublishedRequest.Culture;
+                return culture;
             }
 
             return CultureInfo.CurrentCulture;

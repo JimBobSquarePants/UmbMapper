@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using UmbMapper.Extensions;
 using UmbMapper.Invocations;
+using UmbMapper.Models;
 using UmbMapper.PropertyMappers;
 using UmbMapper.Proxy;
 using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 
 namespace UmbMapper
 {
@@ -18,11 +17,13 @@ namespace UmbMapper
     {
         private readonly IUmbMapperConfig mappingConfig;
         private readonly IUmbMapperService umbMapperService;
+        private readonly IUmbracoContextFactory umbracoContextFactory;
 
-        public MappingProcessor(IUmbMapperConfig mappingConfig, IUmbMapperService umbMapperService)
+        public MappingProcessor(IUmbMapperConfig mappingConfig, IUmbMapperService umbMapperService, IUmbracoContextFactory umbracoContextFactory)
         {
             this.mappingConfig = mappingConfig;
             this.umbMapperService = umbMapperService;
+            this.umbracoContextFactory = umbracoContextFactory;
         }
 
         public object CreateEmpty()
@@ -293,7 +294,7 @@ namespace UmbMapper
                 value = map.PropertyMapper.GetRawValue(content);
 
                 // Now map using the given mappers.
-                value = map.PropertyMapper.Map(content, value);
+                value = map.PropertyMapper.Map(content, value, new MappingContext(this.umbracoContextFactory));
             }
 
             PropertyMapInfo info = map.Info;

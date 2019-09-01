@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 using System.Web.Mvc;
 using UmbMapper.Extensions;
 using UmbMapper.Invocations;
+using UmbMapper.Models;
 using Umbraco.Core;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
@@ -46,7 +47,35 @@ namespace UmbMapper.PropertyMappers
         public abstract string ResolveTypeName(IPublishedElement content);
 
         /// <inheritdoc/>
-        public override object Map(IPublishedElement content, object value)
+        //public override object Map(IPublishedElement content, object value)
+        //{
+        //    PropertyMapInfo info = this.Info;
+        //    Type propType = info.PropertyType;
+        //    bool propTypeIsEnumerable = info.IsEnumerableType;
+        //    Type baseType = info.IsEnumerableType ? info.EnumerableParamType : propType;
+
+        //    IEnumerable<Type> types = this.umbMapperRegistry.CurrentMappedTypes();
+
+        //    // Check for IEnumerable<IPublishedElement> value
+        //    if (value is IEnumerable<IPublishedElement> enumerableContentValue)
+        //    {
+        //        IEnumerable<object> items = this.Select(enumerableContentValue, types);
+        //        return EnumerableInvocations.Cast(baseType, items);
+        //    }
+
+        //    // Check for IPublishedElement value
+        //    if (value is IPublishedElement contentValue)
+        //    {
+        //        string typeName = this.ResolveTypeName(contentValue);
+        //        Type type = FirstOrDefault(types, typeName);
+        //        return type != null ? contentValue.MapTo(type) : null;
+        //    }
+
+        //    // No other possible options
+        //    return info.DefaultValue;
+        //}
+
+        public override object Map(IPublishedElement content, object value, MappingContext mappingContext)
         {
             PropertyMapInfo info = this.Info;
             Type propType = info.PropertyType;

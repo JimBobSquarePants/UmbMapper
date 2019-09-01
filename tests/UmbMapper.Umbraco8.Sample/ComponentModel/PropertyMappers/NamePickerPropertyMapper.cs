@@ -5,6 +5,7 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using UmbMapper.Models;
 using UmbMapper.PropertyMappers;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.PublishedContent;
@@ -26,7 +27,22 @@ namespace UmbMapper.Umbraco8.Sample.ComponentModel.PropertyMappers
         }
 
         /// <inheritdoc/>
-        public override object Map(IPublishedElement content, object value)
+        //public override object Map(IPublishedElement content, object value)
+        //{
+        //    // Make sure you have Microsoft.Net.Compilers installed and up-to-date to use pattern matching
+        //    switch (value)
+        //    {
+        //        case IPublishedContent publishedContent:
+        //            return publishedContent.Name;
+
+        //        case IEnumerable<IPublishedContent> publishedContents:
+        //            return publishedContents.Select(x => x.Name);
+        //    }
+
+        //    return Enumerable.Empty<string>();
+        //}
+
+        public override object Map(IPublishedElement content, object value, MappingContext mapping)
         {
             // Make sure you have Microsoft.Net.Compilers installed and up-to-date to use pattern matching
             switch (value)

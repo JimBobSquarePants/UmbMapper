@@ -4,6 +4,7 @@
 // </copyright>
 
 using System.Globalization;
+using UmbMapper.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 using Umbraco.Web.Security;
@@ -38,12 +39,14 @@ namespace UmbMapper.PropertyMappers
         /// <param name="content">The published content</param>
         /// <param name="value">The current value</param>
         /// <returns>The <see cref="object"/></returns>
-        object Map(IPublishedElement content, object value);
+        ///object Map(IPublishedElement content, object value);
+
+        object Map(IPublishedElement content, object value, MappingContext mappingContext);
 
         /// <summary>
         /// Gets the culture for the current request. This can be either the set culture or the request culture.
         /// </summary>
         /// <returns>The <see cref="CultureInfo"/></returns>
-        CultureInfo GetRequestCulture();
+        CultureInfo GetRequestCulture(MappingContext mappingContextB);
     }
 }

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using UmbMapper.Converters;
 using UmbMapper.Extensions;
+using UmbMapper.Models;
 using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 
@@ -34,7 +35,82 @@ namespace UmbMapper.PropertyMappers
         { }
 
         /// <inheritdoc/>
-        public override object Map(IPublishedElement content, object value)
+        //public override object Map(IPublishedElement content, object value)
+        //{
+        //    if (value.IsNullOrWhiteSpaceString())
+        //    {
+        //        return Enumerable.Empty<object>();
+        //    }
+
+        //    PropertyMapInfo info = this.Info;
+        //    CultureInfo culture = this.GetRequestCulture();
+        //    Type typeArg = info.IsCastableEnumerableType
+        //        ? info.EnumerableParamType
+        //        : info.PropertyType;
+
+        //    // Default to returning the string.
+        //    Func<CultureInfo, string, object> func = (_, s) => s;
+
+        //    if (typeArg == typeof(sbyte))
+        //    {
+        //        func = IntegralNumberConverter<sbyte>.ConvertFrom;
+        //    }
+        //    else if (typeArg == typeof(byte))
+        //    {
+        //        func = IntegralNumberConverter<byte>.ConvertFrom;
+        //    }
+        //    else if (typeArg == typeof(short))
+        //    {
+        //        func = IntegralNumberConverter<short>.ConvertFrom;
+        //    }
+        //    else if (typeArg == typeof(ushort))
+        //    {
+        //        func = IntegralNumberConverter<ushort>.ConvertFrom;
+        //    }
+        //    else if (typeArg == typeof(int))
+        //    {
+        //        func = IntegralNumberConverter<int>.ConvertFrom;
+        //    }
+        //    else if (typeArg == typeof(uint))
+        //    {
+        //        func = IntegralNumberConverter<uint>.ConvertFrom;
+        //    }
+        //    else if (typeArg == typeof(long))
+        //    {
+        //        func = IntegralNumberConverter<long>.ConvertFrom;
+        //    }
+        //    else if (typeArg == typeof(ulong))
+        //    {
+        //        func = IntegralNumberConverter<ulong>.ConvertFrom;
+        //    }
+        //    else if (typeArg == typeof(float))
+        //    {
+        //        func = SimpleConverter<float>.ConvertFrom;
+        //    }
+        //    else if (typeArg == typeof(double))
+        //    {
+        //        func = SimpleConverter<double>.ConvertFrom;
+        //    }
+        //    else if (typeArg == typeof(decimal))
+        //    {
+        //        func = SimpleConverter<decimal>.ConvertFrom;
+        //    }
+
+        //    var result = new List<object>();
+        //    string valueString = value.ToString();
+        //    foreach (string s in GetStringArray(valueString, culture))
+        //    {
+        //        object item = func.Invoke(culture, s);
+        //        if (item != null)
+        //        {
+        //            result.Add(item);
+        //        }
+        //    }
+
+        //    return result;
+        //}
+
+        public override object Map(IPublishedElement content, object value, MappingContext mappingContext)
         {
             if (value.IsNullOrWhiteSpaceString())
             {
@@ -42,7 +118,7 @@ namespace UmbMapper.PropertyMappers
             }
 
             PropertyMapInfo info = this.Info;
-            CultureInfo culture = this.GetRequestCulture();
+            CultureInfo culture = this.GetRequestCulture(mappingContext);
             Type typeArg = info.IsCastableEnumerableType
                 ? info.EnumerableParamType
                 : info.PropertyType;
@@ -108,6 +184,8 @@ namespace UmbMapper.PropertyMappers
 
             return result;
         }
+
+
 
         /// <summary>
         /// Splits a string by separator to return an array of string values.
