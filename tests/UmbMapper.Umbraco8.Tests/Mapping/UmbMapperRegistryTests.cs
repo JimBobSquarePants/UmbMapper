@@ -17,11 +17,13 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         protected readonly IPropertyMapperFactory propertyMapperFactory;
         private readonly IPropertyMapFactory propertyMapFactory;
         private readonly IUmbMapperInitialiser umbMapperInitialiser;
+        protected readonly IMappingProcessorFactory mappingProcessorFactory;
 
         public UmbMapperRegistryTests()
         {
             this.umbMapperRegistry = new UmbMapperRegistry();
-            this.umbMapperService = new UmbMapperService(this.umbMapperRegistry, new MappingProcessorFactory());
+            this.mappingProcessorFactory = new MappingProcessorFactory(Mock.Of<IUmbracoContextFactory>());
+            this.umbMapperService = new UmbMapperService(this.umbMapperRegistry, this.mappingProcessorFactory);
             this.factoryPropertyMapperFactory = new FactoryPropertyMapperFactory(this.umbMapperRegistry);
             this.propertyMapperFactory = new PropertyMapperFactory(this.umbMapperRegistry, this.umbMapperService, Mock.Of<IUmbracoContextFactory>());
             var propertyMapFactory = new PropertyMapFactory(factoryPropertyMapperFactory, this.propertyMapperFactory);

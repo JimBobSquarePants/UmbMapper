@@ -18,7 +18,7 @@ namespace UmbMapper.Extensions
     /// </summary>
     public static class PublishedContentExtensions
     {
-        public static IMappingProcessorFactory mappingProcessorFactory = new MappingProcessorFactory();
+        //public static IMappingProcessorFactory mappingProcessorFactory = new MappingProcessorFactory();
 
         /// <summary>
         /// Performs a mapping operation from the <see cref="IEnumerable{IPublishedElement}"/> to a new <see cref="IEnumerable{T}"/> instance
@@ -89,9 +89,11 @@ namespace UmbMapper.Extensions
                 throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
             }
 
-            var mappingProcessor = mappingProcessorFactory.Create(mapper, mappingService);
+            //var mappingProcessor = mappingProcessorFactory.Create(mapper, mappingService);
 
-            return mappingProcessor.Map(content);
+            //return mappingProcessor.Map(content);
+
+            return content;
         }
 
         /// <summary>
@@ -132,9 +134,11 @@ namespace UmbMapper.Extensions
                 throw new InvalidOperationException($"No mapper for the given type {type} has been registered.");
             }
 
-            var mappingProcessor = mappingProcessorFactory.Create(mapper, mappingService);
+//            return content;
 
-            mappingProcessor.Map(content, destination);
+            //var mappingProcessor = mappingProcessorFactory.Create(mapper, mappingService);
+
+            //mappingProcessor.Map(content, destination);
 
             //mapper.Map(content, destination);
         }
