@@ -28,7 +28,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             this.support.SetupUmbracoContext();
 
             this.umbMapperRegistry = new UmbMapperRegistry();
-            this.mappingProcessorFactory = new MappingProcessorFactory(Mock.Of<IUmbracoContextFactory>());
+            this.mappingProcessorFactory = new MappingProcessorFactory(this.support.GetUmbracoContextFactory());
             this.umbMapperService = new UmbMapperService(this.umbMapperRegistry, this.mappingProcessorFactory);
 
             this.factoryPropertyMapperFactory = new FactoryPropertyMapperFactory(this.umbMapperRegistry, this.umbMapperService);

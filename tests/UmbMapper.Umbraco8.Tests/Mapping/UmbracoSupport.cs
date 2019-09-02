@@ -188,23 +188,71 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             //var publishedSnapshotService = new Mock<IPublishedSnapshotService>();
             //publishedSnapshotService.Setup(x => x.CreatePublishedSnapshot(It.IsAny<string>())).Returns(publishedShapshot);
             ///// END
+            ///
+            //var urlProviders = new UrlProviderCollection(Enumerable.Empty<IUrlProvider>());
 
-            object umbracoContextObject =
-                umbracoContextCtor.Invoke(
-                    new object[] {
-                        _httpContextFactory.HttpContext,
-                        publishedSnapshotService.Object,
-                        new WebSecurity(_httpContextFactory.HttpContext, Mock.Of<IUserService>(), globalSettings),
-                        umbracoSettings,
-                        Enumerable.Empty<IUrlProvider>(),
-                        globalSettings,
-                        new TestVariationContextAccessor()
-                    }
+            //var umbracoContextFactory =
+            //    new UmbracoContextFactory
+            //    (
+            //        new TestUmbracoContextAccessor(),
+            //        publishedSnapshotService.Object,
+            //        new TestVariationContextAccessor(),
+            //        new TestDefaultCultureAccessor(),
+            //        umbracoSettings,
+            //        globalSettings,
+            //        urlProviders,
+            //        Mock.Of<IUserService>()
+            //    );
+
+            //object umbracoContextObject =
+            //    umbracoContextCtor.Invoke(
+            //        new object[] {
+            //            _httpContextFactory.HttpContext,
+            //            publishedSnapshotService.Object,
+            //            new WebSecurity(_httpContextFactory.HttpContext, Mock.Of<IUserService>(), globalSettings),
+            //            umbracoSettings,
+            //            Enumerable.Empty<IUrlProvider>(),
+            //            globalSettings,
+            //            new TestVariationContextAccessor()
+            //        }
+            //    );
+
+            //UmbracoContext umbracoContext = umbracoContextObject as UmbracoContext;
+
+            //return umbracoContext;
+
+            return GetUmbracoContextFactory().EnsureUmbracoContext(_httpContextFactory.HttpContext).UmbracoContext;
+        }
+
+        public IUmbracoContextFactory GetUmbracoContextFactory()
+        {
+            ConstructorInfo umbracoContextCtor = typeof(UmbracoContext)
+                .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).First();
+
+            // build required parameters to invoke UmbracoContext
+            //var _httpContextFactory = new FakeHttpContextFactory("~/Home");
+            var umbracoSettings = UmbMapperMockFactory.GetUmbracoSettings();
+            var globalSettings = Mock.Of<IGlobalSettings>();
+            var publishedSnapshotService = new Mock<IPublishedSnapshotService>();
+            publishedSnapshotService.Setup(x => x.CreatePublishedSnapshot(It.IsAny<string>())).Returns(Mock.Of<IPublishedSnapshot>());
+            var ctxMock = new Mock<UmbracoContext>();
+
+            var urlProviders = new UrlProviderCollection(Enumerable.Empty<IUrlProvider>());
+
+            var umbracoContextFactory =
+                new UmbracoContextFactory
+                (
+                    new TestUmbracoContextAccessor(),
+                    publishedSnapshotService.Object,
+                    new TestVariationContextAccessor(),
+                    new TestDefaultCultureAccessor(),
+                    umbracoSettings,
+                    globalSettings,
+                    urlProviders,
+                    Mock.Of<IUserService>()
                 );
 
-            UmbracoContext umbracoContext = umbracoContextObject as UmbracoContext;
-
-            return umbracoContext;
+            return umbracoContextFactory;
         }
         //public IUmbracoContextFactory GetUmbracoContextFactory()
         //{
