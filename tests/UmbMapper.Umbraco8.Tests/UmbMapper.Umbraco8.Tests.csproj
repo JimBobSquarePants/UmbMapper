@@ -331,6 +331,10 @@
       <Project>{70794e9c-5e67-48a0-994c-fd67c7758fb7}</Project>
       <Name>UmbMapper</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\UmbMapper.Umbraco8TestSupport\UmbMapper.Umbraco8TestSupport.csproj">
+      <Project>{e690a4ff-b82d-4826-960a-f7079a5b3bec}</Project>
+      <Name>UmbMapper.Umbraco8TestSupport</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Base\" />

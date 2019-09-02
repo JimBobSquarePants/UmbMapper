@@ -1,5 +1,6 @@
 ﻿using Moq;
 using UmbMapper.Factories;
+using UmbMapper.Umbraco8TestSupport.MockHelpers;
 using Umbraco.Web;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping
@@ -15,9 +16,13 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         protected readonly IUmbMapperInitialiser umbMapperInitialiser;
         protected readonly IMappingProcessorFactory mappingProcessorFactory;
 
+        protected readonly UmbracoContextHelper _ctxHelper;
         public BaseMappingTest(UmbracoSupport support)
         {
             this.support = support;
+            _ctxHelper = new UmbracoContextHelper();
+
+            //_ctxHelper.InitializeUmbracoContextMock();
 
             // This is needed to access the culture info
             this.support.SetupUmbracoContext();

@@ -1,4 +1,7 @@
-﻿using System.Web.Security;
+﻿using System.Globalization;
+using System.Linq;
+using System.Reflection;
+using System.Web.Security;
 using Moq;
 using Umbraco.Core;
 using Umbraco.Core.Cache;
@@ -11,6 +14,7 @@ using Umbraco.Core.Persistence;
 using Umbraco.Core.Services;
 using Umbraco.Web;
 using Umbraco.Web.PublishedCache;
+using Umbraco.Web.Routing;
 using Umbraco.Web.Security;
 using Current = Umbraco.Core.Composing.Current;
 
@@ -54,6 +58,27 @@ namespace UmbMapper.Umbraco8TestSupport.MockHelpers
         {
             var umbracoContext = GetUmbracoContext();
 
+            ConstructorInfo publishedRequestCtor = typeof(PublishedRequest)
+                .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).First();
+
+            object publishedRequestObject =
+                publishedRequestCtor.Invoke(
+                    new object[] {
+                        Mock.Of<IPublishedRouter>(),
+                        umbracoContext,
+                        null
+                    });
+
+            umbracoContext.PublishedRequest = publishedRequestObject as PublishedRequest;
+            umbracoContext.PublishedRequest.Culture = new CultureInfo("en-US");
+
+            var contextAccessor = new Mock<IUmbracoContextAccessor>();
+            contextAccessor.Setup(x => x.UmbracoContext).Returns(umbracoContext);
+
+            Umbraco.Web.Composing.Current.UmbracoContextAccessor = contextAccessor.Object;
+
+
+
             var membershipHelper = CreateMembershipHelper(umbracoContext);
             var umbracoHelper = CreateUmbracoHelper(membershipHelper);
 
@@ -63,6 +88,7 @@ namespace UmbMapper.Umbraco8TestSupport.MockHelpers
             composition.Register(AppCaches.Disabled);
             composition.RegisterUnique(Mock.Of<IProfilingLogger>());
             composition.RegisterUnique(Mock.Of<IRuntimeState>());
+            
             composition.Register(_ => Mock.Of<IMemberService>());
             composition.Register(_ => Mock.Of<IMemberTypeService>());
             composition.Register(_ => Mock.Of<IUserService>());
@@ -72,6 +98,8 @@ namespace UmbMapper.Umbraco8TestSupport.MockHelpers
             composition.Register<ServiceContext>();
             composition.Register(membershipHelper);
             composition.Register(umbracoHelper);
+
+            composition.RegisterUnique<IUmbracoContextFactory, UmbracoContextFactory>();
         }
 
         protected virtual MembershipHelper CreateMembershipHelper(UmbracoContext umbracoContext)
