@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using UmbMapper.Umbraco8.Tests.Mapping.Models;
 using UmbMapper.Umbraco8.Tests.Mapping.Models.PropertyMapDefinitions;
 using UmbMapper.Umbraco8.Tests.Mocks;
+using UmbMapper.Umbraco8TestSupport.Objects;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Composing;
 using Umbraco.Core.Configuration;
@@ -16,8 +17,8 @@ using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Core.PropertyEditors;
 using Umbraco.Core.PropertyEditors.ValueConverters;
 using Umbraco.Core.Services;
-using Umbraco.Tests.TestHelpers;
-using Umbraco.Tests.Testing.Objects.Accessors;
+//using Umbraco.Tests.TestHelpers;
+//using Umbraco.Tests.Testing.Objects.Accessors;
 using Umbraco.Web;
 using Umbraco.Web.Models;
 using Umbraco.Web.PublishedCache;
@@ -166,7 +167,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
                 .GetConstructors(BindingFlags.Instance | BindingFlags.NonPublic).First();
 
             // build required parameters to invoke UmbracoContext
-            var _httpContextFactory = new FakeHttpContextFactory("~/Home");
+            var _httpContextFactory = new UmbMapper.Umbraco8TestSupport.Factories.FakeHttpContextFactory("~/Home");
             var umbracoSettings = UmbMapperMockFactory.GetUmbracoSettings();
             var globalSettings = Mock.Of<IGlobalSettings>();
             var publishedSnapshotService = new Mock<IPublishedSnapshotService>();
@@ -204,24 +205,24 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             //        Mock.Of<IUserService>()
             //    );
 
-            //object umbracoContextObject =
-            //    umbracoContextCtor.Invoke(
-            //        new object[] {
-            //            _httpContextFactory.HttpContext,
-            //            publishedSnapshotService.Object,
-            //            new WebSecurity(_httpContextFactory.HttpContext, Mock.Of<IUserService>(), globalSettings),
-            //            umbracoSettings,
-            //            Enumerable.Empty<IUrlProvider>(),
-            //            globalSettings,
-            //            new TestVariationContextAccessor()
-            //        }
-            //    );
+            object umbracoContextObject =
+                umbracoContextCtor.Invoke(
+                    new object[] {
+                        _httpContextFactory.HttpContext,
+                        publishedSnapshotService.Object,
+                        new WebSecurity(_httpContextFactory.HttpContext, Mock.Of<IUserService>(), globalSettings),
+                        umbracoSettings,
+                        Enumerable.Empty<IUrlProvider>(),
+                        globalSettings,
+                        new TestVariationContextAccessor()
+                    }
+                );
 
-            //UmbracoContext umbracoContext = umbracoContextObject as UmbracoContext;
+            UmbracoContext umbracoContext = umbracoContextObject as UmbracoContext;
 
-            //return umbracoContext;
+            return umbracoContext;
 
-            return GetUmbracoContextFactory().EnsureUmbracoContext(_httpContextFactory.HttpContext).UmbracoContext;
+            //return GetUmbracoContextFactory().EnsureUmbracoContext(_httpContextFactory.HttpContext).UmbracoContext;
         }
 
         public IUmbracoContextFactory GetUmbracoContextFactory()
@@ -231,6 +232,8 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
 
             // build required parameters to invoke UmbracoContext
             //var _httpContextFactory = new FakeHttpContextFactory("~/Home");
+            var contextAccessor = new Mock<IUmbracoContextAccessor>();
+            contextAccessor.Setup(x => x.UmbracoContext).Returns(this.GetUmbracoContext());
             var umbracoSettings = UmbMapperMockFactory.GetUmbracoSettings();
             var globalSettings = Mock.Of<IGlobalSettings>();
             var publishedSnapshotService = new Mock<IPublishedSnapshotService>();
@@ -242,7 +245,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             var umbracoContextFactory =
                 new UmbracoContextFactory
                 (
-                    new TestUmbracoContextAccessor(),
+                    contextAccessor.Object,//new TestUmbracoContextAccessor(),
                     publishedSnapshotService.Object,
                     new TestVariationContextAccessor(),
                     new TestDefaultCultureAccessor(),
