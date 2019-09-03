@@ -124,6 +124,7 @@ namespace UmbMapper.PropertyMappers
             {
                 string alias = aliases[i];
 
+                //TODO set fall back - test if IPublishedContent or IPublishedElement
                 // Fallback updated to boolean to enum
                 Fallback fallback =
                     info.Recursive
