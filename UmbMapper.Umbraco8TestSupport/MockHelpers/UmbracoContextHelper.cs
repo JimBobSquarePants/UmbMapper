@@ -43,8 +43,13 @@ namespace UmbMapper.Umbraco8TestSupport.MockHelpers
 
         public virtual void Initialise()
         {
+            // Initialise low level dependencies / mocks
             this.InitialiseUmbracoContextDependencies();
+
+            // Initialsie context, needs low level dependencies
             this.InitialiseUmbracoContext();
+
+            // Initialise context accessor, needs a context
             this.InitialiseUmbracoContextAccessor();
         }
 
