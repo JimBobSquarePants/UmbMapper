@@ -248,7 +248,7 @@ namespace UmbMapper.Umbraco8.Tests.Factories
             content.CreateDate = created;
             content.UpdateDate = created;
 
-            InheritedPublishedItem result = this.umbMapperService.MapTo<InheritedPublishedItem>(content); // content.MapTo<InheritedPublishedItem>();
+            InheritedPublishedItem result = this.umbMapperService.MapTo<InheritedPublishedItem>(content);
 
             Assert.NotNull(result);
             Assert.Equal(content.Id, result.Id);
