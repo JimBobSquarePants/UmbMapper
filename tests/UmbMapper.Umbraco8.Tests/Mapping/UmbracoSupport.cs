@@ -238,7 +238,6 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
             var globalSettings = Mock.Of<IGlobalSettings>();
             var publishedSnapshotService = new Mock<IPublishedSnapshotService>();
             publishedSnapshotService.Setup(x => x.CreatePublishedSnapshot(It.IsAny<string>())).Returns(Mock.Of<IPublishedSnapshot>());
-            var ctxMock = new Mock<UmbracoContext>();
 
             var urlProviders = new UrlProviderCollection(Enumerable.Empty<IUrlProvider>());
 
