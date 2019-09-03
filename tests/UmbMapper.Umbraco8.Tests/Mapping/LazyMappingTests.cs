@@ -14,7 +14,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         public LazyMappingTests(UmbracoSupport support)
             : base(support)
         {
-            this.support.SetupUmbracoContext();
+            //this.support.SetupUmbracoContext();
 
             this.support.InitFactoryMappers(this.umbMapperInitialiser);
         }

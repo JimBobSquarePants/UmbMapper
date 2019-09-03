@@ -8,6 +8,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
     public abstract class BaseMappingTest
     {
         protected readonly UmbracoSupport support;
+        protected readonly UmbracoContextHelper umbracoContextHelper;
         protected readonly IUmbMapperRegistry umbMapperRegistry;
         protected readonly IUmbMapperService umbMapperService;
         protected readonly IFactoryPropertyMapperFactory factoryPropertyMapperFactory;
@@ -16,23 +17,24 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         protected readonly IUmbMapperInitialiser umbMapperInitialiser;
         protected readonly IMappingProcessorFactory mappingProcessorFactory;
 
-        protected readonly UmbracoContextHelper _ctxHelper;
+        
         public BaseMappingTest(UmbracoSupport support)
         {
             this.support = support;
-            _ctxHelper = new UmbracoContextHelper();
+            this.umbracoContextHelper = new UmbracoContextHelper();
 
+            this.umbracoContextHelper.Initialise();
             //_ctxHelper.InitializeUmbracoContextMock();
 
             // This is needed to access the culture info
-            this.support.SetupUmbracoContext();
+            //this.support.SetupUmbracoContext();
 
             this.umbMapperRegistry = new UmbMapperRegistry();
-            this.mappingProcessorFactory = new MappingProcessorFactory(this.support.GetUmbracoContextFactory());
+            this.mappingProcessorFactory = new MappingProcessorFactory(this.umbracoContextHelper.UmbracoContextFactory);
             this.umbMapperService = new UmbMapperService(this.umbMapperRegistry, this.mappingProcessorFactory);
 
             this.factoryPropertyMapperFactory = new FactoryPropertyMapperFactory(this.umbMapperRegistry, this.umbMapperService);
-            this.propertyMapperFactory = new PropertyMapperFactory(this.umbMapperRegistry, this.umbMapperService, Mock.Of<IUmbracoContextFactory>());
+            this.propertyMapperFactory = new PropertyMapperFactory(this.umbMapperRegistry, this.umbMapperService, this.umbracoContextHelper.UmbracoContextFactory);
             this.propertyMapFactory = new PropertyMapFactory(this.factoryPropertyMapperFactory, this.propertyMapperFactory);
             //this.propertyMapFactory = new PropertyMapFactory(this.factoryPropertyMapperFactory, Mock.Of<IUmbracoContextFactory>());
             this.umbMapperInitialiser = new UmbMapperInitialiser(this.umbMapperRegistry, this.propertyMapFactory);

@@ -27,22 +27,27 @@ namespace UmbMapper.Umbraco8TestSupport.MockHelpers
     public class UmbracoContextHelper
     {
         private UmbracoContext umbracoContext;
-        protected virtual UmbracoContext UmbracoContext
-            => this.umbracoContext;
-
-
         private IUmbracoContextAccessor umbracoContextAccessor;
         private IPublishedSnapshotService publishedSnapshotService;
         private IVariationContextAccessor variationContextAccessor;
         private IDefaultCultureAccessor defaultCultureAccessor;
         private IUmbracoSettingsSection umbracoSettingsSection;
         private IGlobalSettings globalSettings;
+        private IUmbracoContextFactory umbracoContextFactory;
         private UrlProviderCollection urlProviders;
         private HttpContextBase httpContext;
         private IUserService userService;
 
+        protected virtual UmbracoContext UmbracoContext
+            => this.umbracoContext;
+
+        public virtual IUmbracoContextFactory UmbracoContextFactory
+            => this.umbracoContextFactory;
+
         public virtual void Initialise()
         {
+            Current.Reset();
+
             // Initialise low level dependencies / mocks
             this.InitialiseUmbracoContextDependencies();
 
@@ -51,6 +56,12 @@ namespace UmbMapper.Umbraco8TestSupport.MockHelpers
 
             // Initialise context accessor, needs a context
             this.InitialiseUmbracoContextAccessor();
+
+            // Initialise ctx factory to be injected into services to access things like culture info
+            this.InitialiseUmbracoContextFactory();
+
+            // Is this needed if we're injecting context factory into which ever services need it?
+            Current.Factory = Mock.Of<IFactory>();
         }
 
         public virtual void InitialiseUmbracoContextDependencies()
@@ -85,6 +96,13 @@ namespace UmbMapper.Umbraco8TestSupport.MockHelpers
             contextAccessor.Setup(x => x.UmbracoContext).Returns(this.umbracoContext);
 
             this.umbracoContextAccessor = contextAccessor.Object;
+
+            Umbraco.Web.Composing.Current.UmbracoContextAccessor = this.umbracoContextAccessor;
+        }
+
+        public virtual void InitialiseUmbracoContextFactory()
+        {
+            this.umbracoContextFactory = this.GetUmbracoContextFactory();
         }
 
         //public virtual void InitialiseUmbrcaco
@@ -121,6 +139,21 @@ namespace UmbMapper.Umbraco8TestSupport.MockHelpers
             return umbracoContextObject as UmbracoContext;
         }
 
+        public virtual IUmbracoContextFactory GetUmbracoContextFactory()
+        {
+            return
+                new UmbracoContextFactory
+                (
+                    this.umbracoContextAccessor,
+                    this.publishedSnapshotService,
+                    this.variationContextAccessor,
+                    this.defaultCultureAccessor,
+                    this.umbracoSettingsSection,
+                    this.globalSettings,
+                    this.urlProviders,
+                    this.userService
+                );
+        }
 
         public virtual IUmbracoSettingsSection GetUmbracoSettings()
         {

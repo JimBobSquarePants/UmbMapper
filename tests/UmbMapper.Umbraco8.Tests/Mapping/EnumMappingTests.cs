@@ -11,7 +11,7 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         public EnumMappingTests(UmbracoSupport support) : base (support)
         {
             // This is needed to access the culture info
-            this.support.SetupUmbracoContext();
+            //this.support.SetupUmbracoContext();
 
             this.support.InitFactoryMappers(this.umbMapperInitialiser);
             
