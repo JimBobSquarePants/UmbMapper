@@ -53,31 +53,22 @@ namespace UmbMapper
         public object Map(IPublishedElement content)
         {
             object result;
-            if (mappingConfig.CreateProxy)
+            if (this.mappingConfig.CreateProxy)
             {
                 // Create a proxy instance to replace our object.
-                if (mappingConfig.HasIPublishedConstructor)
+                if (this.mappingConfig.HasIPublishedConstructor)
                 {
                     result =
                         content.IsIPublishedContent()
-                        ? mappingConfig.ProxyType.GetInstance((IPublishedContent)content)
-                        : mappingConfig.ProxyType.GetInstance(content);
-                    // Get the content Type to see if it is IPublishedContent or IPublishedElement
-                    //Type contentType = content.GetType();
-                    //if (typeof(IPublishedContent).IsAssignableFrom(contentType))
-                    //{
-                    //    result = mappingConfig.ProxyType.GetInstance((IPublishedContent)content);
-                    //}
-                    //else
-                    //{
-                    //    result = mappingConfig.ProxyType.GetInstance(content);
-                    //}
+                        ? this.mappingConfig.ProxyType.GetInstance((IPublishedContent)content)
+                        : this.mappingConfig.ProxyType.GetInstance(content);
+
                 }
                 else
                 {
-                    result = mappingConfig.ProxyType.GetInstance();
+                    result = this.mappingConfig.ProxyType.GetInstance();
                 }
-                
+
                 // Map the lazy properties and predicate mappings
                 Dictionary<string, Lazy<object>> lazyProperties = this.MapLazyProperties(content, result);
 
@@ -86,7 +77,10 @@ namespace UmbMapper
             }
             else
             {
-                result = mappingConfig.HasIPublishedConstructor ? mappingConfig.MappedType.GetInstance(content) : mappingConfig.MappedType.GetInstance();
+                result =
+                    this.mappingConfig.HasIPublishedConstructor
+                    ? this.mappingConfig.MappedType.GetInstance(content)
+                    : this.mappingConfig.MappedType.GetInstance();
             }
 
             // Users might want to use lazy loading with API controllers that do not inherit from UmbracoAPIController.

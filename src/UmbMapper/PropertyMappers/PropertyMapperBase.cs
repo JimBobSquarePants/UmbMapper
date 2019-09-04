@@ -68,28 +68,9 @@ namespace UmbMapper.PropertyMappers
         }
 
         /// <inheritdoc/>
-        ///public abstract object Map(IPublishedElement content, object value);
-
         public abstract object Map(IPublishedElement content, object value, MappingContext mappingContext);
 
         /// <inheritdoc/>
-        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        //public CultureInfo GetRequestCulture()
-        //{
-        //    CultureInfo culture = this.Info.Culture;
-        //    if (culture != null)
-        //    {
-        //        return culture;
-        //    }
-
-        //    if (this.UmbracoContext?.PublishedRequest != null)
-        //    {
-        //        return this.UmbracoContext.PublishedRequest.Culture;
-        //    }
-
-        //    return CultureInfo.CurrentCulture;
-        //}
-
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public CultureInfo GetRequestCulture(MappingContext mappingContext)
         {
@@ -124,14 +105,13 @@ namespace UmbMapper.PropertyMappers
             {
                 string alias = aliases[i];
 
-                //TODO set fall back - test if IPublishedContent or IPublishedElement
-                // Fallback updated to boolean to enum
+                // IPublishedElement (NestedContent) can't fallback because it's not
+                // really in the content tree like IPublishedContent nodes
                 Fallback fallback =
                     info.Recursive && content.IsIPublishedContent()
                     ? Fallback.ToAncestors
                     : Fallback.ToDefaultValue;
 
-                //value = content.Value(alias, null, null, fallback, null);
                 value = content.Value(alias, fallback: fallback);
                 if (!this.IsNullOrDefault(value))
                 {
@@ -213,8 +193,6 @@ namespace UmbMapper.PropertyMappers
         private UmbracoContext GetUmbracoContext()
         {
             return this.umbracoContextFactory.EnsureUmbracoContext().UmbracoContext;
-
-            //return Umbraco.Web.Composing.Current.UmbracoContext ?? throw new InvalidOperationException("UmbracoContext.Current is null."); ;
         }
     }
 }
