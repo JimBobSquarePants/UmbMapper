@@ -56,19 +56,9 @@ namespace UmbMapper
     /// </summary>
     public class UmbMapperRegistry : IUmbMapperRegistry, IDisposable
     {
-        //private readonly IUmbMapperConfigFactory umbMapperConfigFactory;
         public UmbMapperRegistry()
         {
             //this.umbMapperConfigFactory = umbMapperConfigFactory;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UmbMapperRegistry"/> class.
-        /// </summary>
-        /// <param name="umbracoContextFactory">Umbraco Context factory</param>
-        public UmbMapperRegistry(IUmbracoContextFactory umbracoContextFactory)
-        {
-            //this.umbracoContextFactory = umbracoContextFactory;
         }
 
         /// <summary>
@@ -153,118 +143,29 @@ namespace UmbMapper
         //    this.Mappers.TryAdd(mapperConfig.MappedType, mapperConfig);
         //}
 
-        private void Mapper_OnMapAdded<T>(UmbMapperConfig<T> mappingConfig, Expression<Func<T, object>> propertyExpression, out PropertyMap<T> map)
-            where T : class
-        {
-            if (!this.GetOrCreateMap<T>(mappingConfig, propertyExpression.ToPropertyInfo(), out map))
-            {
-                mappingConfig.Maps.Add(map);
-            }
-        }
-
-        private void Mapper_OnMapsAdded<T>(UmbMapperConfig<T> mappingConfig, out IEnumerable<PropertyMap<T>> maps, params Expression<Func<T, object>>[] propertyExpressions)
-            where T : class
-        {
-            if (propertyExpressions is null)
-            {
-                maps = Enumerable.Empty<PropertyMap<T>>();
-                return;
-            }
-
-            var mapsTemp = new List<PropertyMap<T>>();
-            foreach (Expression<Func<T, object>> property in propertyExpressions)
-            {
-                if (!this.GetOrCreateMap(mappingConfig, property.ToPropertyInfo(), out PropertyMap<T> map))
-                {
-                    mappingConfig.Maps.Add(map);
-                }
-
-                mapsTemp.Add(map);
-            }
-
-            // We only want to return the new maps for subsequent augmentation
-            maps = mappingConfig.Maps.Intersect(mapsTemp);
-        }
-
-        private void MapperConfig_OnAllMapsAdded<T>(UmbMapperConfig<T> mappingConfig, out IEnumerable<PropertyMap<T>> maps)
-            where T : class
-        {
-            foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags))
-            {
-                if (!this.GetOrCreateMap(mappingConfig, property, out PropertyMap<T> map))
-                {
-                    mappingConfig.Maps.Add(map);
-                }
-            }
-
-            maps = mappingConfig.Maps;
-
-
-            //throw new NotImplementedException();
-        }
-
-        private void MapperConfig_OnAllMapsWriteableAdded<T>(UmbMapperConfig<T> mappingConfig, out IEnumerable<PropertyMap<T>> maps)
-            where T : class
-        {
-            foreach (PropertyInfo property in typeof(T).GetProperties(UmbMapperConstants.MappableFlags).Where(p => p.CanWrite))
-            {
-                if (!this.GetOrCreateMap<T>(mappingConfig, property, out PropertyMap<T> map))
-                {
-                    mappingConfig.Maps.Add(map);
-                }
-            }
-
-            maps = mappingConfig.Maps;
-
-            //throw new NotImplementedException();
-        }
-
-        private void MapperConfig_OnMapIgnored<T>(UmbMapperConfig<T> mappingConfig, Expression<Func<T, object>> propertyExpression, out bool removed)
-            where T : class
-        {
-            var property = propertyExpression.ToPropertyInfo();
-            PropertyMap<T> map = mappingConfig.Maps.Find(m => m.Info.Property == property);
-
-            removed = map != null && mappingConfig.Maps.Remove(map);
-            //throw new NotImplementedException();
-        }
-
-        private bool GetOrCreateMap<T>(UmbMapperConfig<T> mapping, PropertyInfo property, out PropertyMap<T> map)
-            where T : class
-        {
-            bool exists = true;
-            map = mapping.Maps.Find(x => x.Info.Property.Name == property.Name);
-
-            if (map is null)
-            {
-                exists = false;
-                map = new PropertyMap<T>(property);
-            }
-
-            return exists;
-        }
+        
 
         /// <summary>
         /// Creates a mapper for the given type, adding that mapper to the mapping registry
         /// </summary>
         /// <remarks>Any properties marked <code>virtual</code> are automatically lazy mapped.</remarks>
         /// <typeparam name="T">The type of object to map</typeparam>
-        public void AddMapperFor<T>()
-            where T : class
-        {
-            if (this.Mappers.ContainsKey(typeof(T)))
-            {
-                return;
-            }
+        //public void AddMapperFor<T>()
+        //    where T : class
+        //{
+        //    if (this.Mappers.ContainsKey(typeof(T)))
+        //    {
+        //        return;
+        //    }
 
-            var mapperConfig = new UmbMapperConfig<T>();
-            mapperConfig.OnAllMapsWriteableAdded += this.MapperConfig_OnAllMapsWriteableAdded;
+        //    var mapperConfig = new UmbMapperConfig<T>();
+        //    //mapperConfig.OnAllMapsWriteableAdded += this.MapperConfig_OnAllMapsWriteableAdded;
 
-            mapperConfig.MapAllWritable().ForEach(x => x.AsAutoLazy());
+        //    mapperConfig.MapAllWritable().ForEach(x => x.AsAutoLazy());
 
-            mapperConfig.Init();
-            this.Mappers.TryAdd(mapperConfig.MappedType, mapperConfig);
-        }
+        //    mapperConfig.Init();
+        //    this.Mappers.TryAdd(mapperConfig.MappedType, mapperConfig);
+        //}
 
         /// <summary>
         /// Creates an empty instance of the given type.

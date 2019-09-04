@@ -58,16 +58,20 @@ namespace UmbMapper
                 // Create a proxy instance to replace our object.
                 if (mappingConfig.HasIPublishedConstructor)
                 {
+                    result =
+                        content.IsIPublishedContent()
+                        ? mappingConfig.ProxyType.GetInstance((IPublishedContent)content)
+                        : mappingConfig.ProxyType.GetInstance(content);
                     // Get the content Type to see if it is IPublishedContent or IPublishedElement
-                    Type contentType = content.GetType();
-                    if (typeof(IPublishedContent).IsAssignableFrom(contentType))
-                    {
-                        result = mappingConfig.ProxyType.GetInstance((IPublishedContent)content);
-                    }
-                    else
-                    {
-                        result = mappingConfig.ProxyType.GetInstance(content);
-                    }
+                    //Type contentType = content.GetType();
+                    //if (typeof(IPublishedContent).IsAssignableFrom(contentType))
+                    //{
+                    //    result = mappingConfig.ProxyType.GetInstance((IPublishedContent)content);
+                    //}
+                    //else
+                    //{
+                    //    result = mappingConfig.ProxyType.GetInstance(content);
+                    //}
                 }
                 else
                 {

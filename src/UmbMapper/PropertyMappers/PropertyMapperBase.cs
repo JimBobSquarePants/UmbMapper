@@ -127,12 +127,12 @@ namespace UmbMapper.PropertyMappers
                 //TODO set fall back - test if IPublishedContent or IPublishedElement
                 // Fallback updated to boolean to enum
                 Fallback fallback =
-                    info.Recursive
+                    info.Recursive && content.IsIPublishedContent()
                     ? Fallback.ToAncestors
                     : Fallback.ToDefaultValue;
 
                 //value = content.Value(alias, null, null, fallback, null);
-                value = content.Value(alias);
+                value = content.Value(alias, fallback: fallback);
                 if (!this.IsNullOrDefault(value))
                 {
                     this.Alias = alias;

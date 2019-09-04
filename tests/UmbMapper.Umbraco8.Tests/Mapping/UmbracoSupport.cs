@@ -19,8 +19,6 @@ namespace UmbMapper.Umbraco8.Tests.Mapping
         private Link link;
         private ImageCropperValue dataSet;
 
-        protected Composition Composition { get; private set; }
-
         public UmbracoSupport()
         {
             this.InitPublishedProperties();

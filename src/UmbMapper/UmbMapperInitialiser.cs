@@ -32,7 +32,7 @@ namespace UmbMapper
             this.MapWithProperties<T>(
                 typeof(T).GetProperties(UmbMapperConstants.MappableFlags)
                     .Where(p => p.CanWrite)
-                    .Select(x => new PropertyMapDefinition<T>(x)));
+                    .Select(x => new PropertyMapDefinition<T>(x).AsAutoLazy()));
         }
 
         private void MapWithProperties<T>(IEnumerable<PropertyMapDefinition<T>> definitions)

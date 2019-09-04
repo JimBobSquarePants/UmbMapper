@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using UmbMapper.Extensions;
 using UmbMapper.PropertyMappers;
 using Umbraco.Core.Models.PublishedContent;
 
@@ -145,6 +146,20 @@ namespace UmbMapper.Models
         public PropertyMapDefinition<T> AsLazy()
         {
             this.Lazy = true;
+
+            return this;
+        }
+
+        /// <summary>
+        /// Instructs the mapper to lazily map the property. This method will ignore any non <code>virtual</code> properties without warning.
+        /// </summary>
+        /// <returns>The <see cref="PropertyMapDefinition{T}"/></returns>
+        internal PropertyMapDefinition<T> AsAutoLazy()
+        {
+            if (this.PropertyInfo.ShouldAttemptLazyLoad())
+            {
+                this.Lazy = true;
+            }
 
             return this;
         }
