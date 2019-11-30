@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using UmbMapper.Models;
+﻿using UmbMapper.Models;
 using UmbMapper.PropertyMappers;
 
 namespace UmbMapper.Umbraco8.Tests.Mapping.Models.PropertyMapDefinitions
