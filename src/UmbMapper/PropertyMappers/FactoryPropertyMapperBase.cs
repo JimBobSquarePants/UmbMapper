@@ -6,10 +6,13 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Web.Mvc;
 using UmbMapper.Extensions;
 using UmbMapper.Invocations;
+using UmbMapper.Models;
 using Umbraco.Core;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 
 namespace UmbMapper.PropertyMappers
 {
@@ -18,13 +21,22 @@ namespace UmbMapper.PropertyMappers
     /// </summary>
     public abstract class FactoryPropertyMapperBase : PropertyMapperBase
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FactoryPropertyMapperBase"/> class.
-        /// </summary>
-        /// <param name="info">The property map information</param>
-        protected FactoryPropertyMapperBase(PropertyMapInfo info)
-            : base(info)
+        //private readonly IUmbMapperRegistry umbMapperRegistry;
+        //private readonly IUmbMapperService umbMapperService;
+        //private readonly IUmbracoContextFactory umbracoContextFactory;
+
+        protected FactoryPropertyMapperBase(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService)
+       : base(info)
         {
+            //this.umbMapperRegistry = umbMapperRegistry;
+            //this.umbMapperService = umbMapperService;
+        }
+
+        protected FactoryPropertyMapperBase(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService, IUmbracoContextFactory umbracoContextFactory)
+           : base(info, umbMapperRegistry, umbMapperService, umbracoContextFactory)
+        {
+            //this.umbMapperRegistry = umbMapperRegistry;
+            //this.umbMapperService = umbMapperService;
         }
 
         /// <summary>
@@ -32,26 +44,55 @@ namespace UmbMapper.PropertyMappers
         /// </summary>
         /// <param name="content">The current published content.</param>
         /// <returns>The <see cref="string"/>.</returns>
-        public abstract string ResolveTypeName(IPublishedContent content);
+        public abstract string ResolveTypeName(IPublishedElement content);
 
         /// <inheritdoc/>
-        public override object Map(IPublishedContent content, object value)
+        //public override object Map(IPublishedElement content, object value)
+        //{
+        //    PropertyMapInfo info = this.Info;
+        //    Type propType = info.PropertyType;
+        //    bool propTypeIsEnumerable = info.IsEnumerableType;
+        //    Type baseType = info.IsEnumerableType ? info.EnumerableParamType : propType;
+
+        //    IEnumerable<Type> types = this.umbMapperRegistry.CurrentMappedTypes();
+
+        //    // Check for IEnumerable<IPublishedElement> value
+        //    if (value is IEnumerable<IPublishedElement> enumerableContentValue)
+        //    {
+        //        IEnumerable<object> items = this.Select(enumerableContentValue, types);
+        //        return EnumerableInvocations.Cast(baseType, items);
+        //    }
+
+        //    // Check for IPublishedElement value
+        //    if (value is IPublishedElement contentValue)
+        //    {
+        //        string typeName = this.ResolveTypeName(contentValue);
+        //        Type type = FirstOrDefault(types, typeName);
+        //        return type != null ? contentValue.MapTo(type) : null;
+        //    }
+
+        //    // No other possible options
+        //    return info.DefaultValue;
+        //}
+
+        public override object Map(IPublishedElement content, object value, MappingContext mappingContext)
         {
             PropertyMapInfo info = this.Info;
             Type propType = info.PropertyType;
             bool propTypeIsEnumerable = info.IsEnumerableType;
             Type baseType = info.IsEnumerableType ? info.EnumerableParamType : propType;
-            IEnumerable<Type> types = UmbMapperRegistry.CurrentMappedTypes();
 
-            // Check for IEnumerable<IPublishedContent> value
-            if (value is IEnumerable<IPublishedContent> enumerableContentValue)
+            IEnumerable<Type> types = this.umbMapperRegistry.CurrentMappedTypes();
+
+            // Check for IEnumerable<IPublishedElement> value
+            if (value is IEnumerable<IPublishedElement> enumerableContentValue)
             {
                 IEnumerable<object> items = this.Select(enumerableContentValue, types);
                 return EnumerableInvocations.Cast(baseType, items);
             }
 
-            // Check for IPublishedContent value
-            if (value is IPublishedContent contentValue)
+            // Check for IPublishedElement value
+            if (value is IPublishedElement contentValue)
             {
                 string typeName = this.ResolveTypeName(contentValue);
                 Type type = FirstOrDefault(types, typeName);
@@ -76,10 +117,10 @@ namespace UmbMapper.PropertyMappers
             return null;
         }
 
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private IEnumerable<object> Select(IEnumerable<IPublishedContent> content, IEnumerable<Type> types)
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private IEnumerable<object> Select(IEnumerable<IPublishedElement> content, IEnumerable<Type> types)
         {
-            foreach (IPublishedContent item in content)
+            foreach (IPublishedElement item in content)
             {
                 string typeName = this.ResolveTypeName(item);
                 Type match = null;
@@ -93,8 +134,28 @@ namespace UmbMapper.PropertyMappers
                     }
                 }
 
-                yield return match != null ? item.MapTo(match) : null;
+                yield return match != null ? this.umbMapperService.MapTo(item, match) : null;
+                //umbMapperService.MapTo
+                //yield return match != null ? item.MapTo(match) : null;
             }
         }
+
+        //private IUmbMapperRegistry GetMapperRegistry()
+        //{
+        //    var args = new MapperRegistryRequiredArgs();
+        //    EventHandler<MapperRegistryRequiredArgs> handler = OnRegistryRequired;
+        //    if (OnRegistryRequired != null)
+        //    {
+        //        OnRegistryRequired(this, args);
+        //    }
+        //    return args.Registry;
+        //}
+
+        //public event EventHandler<MapperRegistryRequiredArgs> OnRegistryRequired;
     }
+
+    //public class MapperRegistryRequiredArgs : EventArgs
+    //{
+    //    public IUmbMapperRegistry Registry { get; set; }
+    //}
 }

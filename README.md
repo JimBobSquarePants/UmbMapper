@@ -24,6 +24,11 @@ So far it's made up of the following libraries
 
 Nightlies are available on [Myget](https://www.myget.org/gallery/umbmapper) with battle tested releases available on [Nuget](https://www.nuget.org/packages/UmbMapper).
 
+Umbraco 8 Samples project login (Check it out!)
+
+- Username : admin@umbmapper.com
+- Password : umbmapper!
+
 Samples project login (Check it out!)
 
 - Username : admin

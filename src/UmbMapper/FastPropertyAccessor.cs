@@ -18,7 +18,8 @@ namespace UmbMapper
     /// any overhead compilation costs.
     /// </summary>
     /// <remarks>The getter expects invariant uppercase for fast comparison.</remarks>
-    internal class FastPropertyAccessor
+    //internal class FastPropertyAccessor - //TODO - make this internal
+    public class FastPropertyAccessor
     {
         /// <summary>
         /// The method cache for storing function implementations.

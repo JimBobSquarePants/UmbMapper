@@ -1,0 +1,44 @@
+﻿@using UmbMapper.Umbraco8.Sample.Extensions
+@using UmbMapper.Umbraco8.Sample.Helpers
+@using UmbMapper.Umbraco8.Sample.Models.Media
+@using UmbMapper.Umbraco8.Sample.Models.Pages
+@model UmbMapper.Umbraco8.Sample.RenderModels.IRenderPage<PublishedPage>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+@{
+    PublishedPage content = Model.Content;
+    string description = content.BrowserDescription;
+
+    if (!string.IsNullOrWhiteSpace(description))
+    {
+        <meta name="description" content="@description" />
+    }
+
+    // Format the title correctly based on options.
+    // Pipe is used for better SEO due to pixel width.
+    string browserTitle = !string.IsNullOrWhiteSpace(content.BrowserWebsiteTitle)
+        ? content.SwitchTitleOrder.HasValue && content.SwitchTitleOrder.Value
+            ? string.Format("{0} | {1}", content.BrowserWebsiteTitle, content.BrowserPageTitle)
+            : string.Format("{0} | {1}", content.BrowserPageTitle, content.BrowserWebsiteTitle)
+        : content.BrowserPageTitle;
+
+    <title>@browserTitle</title>
+
+    // Open Graph Meta Data. See http://ogp.me/ for more information.
+    string ogTitle = content.OpenGraphTitle;
+    string ogUrl = UrlHelpers.AbsoluteUmbracoContentUrl(content.Id);
+    <meta property="og:url" content="@ogUrl" />
+
+    if (!string.IsNullOrWhiteSpace(ogTitle))
+    {
+        <meta property="og:title" content="@ogTitle" />
+    }
+
+    PublishedImage ogImage = content.OpenGraphImage;
+
+    if (ogImage != null)
+    {
+        <meta property="og:image" content="@UrlHelpers.AbsoluteUmbracoMediaUrl(ogImage.Crops.Src)" />
+    }
+}

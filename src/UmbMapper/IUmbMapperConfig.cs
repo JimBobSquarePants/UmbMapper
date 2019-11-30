@@ -5,7 +5,8 @@
 
 using System;
 using System.Collections.Generic;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 
 namespace UmbMapper
 {
@@ -19,6 +20,18 @@ namespace UmbMapper
         /// </summary>
         Type MappedType { get; }
 
+        bool CreateProxy { get; }
+        Type ProxyType { get; }
+        bool HasIPublishedConstructor { get; }
+
+        IPropertyMap[] NonLazyMaps { get; }
+        IPropertyMap[] LazyMaps { get; }
+        IPropertyMap[] NonLazyPredicateMaps { get; }
+        IPropertyMap[] LazyPredicateMaps { get; }
+        List<string> LazyNames { get; }
+        FastPropertyAccessor PropertyAccessor { get; }
+        //IMappingProcessor CreateProcessor(IUmbMapperService umbMapperService);
+
         /// <summary>
         /// Gets the collection of mappings registered with the mapper
         /// </summary>
@@ -29,14 +42,14 @@ namespace UmbMapper
         /// </summary>
         /// <param name="content">The published content</param>
         /// <returns>The <see cref="object"/></returns>
-        object Map(IPublishedContent content);
+        //object Map(IPublishedElement content);
 
-        /// <summary>
-        /// Performs the mapping operation onto an existing destination object
-        /// </summary>
-        /// <param name="content">The published content</param>
-        /// <param name="destination">The destination object</param>
-        void Map(IPublishedContent content, object destination);
+        ///// <summary>
+        ///// Performs the mapping operation onto an existing destination object
+        ///// </summary>
+        ///// <param name="content">The published content</param>
+        ///// <param name="destination">The destination object</param>
+        //void Map(IPublishedElement content, object destination);
 
         /// <summary>
         /// Creates an empty instance of the mapped type.
@@ -49,7 +62,7 @@ namespace UmbMapper
         /// </summary>
         /// <param name="content">The published content</param>
         /// <returns>The <see cref="object"/></returns>
-        object CreateEmpty(IPublishedContent content);
+        object CreateEmpty(IPublishedElement content);
 
         /// <summary>
         /// Runs any additional code required to setup the configuration

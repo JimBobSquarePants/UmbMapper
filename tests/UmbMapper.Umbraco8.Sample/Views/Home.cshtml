@@ -1,0 +1,45 @@
+﻿@using UmbMapper.Umbraco8.Sample.Models.Components
+@using UmbMapper.Umbraco8.Sample.Models.Pages
+
+@inherits UmbracoViewPage<UmbMapper.Umbraco8.Sample.RenderModels.RenderPage<Home>>
+
+<h1>@Model.Content.Name</h1>
+
+<h3>Standard RTE mapping</h3>
+@Model.Content.BodyText
+<hr />
+
+<h3>Post names rendered using an MNTP and a custom <code>NamePickerPropertyMapper</code></h3>
+<ul>
+    @foreach (string name in Model.Content.PostNames)
+    {
+        <li>@name</li>
+    }
+</ul>
+
+<h3>And the post names rendered using an MNTP without customization. Pulling the name from the mapped type.</h3>
+<ul>
+    @foreach (Post post in Model.Content.Posts)
+    {
+        <li>@post.Name</li>
+    }
+</ul>
+<hr />
+<h2>Gallery</h2>
+<div class="slides">
+    <h3>These gallery items are mapped from Nested Content; no customization required</h3>
+    @* Currently Not working*@
+    @if (Model.Content.Gallery.Any())
+    {
+        foreach (Slide slide in Model.Content.Gallery)
+        {
+            <figure>
+                <img src="@slide.Image.Crops.Src" alt="@slide.Image.Name" width="150" />
+                <figcaption>
+                    @slide.Description
+                </figcaption>
+            </figure>
+        }
+    }
+
+</div>

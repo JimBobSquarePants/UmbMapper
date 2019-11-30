@@ -5,11 +5,14 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Web;
 using UmbMapper.Extensions;
+using UmbMapper.Models;
 using Umbraco.Core;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Core.Services;
 using Umbraco.Web;
 using Umbraco.Web.Security;
 
@@ -20,6 +23,13 @@ namespace UmbMapper.PropertyMappers
     /// </summary>
     public abstract class PropertyMapperBase : IPropertyMapper
     {
+        protected readonly IUmbMapperRegistry umbMapperRegistry;
+        protected readonly IUmbMapperService umbMapperService;
+        protected readonly IUmbracoContextFactory umbracoContextFactory;
+
+        //private readonly IUmbMapperRegistry umbMapperRegistry;
+        //private readonly IUmbMapperService umbMapperService;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="PropertyMapperBase"/> class.
         /// </summary>
@@ -30,17 +40,21 @@ namespace UmbMapper.PropertyMappers
             this.Alias = info.Aliases[0];
         }
 
+        protected PropertyMapperBase(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService, IUmbracoContextFactory umbracoContextFactory)
+        {
+            this.Info = info;
+            this.Alias = info.Aliases[0];
+
+            this.umbMapperRegistry = umbMapperRegistry;
+            this.umbMapperService = umbMapperService;
+            this.umbracoContextFactory = umbracoContextFactory;
+        }
+
         /// <inheritdoc/>
         public PropertyMapInfo Info { get; }
 
         /// <inheritdoc/>
         public UmbracoContext UmbracoContext => this.GetUmbracoContext();
-
-        /// <inheritdoc/>
-        public MembershipHelper Members => new MembershipHelper(this.UmbracoContext);
-
-        /// <inheritdoc/>
-        public UmbracoHelper Umbraco => new UmbracoHelper(this.UmbracoContext);
 
         /// <summary>
         /// Gets the current alias.
@@ -48,17 +62,17 @@ namespace UmbMapper.PropertyMappers
         protected string Alias { get; private set; }
 
         /// <inheritdoc/>
-        public object GetRawValue(IPublishedContent content)
+        public object GetRawValue(IPublishedElement content)
         {
             return this.GetRawValue(content, this.Info.Aliases);
         }
 
         /// <inheritdoc/>
-        public abstract object Map(IPublishedContent content, object value);
+        public abstract object Map(IPublishedElement content, object value, MappingContext mappingContext);
 
         /// <inheritdoc/>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public CultureInfo GetRequestCulture()
+        public CultureInfo GetRequestCulture(MappingContext mappingContext)
         {
             CultureInfo culture = this.Info.Culture;
             if (culture != null)
@@ -66,9 +80,10 @@ namespace UmbMapper.PropertyMappers
                 return culture;
             }
 
-            if (this.UmbracoContext?.PublishedContentRequest != null)
+            culture = mappingContext.GetRequestCultureInfo();
+            if (culture != null)
             {
-                return this.UmbracoContext.PublishedContentRequest.Culture;
+                return culture;
             }
 
             return CultureInfo.CurrentCulture;
@@ -80,7 +95,7 @@ namespace UmbMapper.PropertyMappers
         /// <param name="content">The published content</param>
         /// <param name="aliases">The collection of alias to check against.</param>
         /// <returns>The <see cref="object"/></returns>
-        protected object GetRawValue(IPublishedContent content, string[] aliases)
+        protected object GetRawValue(IPublishedElement content, string[] aliases)
         {
             PropertyMapInfo info = this.Info;
             object value = info.DefaultValue;
@@ -89,7 +104,15 @@ namespace UmbMapper.PropertyMappers
             for (int i = 0; i < aliases.Length; i++)
             {
                 string alias = aliases[i];
-                value = content.GetPropertyValue(alias, info.Recursive);
+
+                // IPublishedElement (NestedContent) can't fallback because it's not
+                // really in the content tree like IPublishedContent nodes
+                Fallback fallback =
+                    info.Recursive && content.IsIPublishedContent()
+                    ? Fallback.ToAncestors
+                    : Fallback.ToDefaultValue;
+
+                value = content.Value(alias, fallback: fallback);
                 if (!this.IsNullOrDefault(value))
                 {
                     this.Alias = alias;
@@ -169,7 +192,7 @@ namespace UmbMapper.PropertyMappers
         [MethodImpl(MethodImplOptions.NoInlining)]
         private UmbracoContext GetUmbracoContext()
         {
-            return UmbracoContext.Current ?? throw new InvalidOperationException("UmbracoContext.Current is null.");
+            return this.umbracoContextFactory.EnsureUmbracoContext().UmbracoContext;
         }
     }
 }

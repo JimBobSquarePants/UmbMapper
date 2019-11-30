@@ -4,7 +4,8 @@
 // </copyright>
 
 using System.Globalization;
-using Umbraco.Core.Models;
+using UmbMapper.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Umbraco.Web;
 using Umbraco.Web.Security;
 
@@ -26,21 +27,11 @@ namespace UmbMapper.PropertyMappers
         UmbracoContext UmbracoContext { get; }
 
         /// <summary>
-        /// Gets the MembershipHelper instance
-        /// </summary>
-        MembershipHelper Members { get; }
-
-        /// <summary>
-        /// Gets the UmbracoHelper instance
-        /// </summary>
-        UmbracoHelper Umbraco { get; }
-
-        /// <summary>
         /// Maps the raw property from the given content without conversion.
         /// </summary>
         /// <param name="content">The published content</param>
         /// <returns>The <see cref="object"/></returns>
-        object GetRawValue(IPublishedContent content);
+        object GetRawValue(IPublishedElement content);
 
         /// <summary>
         /// Maps the property from the given content.
@@ -48,12 +39,14 @@ namespace UmbMapper.PropertyMappers
         /// <param name="content">The published content</param>
         /// <param name="value">The current value</param>
         /// <returns>The <see cref="object"/></returns>
-        object Map(IPublishedContent content, object value);
+        ///object Map(IPublishedElement content, object value);
+
+        object Map(IPublishedElement content, object value, MappingContext mappingContext);
 
         /// <summary>
         /// Gets the culture for the current request. This can be either the set culture or the request culture.
         /// </summary>
         /// <returns>The <see cref="CultureInfo"/></returns>
-        CultureInfo GetRequestCulture();
+        CultureInfo GetRequestCulture(MappingContext mappingContextB);
     }
 }

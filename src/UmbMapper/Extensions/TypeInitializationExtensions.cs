@@ -85,8 +85,18 @@ namespace UmbMapper.Extensions
             TArg2 argument2,
             TArg3 argument3)
         {
-            return InstanceCreationFactory<TArg1, TArg2, TArg3>
-                .CreateInstanceOf(type, argument1, argument2, argument3);
+            return GetInstance<TArg1, TArg2, TArg3, TypeToIgnore>(type, argument1, argument2, argument3, null);
+        }
+
+        public static object GetInstance<TArg1, TArg2, TArg3, TArg4>(
+            this Type type,
+            TArg1 argument1,
+            TArg2 argument2,
+            TArg3 argument3,
+            TArg4 argument4)
+        {
+            return InstanceCreationFactory<TArg1, TArg2, TArg3, TArg4>
+                .CreateInstanceOf(type, argument1, argument2, argument3, argument4);
         }
 
         /// <summary>
@@ -95,12 +105,12 @@ namespace UmbMapper.Extensions
         /// <typeparam name="TArg1">The type of the first argument to pass to the constructor.</typeparam>
         /// <typeparam name="TArg2">The type of the second argument to pass to the constructor.</typeparam>
         /// <typeparam name="TArg3">The type of the third argument to pass to the constructor.</typeparam>
-        private static class InstanceCreationFactory<TArg1, TArg2, TArg3>
+        private static class InstanceCreationFactory<TArg1, TArg2, TArg3, TArg4>
         {
             /// <summary>
             /// This dictionary will hold a cache of object-creation functions, keyed by the Type to create:
             /// </summary>
-            private static readonly ConcurrentDictionary<Type, Func<TArg1, TArg2, TArg3, object>> InstanceCreationMethods = new ConcurrentDictionary<Type, Func<TArg1, TArg2, TArg3, object>>();
+            private static readonly ConcurrentDictionary<Type, Func<TArg1, TArg2, TArg3, TArg4, object>> InstanceCreationMethods = new ConcurrentDictionary<Type, Func<TArg1, TArg2, TArg3, TArg4, object>>();
 
             /// <summary>
             /// The create instance of.
@@ -114,11 +124,11 @@ namespace UmbMapper.Extensions
             /// <returns>
             /// The <see cref="object"/>.
             /// </returns>
-            public static object CreateInstanceOf(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3)
+            public static object CreateInstanceOf(Type type, TArg1 arg1, TArg2 arg2, TArg3 arg3, TArg4 arg4)
             {
                 CacheInstanceCreationMethodIfRequired(type);
 
-                return InstanceCreationMethods[type].Invoke(arg1, arg2, arg3);
+                return InstanceCreationMethods[type].Invoke(arg1, arg2, arg3, arg4);
             }
 
             /// <summary>
@@ -130,12 +140,12 @@ namespace UmbMapper.Extensions
             private static void CacheInstanceCreationMethodIfRequired(Type type)
             {
                 // Bail out if we've already cached the instance creation method:
-                if (InstanceCreationMethods.TryGetValue(type, out Func<TArg1, TArg2, TArg3, object> cached))
+                if (InstanceCreationMethods.TryGetValue(type, out Func<TArg1, TArg2, TArg3, TArg4, object> cached))
                 {
                     return;
                 }
 
-                Type[] argumentTypes = { typeof(TArg1), typeof(TArg2), typeof(TArg3) };
+                Type[] argumentTypes = { typeof(TArg1), typeof(TArg2), typeof(TArg3), typeof(TArg4) };
 
                 // Get a collection of the constructor argument Types we've been given; ignore any
                 // arguments which are of the 'ignore this' Type:
@@ -154,7 +164,8 @@ namespace UmbMapper.Extensions
                 {
                     Expression.Parameter(typeof(TArg1), "param1"),
                     Expression.Parameter(typeof(TArg2), "param2"),
-                    Expression.Parameter(typeof(TArg3), "param3")
+                    Expression.Parameter(typeof(TArg3), "param3"),
+                    Expression.Parameter(typeof(TArg4), "param4")
                 };
 
                 // Get a set of Expressions representing the parameters which will be passed to the constructor:
@@ -165,8 +176,8 @@ namespace UmbMapper.Extensions
                 NewExpression constructorCallExpression = Expression.New(constructor, constructorParameterExpressions.Cast<Expression>());
 
                 // Compile the Expression into a Func which takes three arguments and returns the constructed object:
-                Func<TArg1, TArg2, TArg3, object> constructorCallingLambda =
-                    Expression.Lambda<Func<TArg1, TArg2, TArg3, object>>(
+                Func<TArg1, TArg2, TArg3, TArg4, object> constructorCallingLambda =
+                    Expression.Lambda<Func<TArg1, TArg2, TArg3, TArg4, object>>(
                         constructorCallExpression,
                         lamdaParameterExpressions).Compile();
 

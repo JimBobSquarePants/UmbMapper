@@ -8,13 +8,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using UmbMapper.Extensions;
+using UmbMapper.Models;
 using Umbraco.Core;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 
 namespace UmbMapper.PropertyMappers
 {
     /// <summary>
-    /// Maps from the <see cref="IPublishedContent"/> to an enum.
+    /// Maps from the <see cref="IPublishedElement"/> to an enum.
     /// </summary>
     public class EnumPropertyMapper : PropertyMapperBase
     {
@@ -27,8 +29,81 @@ namespace UmbMapper.PropertyMappers
         {
         }
 
+        public EnumPropertyMapper(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService, IUmbracoContextFactory umbracoContextFactory)
+            : base(info, umbMapperRegistry, umbMapperService, umbracoContextFactory)
+        { }
+
         /// <inheritdoc />
-        public override object Map(IPublishedContent content, object value)
+        //public override object Map(IPublishedElement content, object value)
+        //{
+        //    PropertyMapInfo info = this.Info;
+
+        //    if (value is null)
+        //    {   
+        //        return info.DefaultValue;
+        //    }
+
+        //    Type propertyType = info.PropertyType;
+        //    CultureInfo culture = this.GetRequestCulture();
+
+        //    if (value is string strValue && !string.IsNullOrWhiteSpace(strValue))
+        //    {
+        //        if (strValue.IndexOf(',') != -1)
+        //        {
+        //            long convertedValue = 0;
+
+        //            // ReSharper disable once LoopCanBeConvertedToQuery
+        //            foreach (string v in strValue.ToDelimitedList())
+        //            {
+        //                // OR assignment. Stolen from ComponentModel EnumConverter.
+        //                convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), culture);
+        //            }
+
+        //            return Enum.ToObject(propertyType, convertedValue);
+        //        }
+
+        //        return Enum.Parse(propertyType, strValue, true);
+        //    }
+
+        //    if (value is int)
+        //    {
+        //        // Should handle most cases.
+        //        if (Enum.IsDefined(propertyType, value))
+        //        {
+        //            return Enum.ToObject(propertyType, value);
+        //        }
+        //    }
+
+        //    Type valueType = value.GetType();
+        //    if (valueType.IsEnum)
+        //    {
+        //        // This should work for most cases where enums base type is int.
+        //        return Enum.ToObject(propertyType, Convert.ToInt64(value, culture));
+        //    }
+
+        //    if (valueType.IsEnumerableOfType(typeof(string)))
+        //    {
+        //        long convertedValue = 0;
+        //        var enumerable = ((IEnumerable<string>)value).ToList();
+
+        //        if (enumerable.Count > 0)
+        //        {
+        //            // ReSharper disable once LoopCanBeConvertedToQuery
+        //            foreach (string v in enumerable)
+        //            {
+        //                convertedValue |= Convert.ToInt64((Enum)Enum.Parse(propertyType, v, true), culture);
+        //            }
+
+        //            return Enum.ToObject(propertyType, convertedValue);
+        //        }
+
+        //        return propertyType.GetInstance();
+        //    }
+
+        //    return info.DefaultValue;
+        //}
+
+        public override object Map(IPublishedElement content, object value, MappingContext mappingContext)
         {
             PropertyMapInfo info = this.Info;
 
@@ -38,7 +113,7 @@ namespace UmbMapper.PropertyMappers
             }
 
             Type propertyType = info.PropertyType;
-            CultureInfo culture = this.GetRequestCulture();
+            CultureInfo culture = this.GetRequestCulture(mappingContext);
 
             if (value is string strValue && !string.IsNullOrWhiteSpace(strValue))
             {
@@ -97,4 +172,6 @@ namespace UmbMapper.PropertyMappers
             return info.DefaultValue;
         }
     }
+
+
 }

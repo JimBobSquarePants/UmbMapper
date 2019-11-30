@@ -3,7 +3,9 @@
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
 
-using Umbraco.Core.Models;
+using UmbMapper.Models;
+using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 
 namespace UmbMapper.PropertyMappers
 {
@@ -21,8 +23,24 @@ namespace UmbMapper.PropertyMappers
         {
         }
 
+        public UmbracoPropertyMapper(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService, IUmbracoContextFactory umbracoContextFactory)
+            : base(info, umbMapperRegistry, umbMapperService, umbracoContextFactory)
+        { }
+
         /// <inheritdoc/>
-        public override object Map(IPublishedContent content, object value)
+        //public override object Map(IPublishedElement content, object value)
+        //{
+        //    object convertedValue = this.CheckConvertType(value);
+
+        //    if (this.Info.PropertyType.IsInstanceOfType(convertedValue))
+        //    {
+        //        return convertedValue;
+        //    }
+
+        //    return value ?? this.Info.DefaultValue;
+        //}
+
+        public override object Map(IPublishedElement content, object value, MappingContext mappingContext)
         {
             object convertedValue = this.CheckConvertType(value);
 

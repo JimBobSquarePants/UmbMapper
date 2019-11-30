@@ -8,9 +8,11 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Web.Mvc;
 using UmbMapper.Extensions;
 using UmbMapper.PropertyMappers;
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 
 namespace UmbMapper
 {
@@ -39,6 +41,17 @@ namespace UmbMapper
                 : new UmbracoPropertyMapper(this.Info);
         }
 
+        public PropertyMap(PropertyInfo property, IPropertyMapper propertyMapper)
+        {
+            if (!property.CanWrite)
+            {
+                throw new InvalidOperationException($"Property {property} in class {typeof(T).Name} must be writable in order to be mapped");
+            }
+
+            this.Info = new PropertyMapInfo(property);
+            this.PropertyMapper = propertyMapper;
+        }
+
         /// <inheritdoc/>
         public PropertyMapInfo Info { get; }
 
@@ -48,7 +61,7 @@ namespace UmbMapper
         /// <summary>
         /// Gets the mapping predicate. Used for mapping from known values in the current instance.
         /// </summary>
-        public Func<T, IPublishedContent, object> Predicate { get; internal set; }
+        public Func<T, IPublishedElement, object> Predicate { get; internal set; }
 
         /// <summary>
         /// Sets the aliases to check against when mapping the property
@@ -108,16 +121,55 @@ namespace UmbMapper
             return this;
         }
 
+        public PropertyMap<T> SetFactoryMapper<TMapper>()
+            where TMapper : FactoryPropertyMapperBase
+        {
+            var umb = DependencyResolver.Current.GetService<IUmbracoContextFactory>();
+
+            this.PropertyMapper = (TMapper)typeof(TMapper).GetInstance(this.Info);
+            return this;
+        }
+
+        ////internal PropertyMap<T> SetMapper(Type mapperType)
+        //internal PropertyMap<T> SetMapper(IPropertyMap mapperType)
+        //{
+        //    if (!typeof(IPropertyMapper).IsAssignableFrom(mapperType))
+        //    {
+        //        throw new InvalidOperationException($"Attempt to set invalid type {mapperType.Name} as mapper Type");
+        //    }
+
+        //    this.PropertyMapper = (IPropertyMapper)mapperType.GetInstance(this.Info);
+        //    return this;
+        //}
+
+        //TODO - is it this or the above
+        internal void SetMapper(IPropertyMapper mapper)
+        {
+            this.PropertyMapper = mapper;
+        }
+
+        //TODO - as creating the maper is done elsewhere, this ShOULD be redundant
+        internal void SetMapperFactory(FactoryPropertyMapperBase mapper)
+        {
+            this.PropertyMapper = mapper;
+        }
+
         /// <summary>
         /// Sets the property mapping predicate. Used for mapping from known values in the current instance.
         /// </summary>
         /// <param name="predicate">The mapping predicate</param>
         /// <returns>The <see cref="PropertyMap{T}"/></returns>
-        public PropertyMap<T> MapFromInstance(Func<T, IPublishedContent, object> predicate)
+        public PropertyMap<T> MapFromInstance(Func<T, IPublishedElement, object> predicate)
         {
             this.Info.HasPredicate = true;
             this.Predicate = predicate;
             return this;
+        }
+
+        public void SetMapFromInstance(Func<T, IPublishedElement, object> predicate)
+        {
+            this.Info.HasPredicate = true;
+            this.Predicate = predicate;
         }
 
         /// <summary>
@@ -141,6 +193,11 @@ namespace UmbMapper
             return this;
         }
 
+        internal void SetRecursive(bool recursive)
+        {
+            this.Info.Recursive = recursive;
+        }
+
         /// <summary>
         /// Instructs the mapper to lazily map the property
         /// </summary>
@@ -157,6 +214,16 @@ namespace UmbMapper
             return this;
         }
 
+        internal void SetLazy(bool lazy)
+        {
+            if (!this.Info.Property.ShouldAttemptLazyLoad())
+            {
+                throw new InvalidOperationException($"Property {this.Info.Property.Name} in class {typeof(T).Name} must be marked with the 'virtual' keyword to be lazily mapped.");
+            }
+
+            this.Info.Lazy = true;
+        }
+
         /// <summary>
         /// Sets the default value for the mapper
         /// </summary>
@@ -166,6 +233,14 @@ namespace UmbMapper
         {
             this.Info.DefaultValue = value;
             return this;
+        }
+
+        internal void SetDefaultValue(object value)
+        {
+            if (value != null)
+            {
+                this.Info.DefaultValue = value;
+            }
         }
 
         /// <inheritdoc/>
@@ -207,6 +282,14 @@ namespace UmbMapper
             }
 
             return this;
+        }
+
+        internal void SetAutoLazy()
+        {
+            if (this.Info.Property.ShouldAttemptLazyLoad())
+            {
+                this.Info.Lazy = true;
+            }
         }
 
         private static int GetHashCode(PropertyMap<T> map)

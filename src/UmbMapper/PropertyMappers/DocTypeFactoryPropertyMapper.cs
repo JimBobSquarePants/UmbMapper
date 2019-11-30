@@ -2,8 +2,8 @@
 // Copyright (c) James Jackson-South and contributors.
 // Licensed under the Apache License, Version 2.0.
 // </copyright>
-
-using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Web;
 
 namespace UmbMapper.PropertyMappers
 {
@@ -16,12 +16,17 @@ namespace UmbMapper.PropertyMappers
         /// Initializes a new instance of the <see cref="DocTypeFactoryPropertyMapper"/> class.
         /// </summary>
         /// <param name="info">The property map information</param>
-        public DocTypeFactoryPropertyMapper(PropertyMapInfo info)
-            : base(info)
+        public DocTypeFactoryPropertyMapper(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService)
+            : base(info, umbMapperRegistry, umbMapperService)
+        {
+        }
+
+        public DocTypeFactoryPropertyMapper(PropertyMapInfo info, IUmbMapperRegistry umbMapperRegistry, IUmbMapperService umbMapperService, IUmbracoContextFactory umbracoContextFactory)
+            : base(info, umbMapperRegistry, umbMapperService, umbracoContextFactory)
         {
         }
 
         /// <inheritdoc/>
-        public override string ResolveTypeName(IPublishedContent content) => content.DocumentTypeAlias;
+        public override string ResolveTypeName(IPublishedElement content) => content.ContentType.Alias;
     }
 }

@@ -102,7 +102,7 @@ namespace UmbMapper.Extensions
                     }
 
                     // Reference types are ok
-                    return Attempt<object>.SucceedIf(!destinationType.IsValueType, null);
+                    return Attempt<object>.If(!destinationType.IsValueType, null);
                 }
 
                 Type inputType = input.GetType();
@@ -259,7 +259,7 @@ namespace UmbMapper.Extensions
                     // Because decimal 100.01m will happily convert to integer 100, it
                     // makes sense that string "100.01" *also* converts to integer 100.
                     string input2 = NormalizeNumberDecimalSeparator(input);
-                    return Attempt<object>.SucceedIf(decimal.TryParse(input2, out decimal value2), Convert.ToInt32(value2));
+                    return Attempt<object>.If(decimal.TryParse(input2, out decimal value2), Convert.ToInt32(value2));
                 }
 
                 if (destinationType == typeof(long))
@@ -271,7 +271,7 @@ namespace UmbMapper.Extensions
 
                     // Same as int
                     string input2 = NormalizeNumberDecimalSeparator(input);
-                    return Attempt<object>.SucceedIf(decimal.TryParse(input2, out decimal value2), Convert.ToInt64(value2));
+                    return Attempt<object>.If(decimal.TryParse(input2, out decimal value2), Convert.ToInt64(value2));
                 }
 
                 // TODO: Should we do the decimal trick for short, byte, unsigned?
@@ -290,38 +290,38 @@ namespace UmbMapper.Extensions
                 switch (Type.GetTypeCode(destinationType))
                 {
                     case TypeCode.Int16:
-                        return Attempt<object>.SucceedIf(short.TryParse(input, out short value), value);
+                        return Attempt<object>.If(short.TryParse(input, out short value), value);
 
                     case TypeCode.Double:
                         string input2 = NormalizeNumberDecimalSeparator(input);
-                        return Attempt<object>.SucceedIf(double.TryParse(input2, out double valueD), valueD);
+                        return Attempt<object>.If(double.TryParse(input2, out double valueD), valueD);
 
                     case TypeCode.Single:
                         string input3 = NormalizeNumberDecimalSeparator(input);
-                        return Attempt<object>.SucceedIf(float.TryParse(input3, out float valueF), valueF);
+                        return Attempt<object>.If(float.TryParse(input3, out float valueF), valueF);
 
                     case TypeCode.Char:
-                        return Attempt<object>.SucceedIf(char.TryParse(input, out char valueC), valueC);
+                        return Attempt<object>.If(char.TryParse(input, out char valueC), valueC);
 
                     case TypeCode.Byte:
-                        return Attempt<object>.SucceedIf(byte.TryParse(input, out byte valueB), valueB);
+                        return Attempt<object>.If(byte.TryParse(input, out byte valueB), valueB);
 
                     case TypeCode.SByte:
-                        return Attempt<object>.SucceedIf(sbyte.TryParse(input, out sbyte valueSb), valueSb);
+                        return Attempt<object>.If(sbyte.TryParse(input, out sbyte valueSb), valueSb);
 
                     case TypeCode.UInt32:
-                        return Attempt<object>.SucceedIf(uint.TryParse(input, out uint valueU), valueU);
+                        return Attempt<object>.If(uint.TryParse(input, out uint valueU), valueU);
 
                     case TypeCode.UInt16:
-                        return Attempt<object>.SucceedIf(ushort.TryParse(input, out ushort valueUs), valueUs);
+                        return Attempt<object>.If(ushort.TryParse(input, out ushort valueUs), valueUs);
 
                     case TypeCode.UInt64:
-                        return Attempt<object>.SucceedIf(ulong.TryParse(input, out ulong valueUl), valueUl);
+                        return Attempt<object>.If(ulong.TryParse(input, out ulong valueUl), valueUl);
                 }
             }
             else if (destinationType == typeof(Guid))
             {
-                return Attempt<object>.SucceedIf(Guid.TryParse(input, out Guid value), value);
+                return Attempt<object>.If(Guid.TryParse(input, out Guid value), value);
             }
             else if (destinationType == typeof(DateTime))
             {
@@ -345,20 +345,20 @@ namespace UmbMapper.Extensions
             }
             else if (destinationType == typeof(DateTimeOffset))
             {
-                return Attempt<object>.SucceedIf(DateTimeOffset.TryParse(input, out DateTimeOffset value), value);
+                return Attempt<object>.If(DateTimeOffset.TryParse(input, out DateTimeOffset value), value);
             }
             else if (destinationType == typeof(TimeSpan))
             {
-                return Attempt<object>.SucceedIf(TimeSpan.TryParse(input, out TimeSpan value), value);
+                return Attempt<object>.If(TimeSpan.TryParse(input, out TimeSpan value), value);
             }
             else if (destinationType == typeof(decimal))
             {
                 string input2 = NormalizeNumberDecimalSeparator(input);
-                return Attempt<object>.SucceedIf(decimal.TryParse(input2, out decimal value), value);
+                return Attempt<object>.If(decimal.TryParse(input2, out decimal value), value);
             }
             else if (input != null && destinationType == typeof(Version))
             {
-                return Attempt<object>.SucceedIf(Version.TryParse(input, out Version value), value);
+                return Attempt<object>.If(Version.TryParse(input, out Version value), value);
             }
 
             // E_NOTIMPL IPAddress, BigInteger

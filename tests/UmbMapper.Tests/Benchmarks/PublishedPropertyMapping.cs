@@ -4,8 +4,9 @@ using Our.Umbraco.Ditto;
 using UmbMapper.Extensions;
 using UmbMapper.Tests.Mapping;
 using Umbraco.Core.Models;
-using Umbraco.Web;
-using Umbraco.Web.Models;
+//using Umbraco.Web;
+//using Umbraco.Web.Models;
+using Umbraco.Core.Models.PublishedContent;
 using Zone.UmbracoMapper;
 
 namespace UmbMapper.Tests.Benchmarks

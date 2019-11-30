@@ -300,6 +300,7 @@ __pycache__/
 **/App_Data/FeedCache/
 **/App_Data/courier/revisions/
 **/App_Data/courier/cache/
+**/App_Data/cache/
 **/App_Data/umbraco.licensing.log.txt
 **/App_Data/*.udt
 **/aspnet_client/
